@@ -52,6 +52,11 @@ void export_Tube(py::module& m)
       TUBE_TUBE_INTERVAL_DOUBLE_TFNC_INT,
       "tdomain"_a, "timestep"_a, "f"_a, "f_image_id"_a=0)
 
+    // For MATLAB compatibility.
+    .def(py::init([](const Interval& tdomain, double timestep, const TFnc& f, double f_image_id) { return new Tube(tdomain, timestep, f, (int)f_image_id); }),
+      TUBE_TUBE_INTERVAL_DOUBLE_TFNC_INT,
+      "tdomain"_a, "timestep"_a, "f"_a, "f_image_id"_a=0)
+
     .def(py::init<const vector<Interval>&,const vector<Interval> &>(),
       TUBE_TUBE_VECTORINTERVAL_VECTORINTERVAL,
       "v_tdomains"_a, "v_codomains"_a)
@@ -61,6 +66,11 @@ void export_Tube(py::module& m)
       "x"_a)
 
     .def(py::init<const Tube&,const TFnc&,int>(),
+      TUBE_TUBE_TUBE_TFNC_INT,
+      "x"_a, "f"_a, "f_image_id"_a=0)
+
+    // For MATLAB compatibility.
+    .def(py::init([](const Tube& x, const TFnc& f, double f_image_id) { return new Tube(x, f, (int)f_image_id); }),
       TUBE_TUBE_TUBE_TFNC_INT,
       "x"_a, "f"_a, "f_image_id"_a=0)
 
@@ -137,6 +147,11 @@ void export_Tube(py::module& m)
       py::return_value_policy::reference_internal)
 
     .def("slice_tdomain", &Tube::slice_tdomain,
+      TUBE_CONSTINTERVAL_SLICE_TDOMAIN_INT,
+      "slice_id"_a)
+
+    // For MATLAB compatibility.
+    .def("slice_tdomain", [](Tube& s, double slice_id) { return s.slice_tdomain((int)slice_id); },
       TUBE_CONSTINTERVAL_SLICE_TDOMAIN_INT,
       "slice_id"_a)
 
@@ -450,7 +465,17 @@ void export_Tube(py::module& m)
       TUBE_VOID_SERIALIZE_STRING_INT,
       "binary_file_name"_a="x.tube", "version_number"_a=SERIALIZATION_VERSION)
 
+    // For MATLAB compatibility.
+    .def("serialize", [](Tube& s, const string& binary_file_name, double version_number) { s.serialize(binary_file_name, (int)version_number); },
+      TUBE_VOID_SERIALIZE_STRING_INT,
+      "binary_file_name"_a="x.tube", "version_number"_a=SERIALIZATION_VERSION)
+
     .def("serialize", (void (Tube::*)(const string&,const Trajectory&,int) const)&Tube::serialize,
+      TUBE_VOID_SERIALIZE_STRING_TRAJECTORY_INT,
+      "binary_file_name"_a, "traj"_a, "version_number"_a=SERIALIZATION_VERSION)
+
+    // For MATLAB compatibility.
+    .def("serialize", [](Tube& s, const string& binary_file_name, const Trajectory& traj, double version_number) { s.serialize(binary_file_name, traj, (int)version_number); },
       TUBE_VOID_SERIALIZE_STRING_TRAJECTORY_INT,
       "binary_file_name"_a, "traj"_a, "version_number"_a=SERIALIZATION_VERSION)
 

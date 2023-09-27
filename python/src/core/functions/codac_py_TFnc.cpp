@@ -34,6 +34,12 @@ py::class_<TFnc, pyTFnc> export_TFnc(py::module& m)
       TFNC_TFNC_INT_INT_BOOL,
       "n"_a, "m"_a, "is_intertemporal"_a)
 
+    // For MATLAB compatibility.
+    // Abstract class...
+    //.def(py::init([](double nb_vars, double img_dim, bool is_intertemporal) { return new TFnc((int)nb_vars, (int)img_dim, is_intertemporal); }),
+    //  TFNC_TFNC_INT_INT_BOOL,
+    //  "n"_a, "m"_a, "is_intertemporal"_a)
+
     .def("nb_vars", &TFnc::nb_vars,
       TFNC_INT_NB_VARS)
 

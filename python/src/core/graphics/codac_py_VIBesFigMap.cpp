@@ -55,7 +55,17 @@ void export_VIBesFigMap(py::module& m)
       VIBESFIGMAP_VOID_SET_TUBE_MAX_DISP_SLICES_INT,
       "max"_a)
 
+    // For MATLAB compatibility.
+    .def("set_tube_max_disp_slices", [](VIBesFigMap& s, double max) { s.set_tube_max_disp_slices((int)max); },
+      VIBESFIGMAP_VOID_SET_TUBE_MAX_DISP_SLICES_INT,
+      "max"_a)
+
     .def("set_traj_max_disp_points", &VIBesFigMap::set_traj_max_disp_points,
+      VIBESFIGMAP_VOID_SET_TRAJ_MAX_DISP_POINTS_INT,
+      "max"_a)
+
+    // For MATLAB compatibility.
+    .def("set_traj_max_disp_points", [](VIBesFigMap& s, double max) { s.set_traj_max_disp_points((int)max); },
       VIBESFIGMAP_VOID_SET_TRAJ_MAX_DISP_POINTS_INT,
       "max"_a)
 
@@ -66,6 +76,12 @@ void export_VIBesFigMap(py::module& m)
   // Handling tubes
 
     .def("add_tube", &VIBesFigMap::add_tube,
+      VIBESFIGMAP_VOID_ADD_TUBE_TUBEVECTOR_STRING_INT_INT,
+      "tube"_a, "name"_a, "index_x"_a, "index_y"_a, 
+      py::keep_alive<1,2>())
+
+    // For MATLAB compatibility.
+    .def("add_tube", [](VIBesFigMap& s, const TubeVector *tube, const string& name, double index_x, double index_y) { s.add_tube(tube, name, (int)index_x, (int)index_y); },
       VIBESFIGMAP_VOID_ADD_TUBE_TUBEVECTOR_STRING_INT_INT,
       "tube"_a, "name"_a, "index_x"_a, "index_y"_a, 
       py::keep_alive<1,2>())
@@ -91,8 +107,18 @@ void export_VIBesFigMap(py::module& m)
     .def("add_trajectory", (void (VIBesFigMap::*)(const TrajectoryVector*,const string&,int,int,const string&,bool))&VIBesFigMap::add_trajectory,
       VIBESFIGMAP_VOID_ADD_TRAJECTORY_TRAJECTORYVECTOR_STRING_INT_INT_STRING_BOOL,
       "traj"_a, "name"_a, "index_x"_a, "index_y"_a, "color"_a=DEFAULT_TRAJMAP_COLOR, "vehicle_display"_a=DEFAULT_VEHICLE_DISPLAY_ON_EACH_TRAJ)
+
+    // For MATLAB compatibility.
+    .def("add_trajectory", [](VIBesFigMap& s, const TrajectoryVector* traj, const string& name, double index_x, double index_y, const string& color, bool vehicle_display) { s.add_trajectory(traj, name, (int)index_x, (int)index_y, color, vehicle_display); },
+      VIBESFIGMAP_VOID_ADD_TRAJECTORY_TRAJECTORYVECTOR_STRING_INT_INT_STRING_BOOL,
+      "traj"_a, "name"_a, "index_x"_a, "index_y"_a, "color"_a=DEFAULT_TRAJMAP_COLOR, "vehicle_display"_a=DEFAULT_VEHICLE_DISPLAY_ON_EACH_TRAJ)
     
     .def("add_trajectory", (void (VIBesFigMap::*)(const TrajectoryVector*,const string&,int,int,int,const string&,bool))&VIBesFigMap::add_trajectory,
+      VIBESFIGMAP_VOID_ADD_TRAJECTORY_TRAJECTORYVECTOR_STRING_INT_INT_INT_STRING_BOOL,
+      "traj"_a, "name"_a, "index_x"_a, "index_y"_a, "index_heading"_a, "color"_a=DEFAULT_TRAJMAP_COLOR, "vehicle_display"_a=DEFAULT_VEHICLE_DISPLAY_ON_EACH_TRAJ)
+    
+    // For MATLAB compatibility.
+    .def("add_trajectory", [](VIBesFigMap& s, const TrajectoryVector *traj, const string& name, double index_x, double index_y, double index_heading, const string& color, bool vehicle_display) { s.add_trajectory(traj, name, (int)index_x, (int)index_y, (int)index_heading, color, vehicle_display); },
       VIBESFIGMAP_VOID_ADD_TRAJECTORY_TRAJECTORYVECTOR_STRING_INT_INT_INT_STRING_BOOL,
       "traj"_a, "name"_a, "index_x"_a, "index_y"_a, "index_heading"_a, "color"_a=DEFAULT_TRAJMAP_COLOR, "vehicle_display"_a=DEFAULT_VEHICLE_DISPLAY_ON_EACH_TRAJ)
     

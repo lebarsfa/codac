@@ -10,9 +10,9 @@ import py.codac.*
 dt = 0.01;                                % timestep for tubes accuracy
 tdomain = Interval(0, 3);                 % temporal limits [t_0,t_f]=[0,3]
 
-x = TubeVector(tdomain, dt, int32(4));    % 4d tube for state vectors
-v = TubeVector(tdomain, dt, int32(4));    % 4d tube for derivatives of the states
-u = TubeVector(tdomain, dt, int32(2));    % 2d tube for inputs of the system
+x = TubeVector(tdomain, dt, 4);    % 4d tube for state vectors
+v = TubeVector(tdomain, dt, 4);    % 4d tube for derivatives of the states
+u = TubeVector(tdomain, dt, 2);    % 2d tube for inputs of the system
 
 x_truth = TrajectoryVector(tdomain, TFunction(['(' ...
   '10*cos(t)+t ;' ...
@@ -52,7 +52,7 @@ cn.add(ctc_f, py.list({v, x, u}));   % adding the f constraint
 
 for i=1:length(y) % we add the observ. constraint for each range-only measurement
 
-  p = cn.create_interm_var(IntervalVector(int32(4))); % intermed. variable (state at t_i)
+  p = cn.create_interm_var(IntervalVector(4)); % intermed. variable (state at t_i)
 
   % Distance constraint: relation between the state at t_i and the ith beacon position
   cn.add(CtcDist(), py.list({cn.subvector(p,int32(0),int32(1)), py.list(b{i}), y{i}}));
@@ -71,9 +71,9 @@ cn.contract(true);
 
 beginDrawing();
 fig = VIBesFigMap('fig');
-fig.set_properties(int32(50), int32(50), int32(900), int32(550));
-fig.add_trajectory(x_truth, 'xtruth', int32(0), int32(1), 'white');
-fig.add_tube(x, 'x', int32(0), int32(1));
+fig.set_properties(50, 50, 900, 550);
+fig.add_trajectory(x_truth, 'xtruth', 0, 1, 'white');
+fig.add_tube(x, 'x', 0, 1);
 fig.smooth_tube_drawing(true);
 
 for i=1:3

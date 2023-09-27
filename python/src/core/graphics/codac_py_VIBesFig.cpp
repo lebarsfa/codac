@@ -45,6 +45,11 @@ void export_VIBesFig(py::module& m)
       VIBESFIG_VOID_SET_PROPERTIES_INT_INT_INT_INT,
       "x"_a, "y"_a, "width"_a, "height"_a)
 
+    // For MATLAB compatibility.
+    .def("set_properties", [](VIBesFig& s, double x, double y, double width, double height) { s.set_properties((int)x, (int)y, (int)width, (int)height); },
+      VIBESFIG_VOID_SET_PROPERTIES_INT_INT_INT_INT,
+      "x"_a, "y"_a, "width"_a, "height"_a)
+
     .def("set_background", &VIBesFig::set_background,
       VIBESFIG_VOID_SET_BACKGROUND_STRING,
       "bg_color"_a)

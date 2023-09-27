@@ -40,6 +40,11 @@ void export_VIBesFigTubeVector(py::module& m)
       VIBESFIGTUBEVECTOR_VIBESFIGTUBEVECTOR_STRING_INT_INT,
       "fig_name"_a, "start_index"_a, "end_index"_a)
 
+    // For MATLAB compatibility.
+    .def(py::init([](const std::string& fig_name, double start_index, double end_index) { return new VIBesFigTubeVector(fig_name, (int)start_index, (int)end_index); }),
+      VIBESFIGTUBEVECTOR_VIBESFIGTUBEVECTOR_STRING_INT_INT,
+      "fig_name"_a, "start_index"_a, "end_index"_a)
+
     .def(py::init<const string&,const TubeVector*,const TrajectoryVector*>(),
       VIBESFIGTUBEVECTOR_VIBESFIGTUBEVECTOR_STRING_TUBEVECTOR_TRAJECTORYVECTOR,
       "fig_name"_a, "tubevector"_a, "trajvector"_a=nullptr)
@@ -51,6 +56,11 @@ void export_VIBesFigTubeVector(py::module& m)
       VIBESFIGTUBEVECTOR_INT_SUBFIGS_NUMBER)
 
     .def("set_properties", &VIBesFigTubeVector::set_properties,
+      VIBESFIGTUBEVECTOR_VOID_SET_PROPERTIES_INT_INT_INT_INT,
+      "x"_a, "y"_a, "width"_a, "height"_a)
+
+    // For MATLAB compatibility.
+    .def("set_properties", [](VIBesFigTubeVector& s, double x, double y, double width, double height) { s.set_properties((int)x, (int)y, (int)width, (int)height); },
       VIBESFIGTUBEVECTOR_VOID_SET_PROPERTIES_INT_INT_INT_INT,
       "x"_a, "y"_a, "width"_a, "height"_a)
 

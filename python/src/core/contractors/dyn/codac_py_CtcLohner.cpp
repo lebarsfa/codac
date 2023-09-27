@@ -35,6 +35,11 @@ void export_CtcLohner(py::module& m, py::class_<DynCtc, pyDynCtc>& dyn_ctc)
       CTCLOHNER_CTCLOHNER_FUNCTION_INT_DOUBLE,
       "f"_a, "contractions"_a=5, "eps"_a=0.1)
 
+    // For MATLAB compatibility.
+    .def(py::init([](const Function &f, double contractions, double eps) { return new CtcLohner(f, (int)contractions, eps); }),
+      CTCLOHNER_CTCLOHNER_FUNCTION_INT_DOUBLE,
+      "f"_a, "contractions"_a=5, "eps"_a=0.1)
+
     .def("contract", (void (CtcLohner::*)(TubeVector&,TimePropag) )&CtcLohner::contract,
       CTCLOHNER_VOID_CONTRACT_TUBEVECTOR_TIMEPROPAG,
       "x"_a.noconvert(), "t_propa"_a=TimePropag::FORWARD|TimePropag::BACKWARD)

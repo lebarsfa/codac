@@ -66,6 +66,11 @@ void export_VIBesFigTube(py::module& m)
     .def("add_tubes", (void (VIBesFigTube::*)(const TubeVector*,int,int,const string&,const string&,const string&))&VIBesFigTube::add_tubes,
       VIBESFIGTUBE_VOID_ADD_TUBES_TUBEVECTOR_INT_INT_STRING_STRING_STRING,
       "tubevector"_a, "start_index"_a, "end_index"_a, "name"_a, "color_frgrnd"_a=DEFAULT_FRGRND_COLOR, "color_bckgrnd"_a=DEFAULT_BCKGRND_COLOR)
+    
+    // For MATLAB compatibility.
+    .def("add_tubes", [](VIBesFigTube& s, const TubeVector *tubevector, double start_index, double end_index, const string& name, const string& color_frgrnd, const string& color_bckgrnd) { s.add_tubes(tubevector, (int)start_index, (int)end_index, name, color_frgrnd, color_bckgrnd); },
+      VIBESFIGTUBE_VOID_ADD_TUBES_TUBEVECTOR_INT_INT_STRING_STRING_STRING,
+      "tubevector"_a, "start_index"_a, "end_index"_a, "name"_a, "color_frgrnd"_a=DEFAULT_FRGRND_COLOR, "color_bckgrnd"_a=DEFAULT_BCKGRND_COLOR)
    
     .def("set_tube_name", &VIBesFigTube::set_tube_name,
       VIBESFIGTUBE_VOID_SET_TUBE_NAME_TUBE_STRING,
@@ -104,6 +109,11 @@ void export_VIBesFigTube(py::module& m)
       py::keep_alive<1,2>())
 
     .def("add_trajectories", (void (VIBesFigTube::*)(const TrajectoryVector*,int,int,const string&,const string&))&VIBesFigTube::add_trajectories,
+      VIBESFIGTUBE_VOID_ADD_TRAJECTORIES_TRAJECTORYVECTOR_INT_INT_STRING_STRING,
+      "trajvector"_a, "start_index"_a, "end_index"_a, "name"_a, "color"_a=DEFAULT_TRAJ_COLOR)
+
+    // For MATLAB compatibility.
+    .def("add_trajectories", [](VIBesFigTube& s, const TrajectoryVector *trajvector, double start_index, double end_index, const string& name, const string& color) { s.add_trajectories(trajvector, (int)start_index, (int)end_index, name, color); },
       VIBESFIGTUBE_VOID_ADD_TRAJECTORIES_TRAJECTORYVECTOR_INT_INT_STRING_STRING,
       "trajvector"_a, "start_index"_a, "end_index"_a, "name"_a, "color"_a=DEFAULT_TRAJ_COLOR)
     

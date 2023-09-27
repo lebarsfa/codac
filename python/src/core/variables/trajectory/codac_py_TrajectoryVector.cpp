@@ -86,6 +86,11 @@ void export_TrajectoryVector(py::module& m)
       TRAJECTORYVECTOR_TRAJECTORYVECTOR_INT,
       "n"_a)
 
+    // For MATLAB compatibility.
+    .def(py::init([](double n) { return new TrajectoryVector((int)n); }),
+      TRAJECTORYVECTOR_TRAJECTORYVECTOR_INT,
+      "n"_a)
+
     .def(py::init<const Interval&,const TFunction&>(),
       TRAJECTORYVECTOR_TRAJECTORYVECTOR_INTERVAL_TFUNCTION,
       "domain"_a, "f"_a)
@@ -127,6 +132,11 @@ void export_TrajectoryVector(py::module& m)
       TRAJECTORYVECTOR_TRAJECTORYVECTOR_INT_TRAJECTORY,
       "n"_a, "x"_a)
 
+    // For MATLAB compatibility.
+    .def(py::init([](double n, const Trajectory& x) { return new TrajectoryVector((int)n, x); }),
+      TRAJECTORYVECTOR_TRAJECTORYVECTOR_INT_TRAJECTORY,
+      "n"_a, "x"_a)
+
     .def("size", &TrajectoryVector::size,
       TRAJECTORYVECTOR_INT_SIZE)
 
@@ -137,11 +147,26 @@ void export_TrajectoryVector(py::module& m)
       TRAJECTORYVECTOR_VOID_RESIZE_INT,
       "n"_a)
 
+    // For MATLAB compatibility.
+    .def("resize", [](TrajectoryVector& s, double n) { s.resize((int)n); },
+      TRAJECTORYVECTOR_VOID_RESIZE_INT,
+      "n"_a)
+
     .def("subvector", &TrajectoryVector::subvector,
       TRAJECTORYVECTOR_CONSTTRAJECTORYVECTOR_SUBVECTOR_INT_INT,
       "start_index"_a, "end_index"_a)
 
+    // For MATLAB compatibility.
+    .def("subvector", [](TrajectoryVector& s, double start_index, double end_index) { return s.subvector((int)start_index, (int)end_index); },
+      TRAJECTORYVECTOR_CONSTTRAJECTORYVECTOR_SUBVECTOR_INT_INT,
+      "start_index"_a, "end_index"_a)
+
     .def("put", &TrajectoryVector::put,
+      TRAJECTORYVECTOR_VOID_PUT_INT_TRAJECTORYVECTOR,
+      "start_index"_a, "subvec"_a)
+
+    // For MATLAB compatibility.
+    .def("put", [](TrajectoryVector& s, double start_index, const TrajectoryVector& subvec) { s.put((int)start_index, subvec); },
       TRAJECTORYVECTOR_VOID_PUT_INT_TRAJECTORYVECTOR,
       "start_index"_a, "subvec"_a)
   

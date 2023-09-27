@@ -205,11 +205,27 @@ void export_ContractorNetwork(py::module& m)
       py::return_value_policy::reference_internal,
       py::keep_alive<1,0>())
 
+    // For MATLAB compatibility.
+    // Cause problems for some reason...
+    //.def("subvector", [](ContractorNetwork& s, Vector& v, double start_index, double end_index) { return s.subvector(v, (int)start_index, (int)end_index); },
+    //  CONTRACTORNETWORK_INTERVALVECTOR_SUBVECTOR_VECTOR_INT_INT,
+    //  "v"_a, "start_index"_a, "end_index"_a,
+    //  py::return_value_policy::reference_internal,
+    //  py::keep_alive<1,0>())
+
     .def("subvector", (IntervalVector& (ContractorNetwork::*)(IntervalVector&,int,int))&ContractorNetwork::subvector,
       CONTRACTORNETWORK_INTERVALVECTOR_SUBVECTOR_INTERVALVECTOR_INT_INT,
       "iv"_a, "start_index"_a, "end_index"_a,
       py::return_value_policy::reference_internal,
       py::keep_alive<1,0>())
+
+    // For MATLAB compatibility.
+    // Cause problems for some reason...
+    //.def("subvector", [](ContractorNetwork& s, IntervalVector& iv, double start_index, double end_index) { return s.subvector(iv, (int)start_index, (int)end_index); },
+    //  CONTRACTORNETWORK_INTERVALVECTOR_SUBVECTOR_INTERVALVECTOR_INT_INT,
+    //  "iv"_a, "start_index"_a, "end_index"_a,
+    //  py::return_value_policy::reference_internal,
+    //  py::keep_alive<1,0>())
 
     .def("add", [](ContractorNetwork& cn, Ctc& ctc, py::list lst)
       {

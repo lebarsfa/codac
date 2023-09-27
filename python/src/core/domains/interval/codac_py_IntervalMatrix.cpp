@@ -75,7 +75,11 @@ void export_IntervalMatrix(py::module& m)
   interval_matrix
 
   .def(py::init<int,int>())
+  // For MATLAB compatibility.
+  .def(py::init([](double nb_rows, double nb_cols) { return new IntervalMatrix((int)nb_rows, (int)nb_cols); }))
   .def(py::init<int,int,const Interval>())
+  // For MATLAB compatibility.
+  .def(py::init([](double nb_rows, double nb_cols, const Interval& x) { return new IntervalMatrix((int)nb_rows, (int)nb_cols, x); }))
   .def(py::init<const IntervalMatrix&>())
   .def(py::init(&create_from_list))
 

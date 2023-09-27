@@ -140,7 +140,11 @@ void export_IntervalVector(py::module& m)
   // Definition
 
     .def(py::init<int>(), "dim"_a)
+    // For MATLAB compatibility.
+    .def(py::init([](double n) { return new IntervalVector((int)n); }), "dim"_a)
     .def(py::init<int,const Interval>(), "dim"_a, "itv"_a)
+    // For MATLAB compatibility.
+    .def(py::init([](double n, const Interval& x) { return new IntervalVector((int)n, x); }), "dim"_a, "itv"_a)
     .def(py::init<const IntervalVector&>(), "x"_a)
     .def(py::init<const Vector&>(), "x"_a)
     .def(py::init<const Interval&>(), "x"_a)
@@ -303,6 +307,8 @@ void export_IntervalVector(py::module& m)
     .def("copy", &IntervalVector_copy)
     .def("size", &IntervalVector::size)
     .def_static("empty", &IntervalVector::empty, DOCS_INTERVALVECTOR_EMPTY, py::arg("n"))
+    // For MATLAB compatibility.
+    .def_static("empty", [](double n) { IntervalVector::empty((int)n); }, DOCS_INTERVALVECTOR_EMPTY, py::arg("n"))
     .def("set_empty", &IntervalVector::set_empty, DOCS_INTERVALVECTOR_SET_EMPTY)
     .def("clear", &IntervalVector::clear, DOCS_INTERVALVECTOR_CLEAR)
     .def("init", &IntervalVector::init, DOCS_INTERVALVECTOR_INIT, py::arg("x"))
@@ -310,8 +316,14 @@ void export_IntervalVector(py::module& m)
     .def("inflate", (IntervalVector& (IntervalVector::*) (double, double)) &IntervalVector::inflate, DOCS_INTERVALVECTOR_INFLATE, "rad"_a, "chi"_a)
     //.def("inflate", &IntervalVector::inflate, DOCS_INTERVALVECTOR_INFLATE, py::return_value_policy::reference_internal, py::arg("rad"))
     .def("resize", &IntervalVector::resize, DOCS_INTERVALVECTOR_RESIZE, py::arg("n"))
+    // For MATLAB compatibility.
+    .def("resize", [](IntervalVector& s, double n2) { s.resize((int)n2); }, DOCS_INTERVALVECTOR_RESIZE, py::arg("n"))
     .def("subvector", &IntervalVector::subvector, DOCS_INTERVALVECTOR_SUBVECTOR, "start_index"_a, "end_index"_a) //, return_value_policy<return_by_value>())
+    // For MATLAB compatibility.
+    .def("subvector", [](IntervalVector& s, double start_index, double end_index) { return s.subvector((int)start_index, (int)end_index); }, DOCS_INTERVALVECTOR_SUBVECTOR, "start_index"_a, "end_index"_a) //, return_value_policy<return_by_value>())
     .def("put", &IntervalVector::put, DOCS_INTERVALVECTOR_PUT)
+    // For MATLAB compatibility.
+    .def("put", [](IntervalVector& s, double start_index, const IntervalVector& subvec) { s.put((int)start_index, subvec); }, DOCS_INTERVALVECTOR_PUT)
     .def("size", &IntervalVector::size, DOCS_INTERVALVECTOR_SIZE)
     .def("lb", &IntervalVector::lb, DOCS_INTERVALVECTOR_LB)
     .def("ub", &IntervalVector::ub, DOCS_INTERVALVECTOR_UB)

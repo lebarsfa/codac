@@ -41,11 +41,21 @@ void export_DataLoader(py::module& m)
       DATALOADER_VECTORINTERVALVECTOR_GENERATE_LANDMARKS_BOXES_INTERVALVECTOR_INT,
       "map_box"_a, "nb_landmarks"_a=100)
 
+    // For MATLAB compatibility.
+    .def_static("generate_landmarks_boxes", [](const IntervalVector& map_box, double nb_landmarks) { return DataLoader::generate_landmarks_boxes(map_box, (int)nb_landmarks); },
+      DATALOADER_VECTORINTERVALVECTOR_GENERATE_LANDMARKS_BOXES_INTERVALVECTOR_INT,
+      "map_box"_a, "nb_landmarks"_a=100)
+
     .def_static("generate_static_observations", &DataLoader::generate_static_observations,
       DATALOADER_VECTORINTERVALVECTOR_GENERATE_STATIC_OBSERVATIONS_VECTOR_VECTORINTERVALVECTOR_BOOL_INTERVAL_INTERVAL,
       "x"_a, "map"_a, "random"_a=true, "visi_range"_a=Interval::POS_REALS, "visi_angle"_a=Interval::ALL_REALS)
 
     .def_static("generate_observations", &DataLoader::generate_observations_along_traj,
+      DATALOADER_VECTORINTERVALVECTOR_GENERATE_OBSERVATIONS_ALONG_TRAJ_TRAJECTORYVECTOR_VECTORINTERVALVECTOR_INT_BOOL_INTERVAL_INTERVAL_INTERVAL,
+      "x"_a, "map"_a, "nb_obs"_a=50, "random"_a=true, "visi_range"_a=Interval(0,50), "visi_angle"_a=Interval(-M_PI/4,M_PI/4), "tdomain"_a=Interval::ALL_REALS)
+
+    // For MATLAB compatibility.
+    .def_static("generate_observations", [](const TrajectoryVector& x, const vector<IntervalVector>& map, double nb_obs, bool random, const Interval& visi_range, const Interval& visi_angle, const Interval& tdomain) { return DataLoader::generate_observations_along_traj(x, map, (int)nb_obs, random, visi_range, visi_angle, tdomain); },
       DATALOADER_VECTORINTERVALVECTOR_GENERATE_OBSERVATIONS_ALONG_TRAJ_TRAJECTORYVECTOR_VECTORINTERVALVECTOR_INT_BOOL_INTERVAL_INTERVAL_INTERVAL,
       "x"_a, "map"_a, "nb_obs"_a=50, "random"_a=true, "visi_range"_a=Interval(0,50), "visi_angle"_a=Interval(-M_PI/4,M_PI/4), "tdomain"_a=Interval::ALL_REALS)
   ;

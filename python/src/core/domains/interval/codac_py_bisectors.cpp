@@ -61,6 +61,8 @@ void export_bisectors(py::module& m)
     .def("uniform_prec", &Bsc::uniform_prec, DOCS_BSC_UNIFORM_PREC)
     .def("prec", &Bsc::prec, DOCS_BSC_PREC)
     .def("too_small", &Bsc::too_small, DOCS_BSC_TOO_SMALL)
+    // For MATLAB compatibility.
+    .def("too_small", [](Bsc& s, const IntervalVector& box, double i) { return s.too_small(box, (int)i); }, DOCS_BSC_TOO_SMALL)
   ;
 
   // LargestFirst Bisector binding

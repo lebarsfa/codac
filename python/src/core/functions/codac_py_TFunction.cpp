@@ -84,7 +84,16 @@ void export_TFunction(py::module& m, py::class_<TFnc>& fnc)
     .def("expr", (const string (TFunction::*)(int) const)&TFunction::expr,
       TFUNCTION_CONSTSTRING_EXPR_INT)
 
+    // For MATLAB compatibility.
+    .def("expr", [](TFunction& s, double i) { return s.expr((int)i); },
+      TFUNCTION_CONSTSTRING_EXPR_INT)
+
     .def("arg_name", &TFunction::arg_name,
+      TFUNCTION_CONSTSTRING_ARG_NAME_INT,
+      "i"_a)
+
+    // For MATLAB compatibility.
+    .def("arg_name", [](TFunction& s, double i) { return s.arg_name((int)i); },
       TFUNCTION_CONSTSTRING_ARG_NAME_INT,
       "i"_a)
 
@@ -105,6 +114,11 @@ void export_TFunction(py::module& m, py::class_<TFnc>& fnc)
       "x"_a)
 
     .def("eval", (const Interval (TFunction::*)(int,const TubeVector&) const)&TFunction::eval,
+      TFUNCTION_CONSTINTERVAL_EVAL_INT_TUBEVECTOR,
+      "slice_id"_a, "x"_a)
+
+    // For MATLAB compatibility.
+    .def("eval", [](TFunction& s, double slice_id, const TubeVector& x) { return s.eval((int)slice_id, x); },
       TFUNCTION_CONSTINTERVAL_EVAL_INT_TUBEVECTOR,
       "slice_id"_a, "x"_a)
 
@@ -129,6 +143,11 @@ void export_TFunction(py::module& m, py::class_<TFnc>& fnc)
       "x"_a)
 
     .def("eval_vector", (const IntervalVector (TFunction::*)(int,const TubeVector&) const)&TFunction::eval_vector,
+      TFUNCTION_CONSTINTERVALVECTOR_EVAL_VECTOR_INT_TUBEVECTOR,
+      "slice_id"_a, "x"_a)
+
+    // For MATLAB compatibility.
+    .def("eval_vector", [](TFunction& s, double slice_id, const TubeVector& x) { return s.eval_vector((int)slice_id, x); },
       TFUNCTION_CONSTINTERVALVECTOR_EVAL_VECTOR_INT_TUBEVECTOR,
       "slice_id"_a, "x"_a)
 

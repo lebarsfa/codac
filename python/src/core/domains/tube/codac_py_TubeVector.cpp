@@ -48,11 +48,21 @@ void export_TubeVector(py::module& m)
       TUBEVECTOR_TUBEVECTOR_INTERVAL_INT,
       "domain"_a, "n"_a)
 
+    // For MATLAB compatibility.
+    .def(py::init([](const Interval& tdomain, double n) { return new TubeVector(tdomain, (int)n); }),
+      TUBEVECTOR_TUBEVECTOR_INTERVAL_INT,
+      "domain"_a, "n"_a)
+
     .def(py::init<const Interval&,const IntervalVector &>(),
       TUBEVECTOR_TUBEVECTOR_INTERVAL_INTERVALVECTOR,
       "domain"_a, "codomain"_a)
 
     .def(py::init<const Interval&,double,int>(),
+      TUBEVECTOR_TUBEVECTOR_INTERVAL_DOUBLE_INT,
+      "domain"_a, "timestep"_a, "n"_a)
+
+    // For MATLAB compatibility.
+    .def(py::init([](const Interval& tdomain, double timestep, double n) { return new TubeVector(tdomain, timestep, (int)n); }),
       TUBEVECTOR_TUBEVECTOR_INTERVAL_DOUBLE_INT,
       "domain"_a, "timestep"_a, "n"_a)
 
@@ -85,6 +95,11 @@ void export_TubeVector(py::module& m)
       TUBEVECTOR_TUBEVECTOR_INT_TUBE,
       "n"_a, "x"_a)
 
+    // For MATLAB compatibility.
+    .def(py::init([](double n, const Tube& x) { return new TubeVector((int)n, x); }),
+      TUBEVECTOR_TUBEVECTOR_INT_TUBE,
+      "n"_a, "x"_a)
+
     .def(py::init<const TrajectoryVector&,double>(),
       TUBEVECTOR_TUBEVECTOR_TRAJECTORYVECTOR_DOUBLE,
       "traj"_a, "timestep"_a)
@@ -104,11 +119,26 @@ void export_TubeVector(py::module& m)
       TUBEVECTOR_VOID_RESIZE_INT,
       "n"_a)
 
+    // For MATLAB compatibility.
+    .def("resize", [](TubeVector& s, double n) { s.resize((int)n); },
+      TUBEVECTOR_VOID_RESIZE_INT,
+      "n"_a)
+
     .def("subvector", &TubeVector::subvector,
       TUBEVECTOR_CONSTTUBEVECTOR_SUBVECTOR_INT_INT,
       "start_index"_a, "end_index"_a)
 
+    // For MATLAB compatibility.
+    .def("subvector", [](TubeVector& s, double start_index, double end_index) { return s.subvector((int)start_index, (int)end_index); },
+      TUBEVECTOR_CONSTTUBEVECTOR_SUBVECTOR_INT_INT,
+      "start_index"_a, "end_index"_a)
+
     .def("put", &TubeVector::put,
+      TUBEVECTOR_VOID_PUT_INT_TUBEVECTOR,
+      "start_index"_a, "subvec"_a)
+
+    // For MATLAB compatibility.
+    .def("put", [](TubeVector& s, double start_index, const TubeVector& subvec) { s.put((int)start_index, subvec); },
       TUBEVECTOR_VOID_PUT_INT_TUBEVECTOR,
       "start_index"_a, "subvec"_a)
 
@@ -472,7 +502,17 @@ void export_TubeVector(py::module& m)
       TUBEVECTOR_VOID_SERIALIZE_STRING_INT,
       "binary_file_name"_a="x.tube", "version_number"_a=SERIALIZATION_VERSION)
 
+    // For MATLAB compatibility.
+    .def("serialize", [](TubeVector& s, const string& binary_file_name, double version_number) { s.serialize(binary_file_name, (int)version_number); },
+      TUBEVECTOR_VOID_SERIALIZE_STRING_INT,
+      "binary_file_name"_a="x.tube", "version_number"_a=SERIALIZATION_VERSION)
+
     .def("serialize", (void (TubeVector::*)(const string&,const TrajectoryVector&,int) const)&TubeVector::serialize,
+      TUBEVECTOR_VOID_SERIALIZE_STRING_TRAJECTORYVECTOR_INT,
+      "binary_file_name"_a, "traj"_a, "version_number"_a=SERIALIZATION_VERSION)
+
+    // For MATLAB compatibility.
+    .def("serialize", [](TubeVector& s, const string& binary_file_name, const TrajectoryVector& traj, double version_number) { s.serialize(binary_file_name, traj, (int)version_number); },
       TUBEVECTOR_VOID_SERIALIZE_STRING_TRAJECTORYVECTOR_INT,
       "binary_file_name"_a, "traj"_a, "version_number"_a=SERIALIZATION_VERSION)
 

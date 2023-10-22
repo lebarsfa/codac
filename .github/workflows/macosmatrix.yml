@@ -2,7 +2,7 @@
 # (and zip for having Codac and IBEX binaries for several Visual Studio versions)
 on:
     push:
-        branches: 'master'
+        branches: '**'
         tags: '' # Restrict to blank tags
     pull_request:
 
@@ -19,20 +19,20 @@ jobs:
         fail-fast: false
         matrix:
             cfg:
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Big Sur Python 3.12 arm64' }
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Big Sur Python 3.11 arm64' }
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 10, desc: 'macOS Big Sur Python 3.10 arm64' }
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 9, desc: 'macOS Big Sur Python 3.9 arm64' }
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 8, desc: 'macOS Big Sur Python 3.8 arm64' }
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 7, desc: 'macOS Big Sur Python 3.7 arm64' }
-            - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 6, desc: 'macOS Big Sur Python 3.6 arm64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Big Sur Python 3.12 x86_64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Big Sur Python 3.11 x86_64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 10, desc: 'macOS Big Sur Python 3.10 x86_64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 9, desc: 'macOS Big Sur Python 3.9 x86_64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 8, desc: 'macOS Big Sur Python 3.8 x86_64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 7, desc: 'macOS Big Sur Python 3.7 x86_64' }
-            - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.14', cpcfg: '-macosx_10_14_x86_64', py_v_maj: 3, py_v_min: 6, desc: 'macOS Big Sur Python 3.6 x86_64' } # 10.14 because of error $MACOSX_DEPLOYMENT_TARGET mismatch: now "10.9" but "10.14" during configure.
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Big Sur Python 3.12 arm64' }
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Big Sur Python 3.11 arm64' }
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 10, desc: 'macOS Big Sur Python 3.10 arm64' }
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 9, desc: 'macOS Big Sur Python 3.9 arm64' }
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 8, desc: 'macOS Big Sur Python 3.8 arm64' }
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 7, desc: 'macOS Big Sur Python 3.7 arm64' }
+            # - { os: macos-11, shell: bash, arch: arm64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '11.0', cpcfg: '-macosx_11_0_arm64', py_v_maj: 3, py_v_min: 6, desc: 'macOS Big Sur Python 3.6 arm64' }
+             - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 12, desc: 'macOS Big Sur Python 3.12 x86_64' }
+            # - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 11, desc: 'macOS Big Sur Python 3.11 x86_64' }
+            # - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 10, desc: 'macOS Big Sur Python 3.10 x86_64' }
+            # - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 9, desc: 'macOS Big Sur Python 3.9 x86_64' }
+            # - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 8, desc: 'macOS Big Sur Python 3.8 x86_64' }
+            # - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.9', cpcfg: '-macosx_10_9_x86_64', py_v_maj: 3, py_v_min: 7, desc: 'macOS Big Sur Python 3.7 x86_64' }
+            # - { os: macos-11, shell: bash, arch: x86_64, runtime: bigsur, cmake_flags: '-fPIC', trgt: '10.14', cpcfg: '-macosx_10_14_x86_64', py_v_maj: 3, py_v_min: 6, desc: 'macOS Big Sur Python 3.6 x86_64' } # 10.14 because of error $MACOSX_DEPLOYMENT_TARGET mismatch: now "10.9" but "10.14" during configure.
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v3
@@ -79,4 +79,4 @@ jobs:
         file: "*.whl"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name != 'pull_request')&&(github.ref_name == 'master')
+#      if: (github.event_name != 'pull_request')&&(github.ref_name == 'master')

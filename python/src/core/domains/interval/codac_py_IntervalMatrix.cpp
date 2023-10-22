@@ -103,9 +103,19 @@ void export_IntervalMatrix(py::module& m)
     },
     py::return_value_policy::reference_internal)
 
+  // For MATLAB compatibility.
   .def("getitem", [](IntervalMatrix& s, size_t index) -> IntervalVector&
     {
       if(index < 0 || index >= static_cast<size_t>(s.nb_rows()))
+        throw py::index_error();
+      return s[static_cast<int>(index)];
+    },
+    py::return_value_policy::reference_internal)
+
+  // For MATLAB compatibility.
+  .def("i", [](IntervalMatrix& s, double index) -> IntervalVector&
+    {
+      if(index < 0 || static_cast<int>(index) >= s.nb_rows())
         throw py::index_error();
       return s[static_cast<int>(index)];
     },
@@ -118,9 +128,18 @@ void export_IntervalMatrix(py::module& m)
       s[static_cast<int>(index)] = t;
     })
 
+  // For MATLAB compatibility.
   .def("setitem", [](IntervalMatrix& s, size_t index, IntervalVector& t)
     {
       if(index < 0 || index >= static_cast<size_t>(s.nb_rows()))
+        throw py::index_error();
+      s[static_cast<int>(index)] = t;
+    })
+
+  // For MATLAB compatibility.
+  .def("i", [](IntervalMatrix& s, double index, IntervalVector& t)
+    {
+      if(index < 0 || static_cast<int>(index) >= s.nb_rows())
         throw py::index_error();
       s[static_cast<int>(index)] = t;
     })

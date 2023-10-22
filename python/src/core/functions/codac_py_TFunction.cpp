@@ -151,7 +151,19 @@ void export_TFunction(py::module& m, py::class_<TFnc>& fnc)
       TFUNCTION_CONSTTFUNCTION_OPERATORB_INT,
       py::return_value_policy::reference_internal)
 
+    // For MATLAB compatibility.
     .def("getitem", [](TFunction& s, size_t index)
+      {
+        if((int)index >= s.nb_var())
+          throw py::index_error();
+              
+        return s[static_cast<int>(index)];
+      },
+      TFUNCTION_CONSTTFUNCTION_OPERATORB_INT,
+      py::return_value_policy::reference_internal)
+
+    // For MATLAB compatibility.
+    .def("i", [](TFunction& s, double index)
       {
         if((int)index >= s.nb_var())
           throw py::index_error();

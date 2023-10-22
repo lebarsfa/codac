@@ -183,9 +183,19 @@ void export_IntervalVector(py::module& m)
       },
       py::return_value_policy::reference_internal)
 
+    // For MATLAB compatibility.
     .def("getitem", [](IntervalVector& s, size_t index) -> Interval&
       {
         if(index < 0 || index >= static_cast<size_t>(s.size()))
+          throw py::index_error();
+        return s[static_cast<int>(index)];
+      },
+      py::return_value_policy::reference_internal)
+
+    // For MATLAB compatibility.
+    .def("i", [](IntervalVector& s, double index) -> Interval&
+      {
+        if(index < 0 || static_cast<int>(index) >= s.size())
           throw py::index_error();
         return s[static_cast<int>(index)];
       },
@@ -198,9 +208,18 @@ void export_IntervalVector(py::module& m)
         s[static_cast<int>(index)] = t;
       })
 
+    // For MATLAB compatibility.
     .def("setitem", [](IntervalVector& s, size_t index, Interval& t)
       {
         if(index < 0 || index >= static_cast<size_t>(s.size()))
+          throw py::index_error();
+        s[static_cast<int>(index)] = t;
+      })
+    
+    // For MATLAB compatibility.
+    .def("i", [](IntervalVector& s, double index, Interval& t)
+      {
+        if(index < 0 || static_cast<int>(index) >= s.size())
           throw py::index_error();
         s[static_cast<int>(index)] = t;
       })

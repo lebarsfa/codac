@@ -63,9 +63,20 @@ void export_IntervalVectorVar(py::module& m)
       "todo",
       py::return_value_policy::reference_internal)
 
+    // For MATLAB compatibility.
     .def("getitem", [](IntervalVectorVar& s, size_t index) -> IntervalVar&
       {
         if(index >= static_cast<size_t>(s.size()))
+          throw py::index_error();
+        return s[static_cast<int>(index)];
+      },
+      "todo",
+      py::return_value_policy::reference_internal)
+
+    // For MATLAB compatibility.
+    .def("i", [](IntervalVectorVar& s, double index) -> IntervalVar&
+      {
+        if(static_cast<int>(index) >= s.size())
           throw py::index_error();
         return s[static_cast<int>(index)];
       },

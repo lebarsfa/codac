@@ -96,17 +96,29 @@ void export_thickInterval(py::module& m)
                             if (idx > self.size())   throw py::index_error();
                             return self[idx];
                           })
+      // For MATLAB compatibility.
       .def("getitem", [](ThickBox& self, size_t idx){
                             if (idx > self.size())   throw py::index_error();
                             return self[idx];
+                          })
+      // For MATLAB compatibility.
+      .def("i", [](ThickBox& self, double idx){
+                            if (static_cast<size_t>(idx) > self.size())   throw py::index_error();
+                            return self[static_cast<size_t>(idx)];
                           })
       .def("__setitem__", [](ThickBox& self, size_t idx, ThickInterval& itv){
                             if (idx > self.size())   throw py::index_error();
                             self[idx]=itv;
                           })
+      // For MATLAB compatibility.
       .def("setitem", [](ThickBox& self, size_t idx, ThickInterval& itv){
                             if (idx > self.size())   throw py::index_error();
                             self[idx]=itv;
+                          })
+      // For MATLAB compatibility.
+      .def("i", [](ThickBox& self, double idx, ThickInterval& itv){
+                            if (static_cast<size_t>(idx) > self.size())   throw py::index_error();
+                            self[static_cast<size_t>(idx)]=itv;
                           })
       .def("superset", &ThickBox::superset)
       .def("to_string", &ThickBox::to_string)

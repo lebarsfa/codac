@@ -21,16 +21,16 @@ x_truth = TrajectoryVector(tdomain, TFunction(['(' ...
   'sqrt((-10*sin(t)+1)^2+(10*cos(2*t)+1)^2))'])); % actual trajectory
 
 % Continuous measurements coming from the truth
-measured_psi = x_truth.getitem(int32(2)).sample(dt).make_continuous();
+measured_psi = x_truth.i(2).sample(dt).make_continuous();
 measured_psi = measured_psi + RandTrajectory(tdomain, dt, Interval(-0.01,0.01)); % adding some noise
-measured_speed = x_truth.getitem(int32(3)).sample(dt);
+measured_speed = x_truth.i(3).sample(dt);
 measured_speed = measured_speed + RandTrajectory(tdomain, dt, Interval(-0.01,0.01)); % adding some noise
 
 
 % =============== 1. Defining domains for our variables ================
 
-x.setitem(int32(2), Tube(measured_psi, dt).inflate(0.01));       % measured_psi is a set of measurements
-x.setitem(int32(3), Tube(measured_speed, dt).inflate(0.01));
+x.i(2, Tube(measured_psi, dt).inflate(0.01));       % measured_psi is a set of measurements
+x.i(3, Tube(measured_speed, dt).inflate(0.01));
 
 e_y = Interval(-0.1,0.1);
 y = {Interval(1.9+e_y), Interval(3.6+e_y), ...

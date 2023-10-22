@@ -18,8 +18,8 @@ v_obs = DataLoader().generate_static_observations(py.list(x_truth), v_map, false
 
 % Adding uncertainties on the measurements
 for i=1:length(v_obs) % for each observation:
-  v_obs{i}.getitem(int32(0)).inflate(0.3); % range
-  v_obs{i}.getitem(int32(1)).inflate(0.1); % bearing
+  v_obs{i}.i(0).inflate(0.3); % range
+  v_obs{i}.i(1).inflate(0.1); % bearing
 end
 
 
@@ -46,9 +46,9 @@ for i=1:length(v_obs)
   alpha = cn.create_interm_var(Interval());
   d = cn.create_interm_var(IntervalVector(int32(2)));
 
-  cn.add(ctc_plus, py.list({v_obs{i}.getitem(int32(1)), heading, alpha}));
+  cn.add(ctc_plus, py.list({v_obs{i}.i(1), heading, alpha}));
   cn.add(ctc_minus, py.list({v_map{i}, x, d}));
-  cn.add(CtcPolar(), py.list({d, v_obs{i}.getitem(int32(0)), alpha}));
+  cn.add(CtcPolar(), py.list({d, v_obs{i}.i(0), alpha}));
 end
 
 
@@ -71,8 +71,8 @@ end
 
 for i=1:length(v_obs)
   y = v_obs{i};
-  fig.draw_pie(x_truth(1), x_truth(2), y.getitem(int32(0)).union(Interval(0)), heading+y.getitem(int32(1)), 'lightGray');
-  fig.draw_pie(x_truth(1), x_truth(2), y.getitem(int32(0)), heading+y.getitem(int32(1)), 'gray');
+  fig.draw_pie(x_truth(1), x_truth(2), y.i(0).union(Interval(0)), heading+y.i(1), 'lightGray');
+  fig.draw_pie(x_truth(1), x_truth(2), y.i(0), heading+y.i(1), 'gray');
 end
 
 fig.draw_vehicle(py.list(x_truth),0.5);

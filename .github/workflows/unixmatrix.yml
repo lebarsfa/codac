@@ -6,9 +6,9 @@ on:
     pull_request:
 
 jobs:
- # This job may be commented if a new release should not be created...
  deploy:
     runs-on: ubuntu-latest
+    if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
     steps: 
     - uses: softprops/action-gh-release@v2
       id: create_release
@@ -17,10 +17,10 @@ jobs:
       with:
         draft: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name != 'pull_request')&&(github.ref_name == 'master')
 
  unixmatrix:
     runs-on: ${{ matrix.cfg.os }}
+    if: (github.ref_name!='codac2_codac4matlab')&&(github.event.pull_request.base.ref!='codac2_codac4matlab')
     defaults:
         run:
             shell: ${{ matrix.cfg.shell }}
@@ -171,7 +171,7 @@ jobs:
         ./${{ matrix.cfg.test_config }}my_project
         cd ../..
       shell: bash
-      if: (matrix.cfg.cross!=true)&&(github.ref_name!='codac4matlab')
+      if: (matrix.cfg.cross!=true)
     - run: |
         source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH
         cd packages/choco
@@ -212,7 +212,7 @@ jobs:
         file: "*.zip;*.nupkg;*.deb"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name != 'pull_request')&&(github.ref_name == 'master')
+      if: (github.event_name!='pull_request')&&((github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))
     - run: |
         if [ ${{ runner.os }} = Windows ]; then source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH ; fi
         rm -Rf codac
@@ -223,4 +223,4 @@ jobs:
         ./${{ matrix.cfg.test_config }}my_project
         cd ../..
       shell: bash
-      if: (matrix.cfg.cross!=true)&&(github.ref_name!='codac4matlab')
+      if: (matrix.cfg.cross!=true)

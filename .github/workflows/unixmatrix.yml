@@ -44,8 +44,11 @@ jobs:
             - { os: windows-2019, shell: cmd, arch: x86, bitness: 32, runtime: mingw8, cmake_params: '-G "MinGW Makefiles"', cmake_flags: '-fPIC', choco_flags: '--x86', desc: 'Windows MinGW 8.1.0 x86' }
             - { os: windows-2019, shell: cmd, arch: x64, bitness: 64, runtime: mingw7, cmake_params: '-G "MinGW Makefiles"', cmake_flags: '-fPIC', desc: 'Windows MinGW 7.3.0 x64' }
             - { os: windows-2019, shell: cmd, arch: x86, bitness: 32, runtime: mingw7, cmake_params: '-G "MinGW Makefiles"', cmake_flags: '-fPIC', choco_flags: '--x86', desc: 'Windows MinGW 7.3.0 x86' }
+            - { os: ubuntu-24.04, shell: bash, arch: amd64, bitness: 64, runtime: noble, cmake_flags: '-fPIC', deb: true, desc: 'Ubuntu 24.04 amd64' }
             - { os: ubuntu-22.04, shell: bash, arch: amd64, bitness: 64, runtime: jammy, cmake_flags: '-fPIC', deb: true, desc: 'Ubuntu 22.04 amd64' }
             - { os: ubuntu-20.04, shell: bash, arch: amd64, bitness: 64, runtime: focal, cmake_flags: '-fPIC', deb: true, desc: 'Ubuntu 20.04 amd64' }
+            - { os: macos-15, shell: bash, arch: arm64, bitness: 64, runtime: sequoia, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', desc: 'macOS Sequoia arm64' }
+            - { os: macos-15, shell: bash, arch: x86_64, bitness: 64, runtime: sequoia, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Sequoia x86_64 (cross)' }
             - { os: macos-14, shell: bash, arch: arm64, bitness: 64, runtime: sonoma, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', desc: 'macOS Sonoma arm64' }
             - { os: macos-14, shell: bash, arch: x86_64, bitness: 64, runtime: sonoma, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=x86_64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Sonoma x86_64 (cross)' }
             - { os: macos-13, shell: bash, arch: arm64, bitness: 64, runtime: ventura, cmake_params: '-D CMAKE_SYSTEM_NAME=Darwin -D CMAKE_OSX_ARCHITECTURES=arm64', cmake_flags: '-fPIC', cross: true, desc: 'macOS Ventura arm64 (cross)' }
@@ -70,7 +73,7 @@ jobs:
         echo "CHOCO_PACKAGE_REV=" >> $GITHUB_ENV
         echo "VERBOSE=1" >> $GITHUB_ENV
       shell: bash
-    - run: if [ -z "$CHOCO_PACKAGE_REV" ]; then echo "PACKAGE_VERSION=$SOFTWARE_VERSION" >> $GITHUB_ENV ; else echo "PACKAGE_VERSION=$SOFTWARE_VERSION.$CHOCO_PACKAGE_REV" >> $GITHUB_ENV ; fi
+    - run: if [ -z "$CHOCO_PACKAGE_REV" ]; then echo "PACKAGE_VERSION=${SOFTWARE_VERSION/.dev*/-dev.$(date +%Y%m%d)}" >> $GITHUB_ENV ; else echo "PACKAGE_VERSION=$SOFTWARE_VERSION.$CHOCO_PACKAGE_REV" >> $GITHUB_ENV ; fi
       shell: bash
       if: runner.os=='Windows'
     - run: echo "PACKAGE_VERSION=$SOFTWARE_VERSION-${DEBIAN_PACKAGE_REV}${{ matrix.cfg.runtime }}$PACKAGE_REV" >> $GITHUB_ENV
@@ -168,7 +171,7 @@ jobs:
         ./${{ matrix.cfg.test_config }}my_project
         cd ../..
       shell: bash
-      if: matrix.cfg.cross!=true
+      if: (matrix.cfg.cross!=true)&&(github.ref_name!='codac4matlab')
     - run: |
         source ~/refreshenv.bashrc ; refreshenv ; export PATH=$BASHMINGWPATH:$PATH
         cd packages/choco
@@ -220,4 +223,4 @@ jobs:
         ./${{ matrix.cfg.test_config }}my_project
         cd ../..
       shell: bash
-      if: matrix.cfg.cross!=true
+      if: (matrix.cfg.cross!=true)&&(github.ref_name!='codac4matlab')

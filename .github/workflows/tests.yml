@@ -12,7 +12,7 @@ jobs:
         fail-fast: false
         matrix:
             cfg:
-            - { os: ubuntu-20.04, gcc_v: 8, py_v_maj: 3, py_v_min: 6, desc: 'Ubuntu 20.04 GCC 8 Python 3.6 tests' }
+            - { os: ubuntu-24.04, gcc_v: 11, py_v_maj: 3, py_v_min: 10, desc: 'Ubuntu 24.04 GCC 11 Python 3.10 tests' }
     name: ${{ matrix.cfg.desc }}
     steps: 
     - uses: actions/checkout@v4
@@ -24,11 +24,16 @@ jobs:
       with:
         python-version: ${{ matrix.cfg.py_v_maj }}.${{ matrix.cfg.py_v_min }}
     - run: |
+        # Installing gcc
+        sudo apt install build-essential manpages-dev software-properties-common
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+
         sudo apt-get -q update ; sudo apt-get -y install gcc-${{ matrix.cfg.gcc_v }} g++-${{ matrix.cfg.gcc_v }} || true
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.cfg.gcc_v }} 100 --slave /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.cfg.gcc_v }}
         gcc --version
         g++ --version
 
+        pip install --upgrade --force-reinstall setuptools
         python -c "import sys; print(sys.version)"
         pip --version
 
@@ -78,7 +83,7 @@ jobs:
         # Building lib + tests
         cmake -DCMAKE_INSTALL_PREFIX=$HOME/codac/build_install -DCMAKE_PREFIX_PATH=$HOME/ibex-lib/build_install -DWITH_PYTHON=OFF -DBUILD_TESTS=ON -DWITH_TUBE_TREE=OFF -DWITH_CAPD=OFF -DTEST_EXAMPLES=ON ..
         ##-DPYTHON_EXECUTABLE=/usr/bin/python3.5 ..
-        make
+        make -j 4
         #make doc # todo
         make install
         #cd python/python_package

@@ -36,14 +36,11 @@ git config --global --add safe.directory /io && \
 cd /io && \
 \
 python3 -m pip install \$PIP_OPTIONS --upgrade pip && \
+python3 -m pip install \$PIP_OPTIONS --upgrade wheel setuptools && \
 mkdir -p build_dir_\$(lsb_release -cs) && cd build_dir_\$(lsb_release -cs) && \
 cmake -E env CXXFLAGS=\"-fPIC\" CFLAGS=\"-fPIC\" cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DWITH_TUBE_TREE=OFF -DWITH_CAPD=OFF -DWITH_PYTHON=ON .. && \
 make -j4 && \
 \
-make test ARGS=\"-V --output-on-failure\" && \
-echo \"start of Testing/Temporary/LastTest.log\" && \
-cat Testing/Temporary/LastTest.log && \
-echo \"end of Testing/Temporary/LastTest.log\" && \
 make pip_package && \
 echo \"copy wheel and clean build_dir_\$(lsb_release -cs)\" && \
 for whl in *.whl; do \
@@ -57,13 +54,20 @@ done ; \
 # cp \"\$file\" \"\${file/armv7l/armv6l}\" ; \\
 #done ; \\
 \
+python3 -m pip install \$PIP_OPTIONS codac --no-deps --no-index -f /io/wheelhouse && \
+python3 ../examples/tuto/01_getting_started/01_getting_started.py && \
 # Prerequisites for numpy. \\
 sudo apt-get -y install libatlas3-base || true && \
 sudo apt-get -y install libopenblas0-pthread || true && \
 sudo apt-get -y install libgfortran5 || true && \
 python3 -m pip install \$PIP_OPTIONS numpy --prefer-binary --extra-index-url https://www.piwheels.org/simple && \
-python3 -m pip install \$PIP_OPTIONS codac --no-deps --no-index -f /io/wheelhouse && \
-(cd \"\$HOME\"; python3 -m unittest discover codac.tests) && \
+python3 -m unittest discover codac.tests && \
+\
+make test ARGS=\"-V --output-on-failure\" && \
+echo \"start of Testing/Temporary/LastTest.log\" && \
+cat Testing/Temporary/LastTest.log && \
+echo \"end of Testing/Temporary/LastTest.log\" ; \
+\
 cd /io && \
 rm -fr build_dir_\$(lsb_release -cs)"
 ls wheelhouse

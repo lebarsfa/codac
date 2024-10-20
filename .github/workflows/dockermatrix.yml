@@ -2,9 +2,9 @@
 on:
     push:
         branches:
-            - master
-            - codac1
-            - codac2
+        - master
+        - codac1
+        - codac2
         tags: '' # Restrict to blank tags
     pull_request:
 

@@ -2,10 +2,10 @@
 on:
     push:
         branches:
-            - master
-            - codac1
-            - codac2
-            - codac2_codac4matlab
+        - master
+        - codac1
+        - codac2
+        - codac2_codac4matlab
         tags: '' # Restrict to blank tags
     pull_request:
 

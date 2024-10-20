@@ -3,7 +3,9 @@ on:
     push:
         branches:
             - master
-            - codac4matlab
+            - codac1
+            - codac2
+            - codac2_codac4matlab
         tags: '' # Restrict to blank tags
     pull_request:
 
@@ -42,4 +44,4 @@ jobs:
         file: "wheelhouse/*.whl"
         overwrite: true
         tag_name: autotagname-${{ github.sha }}
-      if: (github.event_name!='pull_request')&&((github.ref_name=='master')||(github.ref_name=='codac4matlab'))
+      if: (github.event_name!='pull_request')&&((github.ref_name=='master')||(github.ref_name=='codac1')||(github.ref_name=='codac2')||(github.ref_name=='codac2_codac4matlab'))

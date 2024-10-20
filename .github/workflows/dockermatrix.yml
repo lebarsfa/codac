@@ -1,7 +1,10 @@
 # This file checks that the lib runs on ARM
 on:
     push:
-        branches: 'master'
+        branches:
+            - master
+            - codac1
+            - codac2
         tags: '' # Restrict to blank tags
     pull_request:
 

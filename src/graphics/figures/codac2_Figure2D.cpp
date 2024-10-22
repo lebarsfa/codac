@@ -203,22 +203,31 @@ void Figure2D::draw_ellipsoid(const Ellipsoid &e, const StyleProperties &s) {
         Vector mu_draw(2);
         // 2d projection of the ellipsoid
         if (e.size() > 2) {
-            // affine space of the projection
-            Vector d(Eigen::VectorXd::Zero(e.mu.nb_rows()));
-            Matrix T(Eigen::MatrixXd::Zero(e.G.nb_rows(), 2));
-            T(output_fig->i(), 0) = 1;
-            T(output_fig->j(), 1) = 1;
+            Ellipsoid ep(e);
+            Vector v = Eigen::VectorXd::Zero(e.size());
+            v[output_fig->i()] = 1;
+            Vector u = Eigen::VectorXd::Zero(e.size());
+            u[output_fig->j()] = 1;
+            ep.projection2D(Eigen::VectorXd::Zero(e.size()),v,u);
+            G_draw = ep.G;
+            mu_draw = ep.mu;
 
-            // project ellipsoid E(mu,Q) = {x in R^n | (x-mu).T*G.{-T}*G^{-1}*(x-mu)<1}
-            // on the affine plan A = {x|x=d+Tt} [Pope -2008]
-            // reduce the dimensions of mu and Q
-
-            auto TTG = T._e.transpose() * e.G._e;
-            Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
-            Matrix U(bdcsvd.matrixU());
-            Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
-            G_draw = U._e * E._e;
-            mu_draw = T._e.transpose() * (d._e + T._e * T._e.transpose() * (e.mu._e - d._e));
+//            // affine space of the projection
+//            Vector d(Eigen::VectorXd::Zero(e.mu.nb_rows()));
+//            Matrix T(Eigen::MatrixXd::Zero(e.G.nb_rows(), 2));
+//            T(output_fig->i(), 0) = 1;
+//            T(output_fig->j(), 1) = 1;
+//
+//            // project ellipsoid E(mu,Q) = {x in R^n | (x-mu).T*G.{-T}*G^{-1}*(x-mu)<1}
+//            // on the affine plan A = {x|x=d+Tt} [Pope -2008]
+//            // reduce the dimensions of mu and Q
+//
+//            auto TTG = T._e.transpose() * e.G._e;
+//            Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
+//            Matrix U(bdcsvd.matrixU());
+//            Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
+//            G_draw = U._e * E._e;
+//            mu_draw = T._e.transpose() * (d._e + T._e * T._e.transpose() * (e.mu._e - d._e));
         } else {
             G_draw = e.G;
             mu_draw = e.mu;

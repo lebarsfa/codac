@@ -46,3 +46,13 @@ fig2.draw_polyline([[-0.8,0],[0,1.5]], 0.2, [Color.red(),Color.black(0.3)])
 fig2.draw_ellipse([1,1],[0.5,2], 0.2, [Color.blue(),Color.blue(0.3)])
 fig2.draw_point([2,2], [Color.red(),Color.yellow(0.5)])
 fig2.draw_box([[2.4,2.9],[2.4,2.9]],[Color("#da3907"),Color("#da390755")])
+
+fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
+fig3.set_axes(axis(0,[-1,21]), axis(1,[-0.5,1.5]))
+fig3.set_window_properties([250,250],[500,500])
+
+cmap=ColorMap.HAXBY
+
+for i in range (20):
+    ratio=i/20
+    fig3.draw_box([[i,i+1],[0,1]],[cmap.color(ratio),cmap.color(ratio)])

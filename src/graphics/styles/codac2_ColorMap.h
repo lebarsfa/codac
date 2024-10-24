@@ -10,7 +10,10 @@
 #pragma once
 
 #include <map>
+#include <cmath>
 #include "codac2_Color.h"
+#include "codac2_Interval.h"
+#include"codac2_assert.h"
 
 namespace codac2
 {
@@ -20,10 +23,15 @@ namespace codac2
    */
   struct ColorMap
   {
-    std::map<float,Color> m_colormap; //!< map of colors
+
+    ColorMap();
+
+    std::map<float,Color> colormap; //!< map of colors
 
     void add_color_point(Color color, float index);
 
-    static ColorMap haxby();
+    Color color (float r) const;
+
+    static const ColorMap HAXBY;
   };
 }

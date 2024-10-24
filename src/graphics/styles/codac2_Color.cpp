@@ -12,6 +12,10 @@
 using namespace std;
 using namespace codac2;
 
+Color::Color()
+  : r(1.), g(1.), b(1.), alpha(1.), hex_str("#FFFFFF")
+{}
+
 Color::Color(float r_, float g_, float b_, float alpha_)
   : r(r_), g(g_), b(b_), alpha(alpha_),
   hex_str([&]

@@ -30,6 +30,9 @@ void export_Color(py::module& m)
     .def_readwrite("alpha", &Color::alpha)
     .def_readwrite("hex_str", &Color::hex_str)
 
+    .def(py::init<>(),
+      COLOR_COLOR)
+
     .def(py::init<int,int,int,int>(),
       COLOR_COLOR_INT_INT_INT_INT,
       "r"_a, "g"_a, "b"_a, "alpha"_a=255)

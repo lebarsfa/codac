@@ -27,6 +27,7 @@ namespace codac2
     float alpha = 1.;     ///< opacity, value between 0. (transparent) and 1. (opaque)
     std::string hex_str;  ///< represents an RGB value in a HTML standard
 
+    explicit Color();
     explicit Color(float r_, float g_, float b_, float alpha_ = 1.);
     explicit Color(int r_, int g_, int b_, int alpha_ = 255);
     explicit Color(const std::string& hex_str_);

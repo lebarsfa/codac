@@ -75,3 +75,23 @@ ColorMap make_haxby()
   }
 
 const ColorMap ColorMap::HAXBY = make_haxby();
+
+ColorMap make_blue_tube()
+{
+  ColorMap map;
+  map.add_color_point(Color(76,110,127), 0.);
+  map.add_color_point(Color(136,197,228), 1.);
+  return map;
+}
+
+const ColorMap ColorMap::BLUE_TUBE = make_blue_tube();
+
+ColorMap make_red_tube()
+{
+  ColorMap map;
+  map.add_color_point(Color(169,55,0), 0.);
+  map.add_color_point(Color(241,140,54), 1.);
+  return map;
+}
+
+const ColorMap ColorMap::RED_TUBE = make_red_tube();

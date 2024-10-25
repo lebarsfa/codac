@@ -33,5 +33,7 @@ namespace codac2
     Color color (float r) const;
 
     static const ColorMap HAXBY;
+    static const ColorMap BLUE_TUBE;
+    static const ColorMap RED_TUBE;
   };
 }

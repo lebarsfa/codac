@@ -87,10 +87,10 @@ void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)
     fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
     opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
-    pen=\"normal\" \n \
-    ";
+    pen=\"normal\"";
   if (tip)
-    _f_temp_content << "arrow=\"normal/normal\" \n ";
+    _f_temp_content << "\n \
+    arrow=\"normal/normal\"";
   _f_temp_content << "> \n";
 }
 
@@ -129,7 +129,7 @@ void Figure2D_IPE::draw_point(const Vector& c, const StyleProperties& s)
     fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
     opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
-    size=\"normal\"/>";
+    size=\"normal\"\n/>";
 }
 
 void Figure2D_IPE::draw_box(const IntervalVector& x, const StyleProperties& s)

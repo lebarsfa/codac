@@ -8,6 +8,7 @@
  */
 
 #include <cstdio>
+#include <math.h>
 #include "codac2_Figure2D_IPE.h"
 
 using namespace std;
@@ -87,6 +88,22 @@ void Figure2D_IPE::begin_path(const StyleProperties& s)
     opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
     pen=\"normal\"> \n ";
+}
+
+void Figure2D_IPE::begin_path_with_matrix(const StyleProperties& s)
+{
+  // substr is needed to remove the "#" at the beginning of hex_str (deprecated by IPE)
+  _colors.emplace(s.stroke_color.hex_str.substr(1), s.stroke_color);
+  _colors.emplace(s.fill_color.hex_str.substr(1), s.fill_color);
+
+  _f_temp_content << "\n \
+    <path layer=\"alpha\" \n \
+    stroke=\"codac_color_" << s.stroke_color.hex_str.substr(1) << "\" \n \
+    fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
+    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
+    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
+    pen=\"normal\" \n \
+    matrix=";
 }
 
 void Figure2D_IPE::draw_point(const Vector& c, const StyleProperties& s)
@@ -190,6 +207,12 @@ void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& 
   assert(j()+1 < x.size());
   assert(size >= 0.);
   // Not implemented yet
+  begin_path_with_matrix(s); //cos sin -sin cos
+
+  _f_temp_content<<"\""<<scale_length(size)*cos(x[j()+1])<<scale_length(size)*sin(x[j()+1]) <<scale_length(size)*cos(x[j()+1]) << - scale_length(size)*sin(x[j()+1]) << scale_x(x[i()])<< scale_y(x[j()])<<"\"\n";
+  _f_temp_content << "</path>";
+  
+
 }
 
 double Figure2D_IPE::scale_x(double x) const

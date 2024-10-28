@@ -29,6 +29,7 @@ namespace codac2
       void update_window_properties();
       void center_viewbox(const Vector& c, const Vector& r);
       void begin_path(const StyleProperties& s);
+      void begin_path_with_matrix(const StyleProperties& s);
 
       // Geometric shapes
       void draw_point(const Vector& c, const StyleProperties& s = StyleProperties());

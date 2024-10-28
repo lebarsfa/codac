@@ -75,7 +75,7 @@ void Figure2D_IPE::center_viewbox(const Vector& c, const Vector& r)
   assert(r.min_coeff() > 0.);
 }
 
-void Figure2D_IPE::begin_path(const StyleProperties& s)
+void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)
 {
   // substr is needed to remove the "#" at the beginning of hex_str (deprecated by IPE)
   _colors.emplace(s.stroke_color.hex_str.substr(1), s.stroke_color);
@@ -87,7 +87,11 @@ void Figure2D_IPE::begin_path(const StyleProperties& s)
     fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
     opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
-    pen=\"normal\"> \n ";
+    pen=\"normal\" \n \
+    ";
+  if (tip)
+    _f_temp_content << "arrow=\"normal/normal\" \n ";
+  _f_temp_content << "> \n";
 }
 
 void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const StyleProperties& s)
@@ -166,9 +170,8 @@ void Figure2D_IPE::draw_polyline(const std::vector<Vector>& x, float tip_length,
 {
   assert(x.size() > 1);
   assert(tip_length >= 0.);
-  // todo: draw tip
 
-  begin_path(s);
+  begin_path(s, tip_length>2e-3*_fig.scaled_unit());
 
   for(size_t k = 0 ; k < x.size() ; k++)
   {
@@ -206,8 +209,6 @@ void Figure2D_IPE::draw_tank(const Vector& x, float size, const StyleProperties&
   
   float length=size/4.0; // from VIBes : initial vehicle's length is 4
 
-  _f_temp_content<<"\n<group>\n";
-
   begin_path_with_matrix(x,length,s);
 
   // Body
@@ -228,8 +229,7 @@ void Figure2D_IPE::draw_tank(const Vector& x, float size, const StyleProperties&
   _f_temp_content << 0  << " " << -1  << " l \n";
   _f_temp_content << 0  << " " << -1.5  << " l \n";
 
-  _f_temp_content << "</path>\n";
-  _f_temp_content<<"</group>";
+  _f_temp_content << "</path>";
 }
 
 void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& s)

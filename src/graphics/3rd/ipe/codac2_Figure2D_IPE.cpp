@@ -203,7 +203,33 @@ void Figure2D_IPE::draw_tank(const Vector& x, float size, const StyleProperties&
   assert(_fig.size() <= x.size()+1);
   assert(j()+1 < x.size());
   assert(size >= 0.);
-  // Not implemented yet
+  
+  float length=size/4.0; // from VIBes : initial vehicle's length is 4
+
+  _f_temp_content<<"\n<group>\n";
+
+  begin_path_with_matrix(x,length,s);
+
+  // Body
+  _f_temp_content << 1  << " " << -1.5  << " m \n";
+  _f_temp_content << -1  << " " << -1.5  << " l \n";
+  _f_temp_content << 0  << " " << -1.5  << " l \n";
+  _f_temp_content << 0  << " " << -1  << " l \n";
+  _f_temp_content << -1  << " " << -1  << " l \n";
+  _f_temp_content << -1  << " " << 1  << " l \n";
+  _f_temp_content << 0  << " " << 1  << " l \n";
+  _f_temp_content << 0  << " " << 1.5  << " l \n";
+  _f_temp_content << -1  << " " << 1.5  << " l \n";
+  _f_temp_content << 1  << " " << 1.5  << " l \n";
+  _f_temp_content << 0  << " " << 1.5  << " l \n";
+  _f_temp_content << 0  << " " << 1  << " l \n";
+  _f_temp_content << 3  << " " << 0.5  << " l \n";
+  _f_temp_content << 3  << " " << -0.5  << " l \n";
+  _f_temp_content << 0  << " " << -1  << " l \n";
+  _f_temp_content << 0  << " " << -1.5  << " l \n";
+
+  _f_temp_content << "</path>\n";
+  _f_temp_content<<"</group>";
 }
 
 void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& s)
@@ -212,9 +238,9 @@ void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& 
   assert(j()+1 < x.size());
   assert(size >= 0.);
 
-  float length=size/7.0;
+  float length=size/7.0; // from VIBes : initial vehicle's length is 7
 
-  _f_temp_content<<"<group>\n";
+  _f_temp_content<<"\n<group>\n";
 
   // Body
 

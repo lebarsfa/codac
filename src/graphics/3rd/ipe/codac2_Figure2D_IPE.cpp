@@ -8,8 +8,8 @@
  */
 
 #include <cstdio>
-#include <math.h>
 #include "codac2_Figure2D_IPE.h"
+#include "codac2_math.h"
 
 using namespace std;
 using namespace codac2;
@@ -90,7 +90,7 @@ void Figure2D_IPE::begin_path(const StyleProperties& s)
     pen=\"normal\"> \n ";
 }
 
-void Figure2D_IPE::begin_path_with_matrix(const StyleProperties& s)
+void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const StyleProperties& s)
 {
   // substr is needed to remove the "#" at the beginning of hex_str (deprecated by IPE)
   _colors.emplace(s.stroke_color.hex_str.substr(1), s.stroke_color);
@@ -104,6 +104,11 @@ void Figure2D_IPE::begin_path_with_matrix(const StyleProperties& s)
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
     pen=\"normal\" \n \
     matrix=";
+
+  // Matrix is composed of the 4 components of the 2D transformation matrix and the translation vector
+  _f_temp_content << "\"" << scale_length(length) * cos(x[j()+1]).mid() << " " << scale_length(length) * sin(x[j()+1]).mid() << " "
+                  << - scale_length(length) * sin(x[j()+1]).mid() << " " << scale_length(length) * cos(x[j()+1]).mid() << " " 
+                  << scale_x(x[i()]) << " " << scale_y(x[j()]) << "\">\n";
 }
 
 void Figure2D_IPE::draw_point(const Vector& c, const StyleProperties& s)
@@ -206,11 +211,42 @@ void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& 
   assert(_fig.size() <= x.size()+1);
   assert(j()+1 < x.size());
   assert(size >= 0.);
-  // Not implemented yet
-  begin_path_with_matrix(s); //cos sin -sin cos
 
-  _f_temp_content<<"\""<<scale_length(size)*cos(x[j()+1])<<scale_length(size)*sin(x[j()+1]) <<scale_length(size)*cos(x[j()+1]) << - scale_length(size)*sin(x[j()+1]) << scale_x(x[i()])<< scale_y(x[j()])<<"\"\n";
-  _f_temp_content << "</path>";
+  float length=size/7.0;
+
+  _f_temp_content<<"<group>\n";
+
+  // Body
+
+  begin_path_with_matrix(x,length,s);
+
+  _f_temp_content << -4  << " " << 0  << " m \n";
+  _f_temp_content << -2  << " " << 1  << " l \n";
+  _f_temp_content << 2  << " " << 1  << " l \n";
+
+  for (float i = 90.; i > -90.; i -= 10.)
+    _f_temp_content <<  cos(i * codac2::pi / 180.).mid() + 2.0 << " " 
+                    <<  sin(i * codac2::pi / 180.).mid() + 0.0 << " l \n";
+
+  _f_temp_content << 2  << " " << -1  << " l \n";
+  _f_temp_content << -2  << " " << -1  << " l \n";
+  _f_temp_content << -4  << " " << 0  << " l \n";
+
+  _f_temp_content << "</path>\n";
+
+  // Propulsion unit
+
+  begin_path_with_matrix(x,length,s);
+
+  _f_temp_content << -4  << " " << 1  << " m \n";
+  _f_temp_content << -3.25  << " " << 1  << " l \n";
+  _f_temp_content << -3.25  << " " << -1  << " l \n";
+  _f_temp_content << -4  << " " << -1  << " l \n";
+  _f_temp_content << -4  << " " << 1  << " l \n";
+
+  _f_temp_content << "</path>\n";
+
+  _f_temp_content<<"</group>";
   
 
 }

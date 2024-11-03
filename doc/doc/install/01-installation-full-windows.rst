@@ -49,4 +49,8 @@ The logic to follow will then be similar to `Linux <01-installation-full-linux.h
 
   cmake --build . --config Release --target install
 
+.. warning::
+
+  | You might need to replace all occurences of :literal:`PATH_SUFFIXES \ ` with something similar to :literal:`PATHS ${CMAKE_CURRENT_LIST_FILE}/../../../../ PATH_SUFFIXES \ ` in all ``.cmake`` in ``codac/share/codac/cmake/`` (where Codac was installed) if a CMake project that tries to use Codac appears to find its installation location but fails to configure the project properly.
+
 See also `Information for developers </dev/info_dev.html>`_.

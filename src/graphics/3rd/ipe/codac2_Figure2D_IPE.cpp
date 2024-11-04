@@ -87,7 +87,7 @@ void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)
     fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
     opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
-    pen=\"normal\"";
+    pen=\"heavier\"";
   if (tip)
     _f_temp_content << "\n \
     arrow=\"normal/normal\"";
@@ -106,7 +106,7 @@ void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const S
     fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
     opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
     stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
-    pen=\"normal\" \n \
+    pen=\"heavier\" \n \
     matrix=";
 
   // Matrix is composed of the 4 components of the 2D transformation matrix and the translation vector

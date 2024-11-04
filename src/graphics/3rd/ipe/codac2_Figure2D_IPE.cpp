@@ -198,7 +198,12 @@ void Figure2D_IPE::draw_ellipse(const Vector& c, const Vector& ab, double theta,
 {
   assert(c.size() == 2);
   assert(ab.size() == 2);
-  // Not implemented yet
+
+  begin_path(s);
+  _f_temp_content << scale_length(ab[0]) * cos(theta).mid() << " " << scale_length(ab[0]) * sin(theta).mid() << " " 
+                  << - scale_length(ab[1]) * sin(theta).mid() << " " << scale_length(ab[1]) * cos(theta).mid() << " " 
+                  << scale_x(c[i()]) << " " << scale_y(c[j()]) << " e \n";
+  _f_temp_content << "</path>";
 }
 
 void Figure2D_IPE::draw_tank(const Vector& x, float size, const StyleProperties& s)

@@ -194,15 +194,20 @@ void Figure2D_IPE::draw_pie(const Vector& c, const Interval& r, const Interval& 
   
   begin_path(s);
 
-  _f_temp_content << scale_x(c[0] + r.lb() * cos(theta.lb()).mid()) << " " << scale_y(c[1] + r.lb() * sin(theta.lb()).mid()) << " m \n";
-  _f_temp_content << scale_x(c[0] + r.ub() * cos(theta.lb()).mid()) << " " << scale_y(c[1] + r.ub() * sin(theta.lb()).mid()) << " l \n";
+  Vector point1 ({r.lb() * cos(theta.lb()).mid(), r.lb() * sin(theta.lb()).mid()});
+  Vector point2 ({r.ub() * cos(theta.lb()).mid(), r.ub() * sin(theta.lb()).mid()});
+  Vector point3 ({r.ub() * cos(theta.ub()).mid(), r.ub() * sin(theta.ub()).mid()});
+  Vector point4 ({r.lb() * cos(theta.ub()).mid(), r.lb() * sin(theta.ub()).mid()});
+
+  _f_temp_content << scale_x(c[0] + point1[0]) << " " << scale_y(c[1] + point1[1]) << " m \n";
+  _f_temp_content << scale_x(c[0] + point2[0]) << " " << scale_y(c[1] + point2[1]) << " l \n";
   _f_temp_content << scale_length(r.ub()) << " 0 0 " << scale_length(r.ub()) << " "
                   << scale_x(c[i()]) << " " << scale_y(c[j()]) << " "
-                  << scale_x(c[0] + r.ub() * cos(theta.ub()).mid()) << " " << scale_y(c[1] + r.ub() * sin(theta.ub()).mid()) << " a \n";
-  _f_temp_content << scale_x(c[0] + r.lb() * cos(theta.ub()).mid()) << " " << scale_y(c[1] + r.lb() * sin(theta.ub()).mid()) << " l \n";
+                  << scale_x(c[0] + point3[0]) << " " << scale_y(c[1] + point3[1]) << " a \n";
+  _f_temp_content << scale_x(c[0] + point4[0]) << " " << scale_y(c[1] + point4[1]) << " l \n";
   _f_temp_content << scale_length(r.lb()) << " 0 0 " << - scale_length(r.lb()) << " "
                   << scale_x(c[i()]) << " " << scale_y(c[j()]) << " "
-                  << scale_x(c[0] + r.lb() * cos(theta.lb()).mid()) << " " << scale_y(c[1] + r.lb() * sin(theta.lb()).mid()) << " a \n";
+                  << scale_x(c[0] + point1[0]) << " " << scale_y(c[1] + point1[1]) << " a \n";
 
   _f_temp_content << "</path>";
 }

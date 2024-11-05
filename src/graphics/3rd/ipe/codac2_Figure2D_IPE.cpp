@@ -110,8 +110,8 @@ void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const S
     matrix=";
 
   // Matrix is composed of the 4 components of the 2D transformation matrix and the translation vector
-  _f_temp_content << "\"" << scale_length(length) * cos(x[j()+1]).mid() << " " << scale_length(length) * sin(x[j()+1]).mid() << " "
-                  << - scale_length(length) * sin(x[j()+1]).mid() << " " << scale_length(length) * cos(x[j()+1]).mid() << " " 
+  _f_temp_content << "\"" << scale_length(length) * std::cos(x[j()+1]) << " " << scale_length(length) * std::sin(x[j()+1]) << " "
+                  << - scale_length(length) * std::sin(x[j()+1]) << " " << scale_length(length) * std::cos(x[j()+1]) << " " 
                   << scale_x(x[i()]) << " " << scale_y(x[j()]) << "\">\n";
 }
 
@@ -194,10 +194,10 @@ void Figure2D_IPE::draw_pie(const Vector& c, const Interval& r, const Interval& 
   
   begin_path(s);
 
-  Vector point1 ({r.lb() * cos(theta.lb()).mid(), r.lb() * sin(theta.lb()).mid()});
-  Vector point2 ({r.ub() * cos(theta.lb()).mid(), r.ub() * sin(theta.lb()).mid()});
-  Vector point3 ({r.ub() * cos(theta.ub()).mid(), r.ub() * sin(theta.ub()).mid()});
-  Vector point4 ({r.lb() * cos(theta.ub()).mid(), r.lb() * sin(theta.ub()).mid()});
+  Vector point1 ({r.lb() * std::cos(theta.lb()), r.lb() * std::sin(theta.lb())});
+  Vector point2 ({r.ub() * std::cos(theta.lb()), r.ub() * std::sin(theta.lb())});
+  Vector point3 ({r.ub() * std::cos(theta.ub()), r.ub() * std::sin(theta.ub())});
+  Vector point4 ({r.lb() * std::cos(theta.ub()), r.lb() * std::sin(theta.ub())});
 
   _f_temp_content << scale_x(c[0] + point1[0]) << " " << scale_y(c[1] + point1[1]) << " m \n";
   _f_temp_content << scale_x(c[0] + point2[0]) << " " << scale_y(c[1] + point2[1]) << " l \n";
@@ -218,8 +218,8 @@ void Figure2D_IPE::draw_ellipse(const Vector& c, const Vector& ab, double theta,
   assert(ab.size() == 2);
 
   begin_path(s);
-  _f_temp_content << scale_length(ab[0]) * cos(theta).mid() << " " << scale_length(ab[0]) * sin(theta).mid() << " " 
-                  << - scale_length(ab[1]) * sin(theta).mid() << " " << scale_length(ab[1]) * cos(theta).mid() << " " 
+  _f_temp_content << scale_length(ab[0]) * std::cos(theta) << " " << scale_length(ab[0]) * std::sin(theta) << " " 
+                  << - scale_length(ab[1]) * std::sin(theta) << " " << scale_length(ab[1]) * std::cos(theta) << " " 
                   << scale_x(c[i()]) << " " << scale_y(c[j()]) << " e \n";
   _f_temp_content << "</path>";
 }

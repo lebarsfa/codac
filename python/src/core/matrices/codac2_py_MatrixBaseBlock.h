@@ -22,32 +22,32 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 template<typename S,typename T>
-py::class_<MatrixBaseBlock<EigenMatrix<T>&,T>> export_MatrixBaseBlock(py::module& m, const std::string& name)
+py::class_<MatrixBaseBlock<typename S::EigenType&,T>> export_MatrixBaseBlock(py::module& m, const std::string& name)
 {
-  py::class_<MatrixBaseBlock<EigenMatrix<T>&,T>> exported_mbb_class(m, name.c_str(), MATRIXBASEBLOCK_MAIN);
+  py::class_<MatrixBaseBlock<typename S::EigenType&,T>> exported_mbb_class(m, name.c_str(), MATRIXBASEBLOCK_MAIN);
 
   exported_mbb_class
 
-    .def("init", [](MatrixBaseBlock<EigenMatrix<T>&,T>& x, const S& a)
+    .def("init", [](MatrixBaseBlock<typename S::EigenType&,T>& x, const S& a)
         {
           return x = a;
         },
       VOID_MATRIXBASEBLOCK_QT_INIT_CONST_S__REF,
       "x"_a)
 
-    .def("nb_rows", &MatrixBaseBlock<EigenMatrix<T>&,T>::nb_rows,
+    .def("nb_rows", &MatrixBaseBlock<typename S::EigenType&,T>::nb_rows,
       SIZET_MATRIXBASEBLOCK_QT_NB_ROWS_CONST)
 
-    .def("nb_cols", &MatrixBaseBlock<EigenMatrix<T>&,T>::nb_cols,
+    .def("nb_cols", &MatrixBaseBlock<typename S::EigenType&,T>::nb_cols,
       SIZET_MATRIXBASEBLOCK_QT_NB_COLS_CONST)
 
-    .def("eval", &MatrixBaseBlock<EigenMatrix<T>&,T>::eval,
+    .def("eval", &MatrixBaseBlock<typename S::EigenType&,T>::eval,
       AUTO_MATRIXBASEBLOCK_QT_EVAL_CONST)
     
     .def(py::self == py::self)
     .def(py::self != py::self)
 
-    .def("__repr__", [](const MatrixBaseBlock<EigenMatrix<T>&,T>& x)
+    .def("__repr__", [](const MatrixBaseBlock<typename S::EigenType&,T>& x)
         {
           std::ostringstream s;
           s << x;

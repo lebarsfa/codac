@@ -12,6 +12,7 @@
 #include <ostream>
 #include "codac2_eigen.h"
 #include "codac2_assert.h"
+#include "codac2_MatrixBase_fwd.h"
 #include "codac2_MatrixBaseBlock.h"
 
 namespace codac2
@@ -22,29 +23,32 @@ namespace codac2
   template<typename Q,typename T>
   struct MatrixBaseBlock;
 
-  template<typename T>
-  using EigenMatrix = Eigen::Matrix<T,-1,-1>;
-
-  template<typename S,typename T>
+  template<typename S,typename T,int Rows,int Cols>
   class MatrixBase
   {
     public:
 
+      using EigenType = Eigen::Matrix<T,Rows,Cols>;
+
       explicit MatrixBase(size_t r, size_t c)
-        : _e(EigenMatrix<T>(r,c))
+        : _e(EigenType(r,c))
       {
+        assert((Rows == (int)r || Rows == -1) && (Cols == (int)c || Cols == -1));
         assert(r >= 0 && c >= 0);
       }
 
       explicit MatrixBase(size_t r, size_t c, const T& x)
-        : MatrixBase<S,T>(r,c)
+        : MatrixBase<S,T,Rows,Cols>(r,c)
       {
+        assert((Rows == (int)r || Rows == -1) && (Cols == (int)c || Cols == -1));
         init(x);
       }
 
       explicit MatrixBase(size_t r, size_t c, const T values[])
-        : MatrixBase<S,T>(r,c)
+        : MatrixBase<S,T,Rows,Cols>(r,c)
       {
+        assert((Rows == (int)r || Rows == -1) && (Cols == (int)c || Cols == -1));
+
         if(values == 0)
           init(T(0.)); // in case the user called MatrixBase(r,c,0) and 0 is interpreted as NULL!
 
@@ -59,14 +63,16 @@ namespace codac2
       }
 
       explicit MatrixBase(const std::vector<T>& x)
-        : MatrixBase<S,T>(x.size(),1,&x[0])
+        : MatrixBase<S,T,-1,-1>(x.size(),1,&x[0])
       {
+        assert(Rows == -1 && Cols == -1);
         assert(!x.empty());
       }
 
       MatrixBase(std::initializer_list<std::initializer_list<T>> l)
-        : MatrixBase<S,T>(0,0 /* will be resized thereafter */)
+        : MatrixBase<S,T,-1,-1>(0,0 /* will be resized thereafter */)
       {
+        assert(Rows == -1 && Cols == -1);
         assert(!std::empty(l));
 
         int cols = -1;
@@ -88,8 +94,9 @@ namespace codac2
       }
 
       MatrixBase(const std::vector<std::vector<T>>& l)
-        : MatrixBase<S,T>(0,0 /* will be resized thereafter */)
+        : MatrixBase<S,T,-1,-1>(0,0 /* will be resized thereafter */)
       {
+        assert(Rows == -1 && Cols == -1);
         assert(!std::empty(l));
 
         int cols = -1;
@@ -118,7 +125,7 @@ namespace codac2
       virtual ~MatrixBase()
       { }
 
-      MatrixBase<S,T>& operator=(const MatrixBase<S,T>&) = default;
+      MatrixBase<S,T,Rows,Cols>& operator=(const MatrixBase<S,T,Rows,Cols>&) = default;
 
       size_t size() const
       {
@@ -161,7 +168,7 @@ namespace codac2
         minmax_item(max);
       }
 
-      friend bool operator==(const MatrixBase<S,T>& x1, const MatrixBase<S,T>& x2)
+      friend bool operator==(const MatrixBase<S,T,Rows,Cols>& x1, const MatrixBase<S,T,Rows,Cols>& x2)
       {
         if(x1.nb_rows() != x2.nb_rows() || x1.nb_cols() != x2.nb_cols())
           return false;
@@ -176,7 +183,7 @@ namespace codac2
 
       T& operator()(size_t i, size_t j)
       {
-        return const_cast<T&>(const_cast<const MatrixBase<S,T>*>(this)->operator()(i,j));
+        return const_cast<T&>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->operator()(i,j));
       }
 
       const T& operator()(size_t i, size_t j) const
@@ -208,36 +215,36 @@ namespace codac2
             _e(i,j) = copy(i,j);
       }
 
-      MatrixBaseBlock<EigenMatrix<T>&,T> block(size_t i, size_t j, size_t p, size_t q)
+      MatrixBaseBlock<EigenType&,T> block(size_t i, size_t j, size_t p, size_t q)
       {
         assert_release(i >= 0 && p > 0 && i+p <= nb_rows());
         assert_release(j >= 0 && q > 0 && j+q <= nb_cols());
         return { _e,i,j,p,q };
       }
 
-      MatrixBaseBlock<const EigenMatrix<T>&,T> block(size_t i, size_t j, size_t p, size_t q) const
+      MatrixBaseBlock<const EigenType&,T> block(size_t i, size_t j, size_t p, size_t q) const
       {
         assert_release(i >= 0 && p > 0 && i+p <= nb_rows());
         assert_release(j >= 0 && q > 0 && j+q <= nb_cols());
         return { _e,i,j,p,q };
       }
 
-      MatrixBaseBlock<EigenMatrix<T>&,T> col(size_t i)
+      MatrixBaseBlock<EigenType&,T> col(size_t i)
       {
         return block(0,i,nb_rows(),1);
       }
 
-      MatrixBaseBlock<const EigenMatrix<T>&,T> col(size_t i) const
+      MatrixBaseBlock<const EigenType&,T> col(size_t i) const
       {
         return block(0,i,nb_rows(),1);
       }
 
-      MatrixBaseBlock<EigenMatrix<T>&,T> row(size_t i)
+      MatrixBaseBlock<EigenType&,T> row(size_t i)
       {
         return block(i,0,1,nb_cols());
       }
 
-      MatrixBaseBlock<const EigenMatrix<T>&,T> row(size_t i) const
+      MatrixBaseBlock<const EigenType&,T> row(size_t i) const
       {
         return block(i,0,1,nb_cols());
       }
@@ -255,43 +262,43 @@ namespace codac2
       static S zeros(size_t r, size_t c)
       {
         assert_release(r >= 0 && c >= 0);
-        return EigenMatrix<T>::Zero(r,c);
+        return EigenType::Zero(r,c);
       }
 
       static S ones(size_t r, size_t c)
       {
         assert_release(r >= 0 && c >= 0);
-        return EigenMatrix<T>::Ones(r,c);
+        return EigenType::Ones(r,c);
       }
 
       static S eye(size_t r, size_t c)
       {
         assert_release(r >= 0 && c >= 0);
-        return EigenMatrix<T>::Identity(r,c);
+        return EigenType::Identity(r,c);
       }
 
-      template<typename S_,typename T_>
-      friend std::ostream& operator<<(std::ostream& os, const MatrixBase<S_,T_>& x);
+      template<typename S_,typename T_,int Rows_,int Cols_>
+      friend std::ostream& operator<<(std::ostream& os, const MatrixBase<S_,T_,Rows_,Cols_>& x);
 
-      template<typename S_,typename T_>
-      friend S_ abs(const MatrixBase<S_,T_>& x);
+      template<typename S_,typename T_,int Rows_,int Cols_>
+      friend S_ abs(const MatrixBase<S_,T_,Rows_,Cols_>& x);
 
-      operator EigenMatrix<T>()
+      operator EigenType()
       {
-        return const_cast<EigenMatrix<T>&>(const_cast<const MatrixBase<S,T>*>(this)->operator EigenMatrix<T>());
+        return const_cast<EigenType&>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->operator EigenType());
       }
 
-      operator EigenMatrix<T>() const
+      operator EigenType() const
       {
         return _e;
       }
 
-      using iterator = typename EigenMatrix<T>::iterator;
-      using const_iterator = typename EigenMatrix<T>::const_iterator;
+      using iterator = typename EigenType::iterator;
+      using const_iterator = typename EigenType::const_iterator;
       
       iterator begin()
       {
-        return const_cast<iterator>(const_cast<const MatrixBase<S,T>*>(this)->begin());
+        return const_cast<iterator>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->begin());
       }
 
       const_iterator begin() const
@@ -306,14 +313,14 @@ namespace codac2
 
       iterator end()
       {
-        return const_cast<iterator>(const_cast<const MatrixBase<S,T>*>(this)->end());
+        return const_cast<iterator>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->end());
       }
 
-      EigenMatrix<T> _e;
+      EigenType _e;
   };
 
-  template<typename S,typename T>
-  S abs(const MatrixBase<S,T>& x)
+  template<typename S,typename T,int Rows,int Cols>
+  S abs(const MatrixBase<S,T,Rows,Cols>& x)
   {
     S a(x);
 
@@ -328,8 +335,8 @@ namespace codac2
     return a;
   }
 
-  template<typename S,typename T>
-  std::ostream& operator<<(std::ostream& os, const MatrixBase<S,T>& x)
+  template<typename S,typename T,int Rows,int Cols>
+  std::ostream& operator<<(std::ostream& os, const MatrixBase<S,T,Rows,Cols>& x)
   {
     os << "(";
     for(size_t i = 0 ; i < x.nb_rows() ; i++)
@@ -344,8 +351,8 @@ namespace codac2
     return os;
   }
 
-  template<typename S,typename T>
-  const auto& eigen(const MatrixBase<S,T>& x)
+  template<typename S,typename T,int Rows,int Cols>
+  const auto& eigen(const MatrixBase<S,T,Rows,Cols>& x)
   {
     return x._e;
   }

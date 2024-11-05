@@ -29,11 +29,11 @@ namespace codac2
 
       Vector(const std::vector<double>& l);
 
-      Vector(const MatrixBase<Vector,double>& x);
+      Vector(const MatrixBase<Vector,double,-1,1>& x);
 
       template<typename OtherDerived>
       Vector(const Eigen::MatrixBase<OtherDerived>& x)
-        : MatrixBase<Vector,double>(x),
+        : MatrixBase<Vector,double,-1,1>(x),
           VectorBase<Vector,Matrix,double>(x)
       { }
 

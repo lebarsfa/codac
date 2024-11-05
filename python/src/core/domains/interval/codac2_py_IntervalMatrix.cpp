@@ -65,11 +65,11 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
       INTERVALMATRIX_INTERVALMATRIX_CONST_INTERVALVECTOR_REF,
       "x"_a)
 
-    .def(py::init<const MatrixBaseBlock<EigenMatrix<double>&,double>&>(),
+    .def(py::init<const MatrixBaseBlock<Matrix::EigenType&,double>&>(),
       INTERVALMATRIX_INTERVALMATRIX_CONST_MATRIXBASEBLOCK_QT_REF,
       "x"_a)
 
-    .def(py::init<const MatrixBaseBlock<EigenMatrix<Interval>&,Interval>&>(),
+    .def(py::init<const MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>&>(),
       INTERVALMATRIX_INTERVALMATRIX_CONST_MATRIXBASEBLOCK_QT_REF,
       "x"_a)
 

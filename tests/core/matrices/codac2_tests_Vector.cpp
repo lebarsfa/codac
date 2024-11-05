@@ -16,5 +16,9 @@ using namespace codac2;
 
 TEST_CASE("Vector")
 {
-  
+  size_t i = 0;
+  Vector a(3), b {{-1},{2},{-3}};
+  for(const auto& bi : b)
+    a[i++] = bi;
+  CHECK(a == b);
 }

@@ -229,23 +229,9 @@ void Figure2D_IPE::draw_tank(const Vector& x, float size, const StyleProperties&
 
   begin_path_with_matrix(x,length,s);
 
-  // Body
-  _f_temp_content << 1  << " " << -1.5  << " m \n";
-  _f_temp_content << -1  << " " << -1.5  << " l \n";
-  _f_temp_content << 0  << " " << -1.5  << " l \n";
-  _f_temp_content << 0  << " " << -1  << " l \n";
-  _f_temp_content << -1  << " " << -1  << " l \n";
-  _f_temp_content << -1  << " " << 1  << " l \n";
-  _f_temp_content << 0  << " " << 1  << " l \n";
-  _f_temp_content << 0  << " " << 1.5  << " l \n";
-  _f_temp_content << -1  << " " << 1.5  << " l \n";
-  _f_temp_content << 1  << " " << 1.5  << " l \n";
-  _f_temp_content << 0  << " " << 1.5  << " l \n";
-  _f_temp_content << 0  << " " << 1  << " l \n";
-  _f_temp_content << 3  << " " << 0.5  << " l \n";
-  _f_temp_content << 3  << " " << -0.5  << " l \n";
-  _f_temp_content << 0  << " " << -1  << " l \n";
-  _f_temp_content << 0  << " " << -1.5  << " l \n";
+  constexpr char tank_shape[] = " 1 -1.5 m \n -1 -1.5 l \n 0 -1.5 l \n 0 -1 l \n -1 -1 l \n -1 1 l \n 0 1 l \n 0 1.5 l \n -1 1.5 l \n 1 1.5 l \n 0 1.5 l \n 0 1 l \n 3 0.5 l \n 3 -0.5 l \n 0 -1 l \n 0 -1.5 l \n";
+
+  _f_temp_content << tank_shape;
 
   _f_temp_content << "</path>";
 }
@@ -264,29 +250,19 @@ void Figure2D_IPE::draw_AUV(const Vector& x, float size, const StyleProperties& 
 
   begin_path_with_matrix(x,length,s);
 
-  _f_temp_content << -4  << " " << 0  << " m \n";
-  _f_temp_content << -2  << " " << 1  << " l \n";
-  _f_temp_content << 2  << " " << 1  << " l \n";
+  constexpr char body_shape[] = " -4 0 m \n -2 1 l \n 2 1 l \n 2.17365 0.984808 l \n 2.34202 0.939693 l \n 2.5 0.866025 l \n 2.64279 0.766044 l \n 2.76604 0.642788 l \n 2.86603 0.5 l \n 2.93969 0.34202 l \n 2.98481 0.173648 l \n 3 0 l \n 2.98481 -0.173648 l \n 2.93969 -0.34202 l \n 2.86603 -0.5 l \n 2.76604 -0.642788 l \n 2.64279 -0.766044 l \n 2.5 -0.866025 l \n 2.34202 -0.939693 l \n 2.17365 -0.984808 l \n 2 -1 l \n -2 -1 l \n -4 0 l \n";
 
-  for (float i = 90.; i > -90.; i -= 10.)
-    _f_temp_content <<  cos(i * codac2::pi / 180.).mid() + 2.0 << " " 
-                    <<  sin(i * codac2::pi / 180.).mid() + 0.0 << " l \n";
-
-  _f_temp_content << 2  << " " << -1  << " l \n";
-  _f_temp_content << -2  << " " << -1  << " l \n";
-  _f_temp_content << -4  << " " << 0  << " l \n";
+  _f_temp_content << body_shape;
 
   _f_temp_content << "</path>\n";
 
   // Propulsion unit
 
+  constexpr char propeller_shape[] = " -4 1 m \n -3.25 1 l \n -3.25 -1 l \n -4 -1 l \n -4 1 l \n";
+
   begin_path_with_matrix(x,length,s);
 
-  _f_temp_content << -4  << " " << 1  << " m \n";
-  _f_temp_content << -3.25  << " " << 1  << " l \n";
-  _f_temp_content << -3.25  << " " << -1  << " l \n";
-  _f_temp_content << -4  << " " << -1  << " l \n";
-  _f_temp_content << -4  << " " << 1  << " l \n";
+  _f_temp_content << propeller_shape;
 
   _f_temp_content << "</path>\n";
 

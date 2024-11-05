@@ -298,7 +298,7 @@ namespace codac2
       
       iterator begin()
       {
-        return const_cast<iterator>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->begin());
+        return _e.begin();
       }
 
       const_iterator begin() const
@@ -313,7 +313,7 @@ namespace codac2
 
       iterator end()
       {
-        return const_cast<iterator>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->end());
+        return _e.end();
       }
 
       EigenType _e;

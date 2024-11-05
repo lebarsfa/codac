@@ -101,8 +101,7 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
 
     .def("__iter__", [](const S &x)
         {
-          auto x_ = x._e.reshaped();
-          return py::make_iterator(x_.begin(), x_.end());
+          return py::make_iterator(x._e.begin(), x._e.end());
         },
       py::keep_alive<0, 1>() /*  keep object alive while iterator exists */)
   ;

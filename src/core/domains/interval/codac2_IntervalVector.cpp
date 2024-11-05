@@ -21,30 +21,30 @@ namespace codac2
   }
 
   IntervalVector::IntervalVector(size_t n, const Interval& x)
-    : MatrixBase<IntervalVector,Interval>(n,1,x),
-      IntervalMatrixBase<IntervalVector,Vector>(n,1),
+    : MatrixBase<IntervalVector,Interval,-1,1>(n,1,x),
+      IntervalMatrixBase<IntervalVector,Vector,-1,1>(n,1),
       VectorBase<IntervalVector,IntervalMatrix,Interval>(n)
   {
     assert_release(n >= 0);
   }
 
   IntervalVector::IntervalVector(size_t n, const double bounds[][2])
-    : MatrixBase<IntervalVector,Interval>(n,1),
-      IntervalMatrixBase<IntervalVector,Vector>(n,1,bounds),
+    : MatrixBase<IntervalVector,Interval,-1,1>(n,1),
+      IntervalMatrixBase<IntervalVector,Vector,-1,1>(n,1,bounds),
       VectorBase<IntervalVector,IntervalMatrix,Interval>(n)
   {
     assert_release(n >= 0);
   }
 
   IntervalVector::IntervalVector(const Vector& x)
-    : MatrixBase<IntervalVector,Interval>(x._e.template cast<Interval>()),
-      IntervalMatrixBase<IntervalVector,Vector>(x.size(),1),
+    : MatrixBase<IntervalVector,Interval,-1,1>(x._e.template cast<Interval>()),
+      IntervalMatrixBase<IntervalVector,Vector,-1,1>(x.size(),1),
       VectorBase<IntervalVector,IntervalMatrix,Interval>(x.size())
   { }
 
   IntervalVector::IntervalVector(const Vector& lb, const Vector& ub)
-    : MatrixBase<IntervalVector,Interval>(lb._e.template cast<Interval>()),
-      IntervalMatrixBase<IntervalVector,Vector>(lb.size(),1),
+    : MatrixBase<IntervalVector,Interval,-1,1>(lb._e.template cast<Interval>()),
+      IntervalMatrixBase<IntervalVector,Vector,-1,1>(lb.size(),1),
       VectorBase<IntervalVector,IntervalMatrix,Interval>(lb.size())
   {
     assert_release(lb.size() == ub.size());
@@ -52,25 +52,25 @@ namespace codac2
   }
 
   IntervalVector::IntervalVector(initializer_list<Interval> l)
-    : MatrixBase<IntervalVector,Interval>(l.size(),1),
-      IntervalMatrixBase<IntervalVector,Vector>(l.size(),1),
+    : MatrixBase<IntervalVector,Interval,-1,1>(l.size(),1),
+      IntervalMatrixBase<IntervalVector,Vector,-1,1>(l.size(),1),
       VectorBase<IntervalVector,IntervalMatrix,Interval>(l)
   {
     assert_release(!std::empty(l));
   }
 
-  IntervalVector::IntervalVector(const MatrixBase<Vector,double>& x)
+  IntervalVector::IntervalVector(const MatrixBase<Vector,double,-1,1>& x)
     : IntervalVector(x._e.template cast<Interval>())
   { }
 
-  IntervalVector::IntervalVector(const MatrixBase<IntervalVector,Interval>& x)
+  IntervalVector::IntervalVector(const MatrixBase<IntervalVector,Interval,-1,1>& x)
     : IntervalVector(x._e)
   { }
 
   bool operator==(const IntervalVector& x1, const IntervalVector& x2)
   {
     // ^ This overload allows automatic cast for Vector == IntervalVector comparisons
-    return (IntervalMatrixBase<IntervalVector,Vector>)x1 == (IntervalMatrixBase<IntervalVector,Vector>)x2;
+    return (IntervalMatrixBase<IntervalVector,Vector,-1,1>)x1 == (IntervalMatrixBase<IntervalVector,Vector,-1,1>)x2;
   }
 
   list<IntervalVector> IntervalVector::complementary() const

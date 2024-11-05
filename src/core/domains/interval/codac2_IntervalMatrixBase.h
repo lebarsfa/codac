@@ -23,21 +23,21 @@ namespace codac2
 {
   class IntervalMatrix;
 
-  template<typename S,typename V>
-  class IntervalMatrixBase : virtual public MatrixBase<S,Interval>, public DomainInterface<S,V>
+  template<typename S,typename V,int Rows=-1,int Cols=-1>
+  class IntervalMatrixBase : virtual public MatrixBase<S,Interval,Rows,Cols>, public DomainInterface<S,V>
   {
     public:
 
       explicit IntervalMatrixBase(size_t r, size_t c)
-        : MatrixBase<S,Interval>(r,c)
+        : MatrixBase<S,Interval,Rows,Cols>(r,c)
       { }
 
       explicit IntervalMatrixBase(size_t r, size_t c, const Interval& x)
-        : MatrixBase<S,Interval>(r,c,x)
+        : MatrixBase<S,Interval,Rows,Cols>(r,c,x)
       { }
       
       explicit IntervalMatrixBase(size_t r, size_t c, const double bounds[][2])
-        : MatrixBase<S,Interval>(r,c)
+        : MatrixBase<S,Interval,Rows,Cols>(r,c)
       {
         size_t k = 0;
         for(size_t i = 0 ; i < this->nb_rows() ; i++)
@@ -50,12 +50,12 @@ namespace codac2
       }
 
       IntervalMatrixBase(std::initializer_list<std::initializer_list<Interval>> l)
-        : MatrixBase<S,Interval>(l)
+        : MatrixBase<S,Interval,Rows,Cols>(l)
       { }
 
       template<typename OtherDerived>
       IntervalMatrixBase(const Eigen::MatrixBase<OtherDerived>& x)
-        : MatrixBase<S,Interval>(x)
+        : MatrixBase<S,Interval,Rows,Cols>(x)
       { }
 
       double volume() const
@@ -478,12 +478,12 @@ namespace codac2
         return y |= x;
       }
 
-      friend bool operator==(const IntervalMatrixBase<S,V>& x1, const IntervalMatrixBase<S,V>& x2)
+      friend bool operator==(const IntervalMatrixBase<S,V,Rows,Cols>& x1, const IntervalMatrixBase<S,V,Rows,Cols>& x2)
       {
         if(x1.is_empty() || x2.is_empty())
           return x1.is_empty() && x2.is_empty() && x1.size() == x2.size();
 
-        return (MatrixBase<S,Interval>)x1 == (MatrixBase<S,Interval>)x2;
+        return (MatrixBase<S,Interval,Rows,Cols>)x1 == (MatrixBase<S,Interval,Rows,Cols>)x2;
       }
 
       std::pair<S,S> bisect(size_t i, float ratio = 0.49) const

@@ -21,27 +21,27 @@ namespace codac2
   }
 
   Vector::Vector(size_t n, double x)
-    : MatrixBase<Vector,double>(n,1,x),
+    : MatrixBase<Vector,double,-1,1>(n,1,x),
       VectorBase<Vector,Matrix,double>(n)
   {
     assert_release(n >= 0);
   }
 
   Vector::Vector(std::initializer_list<double> l)
-    : MatrixBase<Vector,double>(l.size(),1),
+    : MatrixBase<Vector,double,-1,1>(l.size(),1),
       VectorBase<Vector,Matrix,double>(l)
   {
     assert_release(!std::empty(l));
   }
 
   Vector::Vector(const std::vector<double>& l)
-    : MatrixBase<Vector,double>(l.size(),1),
+    : MatrixBase<Vector,double,-1,1>(l.size(),1),
       VectorBase<Vector,Matrix,double>(l)
   {
     assert_release(!std::empty(l));
   }
 
-  Vector::Vector(const MatrixBase<Vector,double>& x)
+  Vector::Vector(const MatrixBase<Vector,double,-1,1>& x)
     : Vector(x._e)
   { }
 

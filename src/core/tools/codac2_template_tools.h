@@ -17,13 +17,13 @@ namespace codac2
 {
   template<class T>
   concept IsMatrix = (std::is_same_v<Matrix,T> 
-      || std::is_same_v<MatrixBaseBlock<EigenMatrix<double>&,double>,T> 
-      || std::is_same_v<MatrixBaseBlock<const EigenMatrix<double>&,double>,T>);
+      || std::is_same_v<MatrixBaseBlock<Matrix::EigenType&,double>,T> 
+      || std::is_same_v<MatrixBaseBlock<const Matrix::EigenType&,double>,T>);
 
   template<class T>
   concept IsIntervalMatrix = (std::is_same_v<IntervalMatrix,T> 
-      || std::is_same_v<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>,T> 
-      || std::is_same_v<MatrixBaseBlock<const EigenMatrix<Interval>&,Interval>,T>);
+      || std::is_same_v<MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>,T> 
+      || std::is_same_v<MatrixBaseBlock<const IntervalMatrix::EigenType&,Interval>,T>);
 
   template<class C,class X>
   concept IsCtcBaseOrPtr = (std::is_base_of_v<CtcBase<X>,C>

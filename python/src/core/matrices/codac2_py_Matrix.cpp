@@ -58,7 +58,7 @@ py::class_<Matrix> export_Matrix(py::module& m)
       MATRIX_MATRIX_CONST_VECTOR_REF,
       "x"_a)
 
-    .def(py::init<const MatrixBaseBlock<EigenMatrix<double>&,double>&>(),
+    .def(py::init<const MatrixBaseBlock<Matrix::EigenType&,double>&>(),
       MATRIX_MATRIX_CONST_MATRIXBASEBLOCK_QDOUBLE_REF,
       "x"_a)
 

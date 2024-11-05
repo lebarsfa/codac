@@ -100,6 +100,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_MatrixBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_MatrixBase_fwd.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_MatrixBaseBlock.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Vector.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Vector.h

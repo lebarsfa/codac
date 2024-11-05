@@ -23,7 +23,7 @@
 
 namespace codac2
 {
-  class IntervalVector : public IntervalMatrixBase<IntervalVector,Vector>, public VectorBase<IntervalVector,IntervalMatrix,Interval>
+  class IntervalVector : public IntervalMatrixBase<IntervalVector,Vector,-1,1>, public VectorBase<IntervalVector,IntervalMatrix,Interval>
   {
     public:
 
@@ -39,14 +39,14 @@ namespace codac2
 
       IntervalVector(std::initializer_list<Interval> l);
 
-      IntervalVector(const MatrixBase<Vector,double>& x);
+      IntervalVector(const MatrixBase<Vector,double,-1,1>& x);
 
-      IntervalVector(const MatrixBase<IntervalVector,Interval>& x);
+      IntervalVector(const MatrixBase<IntervalVector,Interval,-1,1>& x);
 
       template<typename OtherDerived>
       IntervalVector(const Eigen::MatrixBase<OtherDerived>& x)
-        : MatrixBase<IntervalVector,Interval>(x.template cast<Interval>()),
-          IntervalMatrixBase<IntervalVector,Vector>(x.template cast<Interval>()),
+        : MatrixBase<IntervalVector,Interval,-1,1>(x.template cast<Interval>()),
+          IntervalMatrixBase<IntervalVector,Vector,-1,1>(x.template cast<Interval>()),
           VectorBase<IntervalVector,IntervalMatrix,Interval>(x.template cast<Interval>())
       {
         assert_release(x.cols() == 1);

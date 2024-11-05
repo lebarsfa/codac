@@ -14,18 +14,18 @@
 namespace codac2
 {
   template<typename S,typename M,typename T>
-  class VectorBase : virtual public MatrixBase<S,T>
+  class VectorBase : virtual public MatrixBase<S,T,-1,1>
   {
     public:
 
       explicit VectorBase(size_t n)
-        : MatrixBase<S,T>(n,1)
+        : MatrixBase<S,T,-1,1>(n,1)
       {
         assert_release(n >= 0);
       }
 
       VectorBase(std::initializer_list<T> l)
-        : MatrixBase<S,T>(l.size(),1)
+        : MatrixBase<S,T,-1,1>(l.size(),1)
       {
         assert(!std::empty(l));
         size_t i = 0;
@@ -34,7 +34,7 @@ namespace codac2
       }
 
       VectorBase(const std::vector<T>& l)
-        : MatrixBase<S,T>(l.size(),1)
+        : MatrixBase<S,T,-1,1>(l.size(),1)
       {
         assert(!std::empty(l));
         size_t i = 0;
@@ -44,7 +44,7 @@ namespace codac2
 
       template<typename OtherDerived>
       VectorBase(const Eigen::MatrixBase<OtherDerived>& x)
-        : MatrixBase<S,T>(x)
+        : MatrixBase<S,T,-1,1>(x)
       { }
 
       bool is_squared() const = delete;
@@ -70,7 +70,7 @@ namespace codac2
       void resize(size_t n)
       {
         assert_release(n >= 0);
-        MatrixBase<S,T>::resize(n,1);
+        MatrixBase<S,T,-1,1>::resize(n,1);
       }
 
       void put(size_t start_id, const S& x)

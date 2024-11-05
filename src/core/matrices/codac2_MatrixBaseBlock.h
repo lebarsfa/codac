@@ -12,13 +12,11 @@
 #include <ostream>
 #include "codac2_eigen.h"
 #include "codac2_assert.h"
+#include "codac2_MatrixBase_fwd.h"
 #include "codac2_MatrixBase.h"
 
 namespace codac2
 {
-  template<typename S,typename T>
-  class MatrixBase;
-  
   template<typename Q,typename T>
   struct MatrixBaseBlock
   {
@@ -42,8 +40,8 @@ namespace codac2
       return _q;
     }
 
-    template<typename S_>
-    void operator=(const MatrixBase<S_,T>& x)
+    template<typename S_,int Rows_,int Cols_>
+    void operator=(const MatrixBase<S_,T,Rows_,Cols_>& x)
     {
       assert_release(x.nb_rows() == _p && x.nb_cols() == _q);
       _m.block(_i,_j,_p,_q) = x._e;

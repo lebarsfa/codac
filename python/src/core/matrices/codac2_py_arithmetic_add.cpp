@@ -18,8 +18,8 @@ using namespace codac2;
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-using B = MatrixBaseBlock<EigenMatrix<double>&,double>;
-using IB = MatrixBaseBlock<EigenMatrix<Interval>&,Interval>;
+using B = MatrixBaseBlock<Matrix::EigenType&,double>;
+using IB = MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>;
 
 void export_arithmetic_add(py::module& m,
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,

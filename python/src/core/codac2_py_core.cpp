@@ -73,19 +73,19 @@ void export_Polygon(py::module& m);
 void export_arithmetic_add(py::module& m,
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
+  py::class_<MatrixBaseBlock<Matrix::EigenType&,double>>& py_B, py::class_<MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>>& py_IB);
 void export_arithmetic_sub(py::module& m,
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
+  py::class_<MatrixBaseBlock<Matrix::EigenType&,double>>& py_B, py::class_<MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>>& py_IB);
 void export_arithmetic_mul(py::module& m,
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
+  py::class_<MatrixBaseBlock<Matrix::EigenType&,double>>& py_B, py::class_<MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>>& py_IB);
 void export_arithmetic_div(py::module& m,
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
+  py::class_<MatrixBaseBlock<Matrix::EigenType&,double>>& py_B, py::class_<MatrixBaseBlock<IntervalMatrix::EigenType&,Interval>>& py_IB);
 py::class_<Vector> export_Vector(py::module& m);
 py::class_<Matrix> export_Matrix(py::module& m);
 

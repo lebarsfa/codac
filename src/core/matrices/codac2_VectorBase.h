@@ -96,13 +96,13 @@ namespace codac2
       static S zeros(size_t n)
       {
         assert_release(n >= 0);
-        return EigenMatrix<T>::Zero(n,1);
+        return S::EigenType::Zero(n,1);
       }
 
       static S ones(size_t n)
       {
         assert_release(n >= 0);
-        return EigenMatrix<T>::Ones(n,1);
+        return S::EigenType::Ones(n,1);
       }
 
   };

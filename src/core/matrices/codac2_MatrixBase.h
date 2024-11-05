@@ -23,16 +23,15 @@ namespace codac2
   template<typename Q,typename T>
   struct MatrixBaseBlock;
 
-  template<typename T,int Rows=-1,int Cols=-1>
-  using EigenMatrix = Eigen::Matrix<T,Rows,Cols>;
-
   template<typename S,typename T,int Rows,int Cols>
   class MatrixBase
   {
     public:
 
+      using EigenType = Eigen::Matrix<T,Rows,Cols>;
+
       explicit MatrixBase(size_t r, size_t c)
-        : _e(EigenMatrix<T,Rows,Cols>(r,c))
+        : _e(EigenType(r,c))
       {
         assert((Rows == (int)r || Rows == -1) && (Cols == (int)c || Cols == -1));
         assert(r >= 0 && c >= 0);
@@ -216,36 +215,36 @@ namespace codac2
             _e(i,j) = copy(i,j);
       }
 
-      MatrixBaseBlock<EigenMatrix<T,Rows,Cols>&,T> block(size_t i, size_t j, size_t p, size_t q)
+      MatrixBaseBlock<EigenType&,T> block(size_t i, size_t j, size_t p, size_t q)
       {
         assert_release(i >= 0 && p > 0 && i+p <= nb_rows());
         assert_release(j >= 0 && q > 0 && j+q <= nb_cols());
         return { _e,i,j,p,q };
       }
 
-      MatrixBaseBlock<const EigenMatrix<T,Rows,Cols>&,T> block(size_t i, size_t j, size_t p, size_t q) const
+      MatrixBaseBlock<const EigenType&,T> block(size_t i, size_t j, size_t p, size_t q) const
       {
         assert_release(i >= 0 && p > 0 && i+p <= nb_rows());
         assert_release(j >= 0 && q > 0 && j+q <= nb_cols());
         return { _e,i,j,p,q };
       }
 
-      MatrixBaseBlock<EigenMatrix<T,Rows,Cols>&,T> col(size_t i)
+      MatrixBaseBlock<EigenType&,T> col(size_t i)
       {
         return block(0,i,nb_rows(),1);
       }
 
-      MatrixBaseBlock<const EigenMatrix<T,Rows,Cols>&,T> col(size_t i) const
+      MatrixBaseBlock<const EigenType&,T> col(size_t i) const
       {
         return block(0,i,nb_rows(),1);
       }
 
-      MatrixBaseBlock<EigenMatrix<T,Rows,Cols>&,T> row(size_t i)
+      MatrixBaseBlock<EigenType&,T> row(size_t i)
       {
         return block(i,0,1,nb_cols());
       }
 
-      MatrixBaseBlock<const EigenMatrix<T,Rows,Cols>&,T> row(size_t i) const
+      MatrixBaseBlock<const EigenType&,T> row(size_t i) const
       {
         return block(i,0,1,nb_cols());
       }
@@ -263,19 +262,19 @@ namespace codac2
       static S zeros(size_t r, size_t c)
       {
         assert_release(r >= 0 && c >= 0);
-        return EigenMatrix<T,Rows,Cols>::Zero(r,c);
+        return EigenType::Zero(r,c);
       }
 
       static S ones(size_t r, size_t c)
       {
         assert_release(r >= 0 && c >= 0);
-        return EigenMatrix<T,Rows,Cols>::Ones(r,c);
+        return EigenType::Ones(r,c);
       }
 
       static S eye(size_t r, size_t c)
       {
         assert_release(r >= 0 && c >= 0);
-        return EigenMatrix<T,Rows,Cols>::Identity(r,c);
+        return EigenType::Identity(r,c);
       }
 
       template<typename S_,typename T_,int Rows_,int Cols_>
@@ -284,18 +283,18 @@ namespace codac2
       template<typename S_,typename T_,int Rows_,int Cols_>
       friend S_ abs(const MatrixBase<S_,T_,Rows_,Cols_>& x);
 
-      operator EigenMatrix<T,Rows,Cols>()
+      operator EigenType()
       {
-        return const_cast<EigenMatrix<T,Rows,Cols>&>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->operator EigenMatrix<T,Rows,Cols>());
+        return const_cast<EigenType&>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->operator EigenType());
       }
 
-      operator EigenMatrix<T,Rows,Cols>() const
+      operator EigenType() const
       {
         return _e;
       }
 
-      using iterator = typename EigenMatrix<T,Rows,Cols>::iterator;
-      using const_iterator = typename EigenMatrix<T,Rows,Cols>::const_iterator;
+      using iterator = typename EigenType::iterator;
+      using const_iterator = typename EigenType::const_iterator;
       
       iterator begin()
       {
@@ -317,7 +316,7 @@ namespace codac2
         return const_cast<iterator>(const_cast<const MatrixBase<S,T,Rows,Cols>*>(this)->end());
       }
 
-      EigenMatrix<T,Rows,Cols> _e;
+      EigenType _e;
   };
 
   template<typename S,typename T,int Rows,int Cols>

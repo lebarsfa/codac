@@ -55,7 +55,7 @@ In case you prefer the latest development version, Codac can be installed by com
 Requirements
 ^^^^^^^^^^^^
 
-Codac uses several features of the `IBEX library <http://www.ibex-lib.org/doc/install.html>`_ that you have to install first. The last version of IBEX is maintained on `this unofficial development repository <https://github.com/lebarsfa/ibex-lib/tree/master>`_:
+Codac uses several features of the `IBEX library <https://ibex-team.github.io/ibex-lib/install.html>`_ that you have to install first. The last version of IBEX is maintained on `this unofficial development repository <https://github.com/lebarsfa/ibex-lib/tree/master>`_:
 
 .. code-block:: bash
 
@@ -76,6 +76,10 @@ Codac uses several features of the `IBEX library <http://www.ibex-lib.org/doc/in
   cd ../..
 
 For further CMake options, please refer to the IBEX documentation. 
+
+.. warning::
+
+  GAOL prerequisite: On some platforms, you might need to install manually `MathLib <https://github.com/lebarsfa/mathlib>`_ and `GAOL <https://github.com/lebarsfa/GAOL>`_ with CMake and `specify where they are <https://ibex-team.github.io/ibex-lib/install-cmake.html#configuration-options>`_ to build IBEX successfully and have accurate computations.
 
 .. admonition:: Debug/development mode
   

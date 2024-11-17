@@ -60,7 +60,7 @@ In a nutshell, Codac is a **constraint programming framework** providing tools t
 
 .. **Mobile robotics** has been the initial motivation of this project: the mathematical tools provided in Codac come together with robotic applications.
 
-.. Computations stands on the `IBEX library <http://www.ibex-lib.org/>`_ that provides reliable tools for static systems.
+.. Computations stands on the `IBEX library <https://github.com/ibex-team/ibex-lib>`_ that provides reliable tools for static systems.
 
 
 Getting started: 2 minutes to Codac
@@ -254,8 +254,8 @@ Then you have two options: read the details about the features of Codac (domains
   .. Figure:: img/logo_ibex.jpg
     :align: center
 
-  | Note that Codac stands on the `IBEX library <http://www.ibex-lib.org/>`_ for interval analysis computations and static contractors on boxes.
-  | `Read the IBEX documentation. <http://www.ibex-lib.org/doc/>`_
+  | Note that Codac stands on the `IBEX library <https://github.com/ibex-team/ibex-lib>`_ for interval analysis computations and static contractors on boxes.
+  | `Read the IBEX documentation. <http://ibex-team.github.io/ibex-lib/>`_
 
 ..  .. rubric:: pyIbex
 ..

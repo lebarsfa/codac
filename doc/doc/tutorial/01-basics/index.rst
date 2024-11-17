@@ -443,4 +443,4 @@ We now have all the material to compute a solver for state estimation in the nex
 
 .. rubric:: Footnotes
 
-.. [#f1] C++ objects originates from the `IBEX library <http://www.ibex-lib.org>`_.
+.. [#f1] C++ objects originates from the `IBEX library <https://github.com/ibex-team/ibex-lib>`_.

@@ -77,6 +77,10 @@ Codac uses several features of the `IBEX library <https://ibex-team.github.io/ib
 
 For further CMake options, please refer to the IBEX documentation. 
 
+.. warning::
+
+  GAOL prerequisite: On some platforms, you might need to install manually `MathLib <https://github.com/lebarsfa/mathlib>`_ and `GAOL <https://github.com/lebarsfa/GAOL>`_ with CMake and `specify where they are <https://ibex-team.github.io/ibex-lib/install-cmake.html#configuration-options>`_ to build IBEX successfully and have accurate computations.
+
 .. admonition:: Debug/development mode
   
   Note that the :code:`-DCMAKE_BUILD_TYPE=Debug` option will slightly slow down your computations, but display useful error messages in case of failure conditions such as access violations. **It is highly recommended** for your developments. To use it:

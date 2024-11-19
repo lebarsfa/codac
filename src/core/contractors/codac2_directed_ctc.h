@@ -243,7 +243,7 @@ namespace codac2
       requires (std::is_base_of_v<ScalarOpValue,X> && ...)
     static VectorOpValue fwd(const X&... x)
     {
-      IntervalMatrix d(sizeof...(X),std::get<0>(std::tie(x...)).da.nb_cols());
+      IntervalMatrix d(sizeof...(X),std::get<0>(std::tie(x...)).da.cols());
       size_t i = 0;
       ((d.row(i++) = x.da), ...);
 

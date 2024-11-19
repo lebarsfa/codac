@@ -12,12 +12,12 @@
 #include "codac2_template_tools.h"
 #include "codac2_IntervalMatrix.h"
 #include "codac2_IntervalVector.h"
-#include "codac2_MatrixBaseBlock.h"
+//#include "codac2_MatrixBaseBlock.h"
 
 namespace codac2
 {
   // ====== First operand: double
-
+/*
   inline Vector operator*(double x1, const Vector& x2)
   {
     return x1 * eigen(x2);
@@ -100,7 +100,7 @@ namespace codac2
     requires IsMatrix<M>
   Vector operator*(const M& x1, const Vector& x2)
   {
-    assert_release(x1.nb_cols() == x2.size());
+    assert_release(x1.cols() == x2.size());
     return eigen(x1) * eigen(x2);
   }
 
@@ -108,7 +108,7 @@ namespace codac2
     requires IsMatrix<M> && IsMatrix<M_>
   Matrix operator*(const M& x1, const M_& x2)
   {
-    assert_release(x1.nb_cols() == x2.nb_rows());
+    assert_release(x1.cols() == x2.rows());
     return eigen(x1) * eigen(x2);
   }
 
@@ -116,18 +116,24 @@ namespace codac2
     requires IsMatrix<M>
   IntervalVector operator*(const M& x1, const IntervalVector& x2)
   {
-    assert_release(x1.nb_cols() == x2.size());
+    assert_release(x1.cols() == x2.size());
     return eigen(x1).template cast<Interval>() * eigen(x2);
   }
 
   template<typename M,typename IM>
-    requires IsMatrix<M> && IsIntervalMatrix<IM>
-  IntervalMatrix operator*(const M& x1, const IM& x2)
-  {
-    assert_release(x1.nb_cols() == x2.nb_rows());
-    return eigen(x1).template cast<Interval>() * eigen(x2);
-  }
+    requires IsMatrix<M> && IsIntervalMatrix<IM>*/
 
+  /*auto operator*(const Matrix& x1, const IntervalMatrix& x2)
+  {
+    assert_release(x1.cols() == x2.rows());
+
+    //return Eigen::operator*(x1.template cast<Interval>(), x2);
+
+    //const Eigen::Product<Derived, OtherDerived> Eigen::MatrixBase<Derived>::operator*(const Eigen::MatrixBase<OtherDerived>&) const [with OtherDerived = Eigen::Matrix<codac2::Interval, -1, -1>; Derived = Eigen::CwiseUnaryOp<Eigen::internal::scalar_cast_op<double, codac2::Interval>, const Eigen::Matrix<double, -1, -1> >]
+
+    return x1.template cast<Interval>() * x2;
+  }*/
+/*
   // ====== First operand: interval vector
 
   inline IntervalVector operator*(const IntervalVector& x1, double x2)
@@ -160,7 +166,7 @@ namespace codac2
     requires IsIntervalMatrix<IM>
   IntervalVector operator*(const IM& x1, const Vector& x2)
   {
-    assert_release(x1.nb_cols() == x2.size());
+    assert_release(x1.cols() == x2.size());
     return eigen(x1) * eigen(x2).template cast<Interval>();
   }
 
@@ -168,7 +174,7 @@ namespace codac2
     requires IsIntervalMatrix<IM> && IsMatrix<M>
   IntervalMatrix operator*(const IM& x1, const M& x2)
   {
-    assert_release(x1.nb_cols() == x2.nb_rows());
+    assert_release(x1.cols() == x2.rows());
     return eigen(x1) * eigen(x2).template cast<Interval>();
   }
 
@@ -176,7 +182,7 @@ namespace codac2
     requires IsIntervalMatrix<IM>
   IntervalVector operator*(const IM& x1, const IntervalVector& x2)
   {
-    assert_release(x1.nb_cols() == x2.size());
+    assert_release(x1.cols() == x2.size());
     return eigen(x1) * eigen(x2);
   }
 
@@ -184,7 +190,7 @@ namespace codac2
     requires IsIntervalMatrix<IM> && IsIntervalMatrix<IM_>
   IntervalMatrix operator*(const IM& x1, const IM_& x2)
   {
-    assert_release(x1.nb_cols() == x2.nb_rows());
+    assert_release(x1.cols() == x2.rows());
     return eigen(x1) * eigen(x2);
-  }
+  }*/
 }

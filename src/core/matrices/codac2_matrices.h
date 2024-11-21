@@ -76,12 +76,6 @@ namespace Eigen
   template<typename BinOp>
   struct ScalarBinaryOpTraits<double,codac2::Interval,BinOp>
   { typedef codac2::Interval ReturnType; };
-
-  /*inline bool operator==(const codac2::Interval& x1, double x2)
-  { return x1 == codac2::Interval(x2); } // todo: keep this?
-
-  inline bool operator==(double x2, const codac2::Interval& x1)
-  { return codac2::Interval(x1) == x2; } // todo: keep this?*/
 }
 
 namespace codac2
@@ -96,4 +90,34 @@ namespace codac2
 
   template<typename Scalar,int R,int C>
   using Mat = Eigen::Matrix<Scalar,R,C>;
+}
+
+namespace codac2
+{
+  template<typename Scalar,int RowsAtCompileTime,int ColsAtCompileTime>
+  inline auto abs(const Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>& x)
+  {
+    Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime> a(x);
+
+    for(size_t i = 0 ; i < x.size() ; i++)
+    {
+      if constexpr(std::is_same_v<Scalar,double>)
+        *(a.data()+i) = fabs(*(x.data()+i));
+      else
+        *(a.data()+i) = abs(*(x.data()+i));
+    }
+
+    return a;
+  }
+
+  template<typename Scalar,int RowsAtCompileTime,int ColsAtCompileTime>
+    requires Eigen::IsIntervalDomain<Scalar>
+  inline auto hull(const std::list<Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>& l)
+  {
+    assert_release(!l.empty());
+    Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime> h(l.front());
+    for(const auto& li : l)
+      h |= li;
+    return h;
+  }
 }

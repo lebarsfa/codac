@@ -11,7 +11,6 @@
 
 #include <string>
 #include "codac2_analytic_values.h"
-#include "codac2_arithmetic.h"
 #include "codac2_template_tools.h"
 
 namespace codac2

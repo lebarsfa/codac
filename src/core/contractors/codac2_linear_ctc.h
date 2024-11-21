@@ -11,7 +11,6 @@
 #pragma once
 
 #include <string>
-#include "codac2_arithmetic.h"
 #include "codac2_Collection.h"
 #include "codac2_template_tools.h"
 #include "codac2_Matrix.h"

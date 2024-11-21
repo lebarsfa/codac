@@ -18,10 +18,10 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+template<typename U=Scalar>
   requires IsIntervalDomain<U>
-Matrix(const Matrix<double,R,C>& x)
-  : Matrix<U,R,C>(x.template cast<codac2::Interval>())
+Matrix(const Matrix<double,RowsAtCompileTime,ColsAtCompileTime>& x)
+  : Matrix<U,RowsAtCompileTime,ColsAtCompileTime>(x.template cast<codac2::Interval>())
 { }
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -597,17 +597,6 @@ inline auto operator|(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtComp
 {
   auto y = *this;
   return y |= x;
-}
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsIntervalDomain<U>
-inline auto diam() const
-{
-  const Eigen::Matrix<codac2::Interval,R,C>& e = *this;
-  Eigen::Matrix<double,R,C> d(this->rows(),this->cols());
-  for(size_t i = 0 ; i < this->size() ; i++)
-    *(d.data()+i) = (e.data()+i)->diam();
-  return d;
 }
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>

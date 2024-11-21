@@ -90,11 +90,6 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_Polygon.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_Polygon.h
     
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_add.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_div.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_mul.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_sub.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_matrices.h

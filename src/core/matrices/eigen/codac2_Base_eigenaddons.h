@@ -13,19 +13,27 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
+template<typename Scalar_,int R_,int C_>
+  requires (R_ != RowsAtCompileTime || C_ != ColsAtCompileTime)
+Matrix(const Matrix<Scalar_,R_,C_>& x)
+  : Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>(x.rows(),x.cols())
+{
+  *this = x.template cast<Scalar>();
+}
+
 inline size_t size() const
 {
-  return Eigen::PlainObjectBase<Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>::size();
+  return Base::size();
 }
 
 inline size_t rows() const
 {
-  return Eigen::PlainObjectBase<Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>::rows();
+  return Base::rows();
 }
 
 inline size_t cols() const
 {
-  return Eigen::PlainObjectBase<Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>::cols();
+  return Base::cols();
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -87,30 +95,6 @@ inline Scalar min_coeff() const
 inline Scalar max_coeff() const
 {
   minmax_item(max);
-}
-
-inline friend auto abs(const Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>& x)
-{
-  Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime> a(x);
-
-  for(size_t i = 0 ; i < x.size() ; i++)
-  {
-    if constexpr(std::is_same_v<Scalar,double>)
-      *(a.data()+i) = fabs(*(x.data()+i));
-    else
-      *(a.data()+i) = abs(*(x.data()+i));
-  }
-
-  return a;
-}
-
-inline friend auto hull(const std::list<Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>& l)
-{
-  assert_release(!l.empty());
-  Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime> h(l.front());
-  for(const auto& li : l)
-    h |= li;
-  return h;
 }
 
 template<typename U_,int R_,int C_>

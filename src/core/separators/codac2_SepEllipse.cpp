@@ -8,7 +8,6 @@
  */
 
 #include "codac2_SepEllipse.h"
-#include "codac2_arithmetic.h"
 
 using namespace std;
 using namespace codac2;

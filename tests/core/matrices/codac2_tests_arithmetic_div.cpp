@@ -12,7 +12,6 @@
 #include <codac2_Matrix.h>
 #include <codac2_IntervalVector.h>
 #include <codac2_IntervalMatrix.h>
-#include <codac2_arithmetic_div.h>
 #include <codac2_Approx.h>
 
 using namespace std;

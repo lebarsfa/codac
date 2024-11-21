@@ -39,7 +39,7 @@ py::class_<Vector> export_Vector(py::module& m)
   exported_vector_class
 
     .def(py::init(
-        [](size_t_type n)
+        [](Index_type n)
         {
           matlab::test_integer(n);
           return std::make_unique<Vector>(n);
@@ -65,13 +65,13 @@ py::class_<Vector> export_Vector(py::module& m)
         {
           return matlab::output_index(x.min_coeff_index());
         },
-      VECTOR_EIGENADDONS_SIZET_MIN_COEFF_INDEX_CONST)
+      VECTOR_EIGENADDONS_INDEX_MIN_COEFF_INDEX_CONST)
 
     .def("max_coeff_index", [](const Vector& x)
         {
           return matlab::output_index(x.max_coeff_index());
         },
-      VECTOR_EIGENADDONS_SIZET_MAX_COEFF_INDEX_CONST)
+      VECTOR_EIGENADDONS_INDEX_MAX_COEFF_INDEX_CONST)
 
     .def("__repr__", [](const Vector& x)
         {

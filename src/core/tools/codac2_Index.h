@@ -1,5 +1,5 @@
 /** 
- *  codac2_CtcEmpty.cp
+ *  \file codac2_Index.h
  * ----------------------------------------------------------------------------
  *  \date       2024
  *  \author     Simon Rohou
@@ -7,16 +7,10 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-#include "codac2_CtcEmpty.h"
+#pragma once
 
-using namespace std;
-using namespace codac2;
-
-CtcEmpty::CtcEmpty(Index n)
-  : Ctc<CtcEmpty,IntervalVector>(n)
-{ }
-
-void CtcEmpty::contract(IntervalVector& x) const
+namespace codac2
 {
-  x.set_empty();
+  // The Index type is the same as for Eigen
+  typedef long int Index;
 }

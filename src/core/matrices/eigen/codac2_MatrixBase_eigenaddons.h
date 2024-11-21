@@ -36,9 +36,9 @@ explicit Matrix(int r, int c, const Scalar values[])
 
   else
   {
-    size_t k = 0;
-    for(size_t i = 0 ; i < this->rows() ; i++)
-      for(size_t j = 0 ; j < this->cols() ; j++)
+    Index k = 0;
+    for(Index i = 0 ; i < this->rows() ; i++)
+      for(Index j = 0 ; j < this->cols() ; j++)
         (*this)(i,j) = values[k++];
     assert(k == this->size());
   }
@@ -46,7 +46,7 @@ explicit Matrix(int r, int c, const Scalar values[])
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline auto block(size_t i, size_t j, size_t p, size_t q)
+inline auto block(Index i, Index j, Index p, Index q)
 {
   assert_release(i >= 0 && p > 0 && i+p <= this->rows());
   assert_release(j >= 0 && q > 0 && j+q <= this->cols());
@@ -55,7 +55,7 @@ inline auto block(size_t i, size_t j, size_t p, size_t q)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline auto block(size_t i, size_t j, size_t p, size_t q) const
+inline auto block(Index i, Index j, Index p, Index q) const
 {
   assert_release(i >= 0 && p > 0 && i+p <= this->rows());
   assert_release(j >= 0 && q > 0 && j+q <= this->cols());
@@ -64,7 +64,7 @@ inline auto block(size_t i, size_t j, size_t p, size_t q) const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline static Matrix<Scalar,R,C> zeros(size_t r, size_t c)
+inline static Matrix<Scalar,R,C> zeros(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
   return Matrix<Scalar,R,C>::Zero(r,c);
@@ -72,7 +72,7 @@ inline static Matrix<Scalar,R,C> zeros(size_t r, size_t c)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline static Matrix<Scalar,R,C> ones(size_t r, size_t c)
+inline static Matrix<Scalar,R,C> ones(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
   return Matrix<Scalar,R,C>::Ones(r,c);
@@ -80,7 +80,7 @@ inline static Matrix<Scalar,R,C> ones(size_t r, size_t c)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline static Matrix<Scalar,R,C> eye(size_t r, size_t c)
+inline static Matrix<Scalar,R,C> eye(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
   return Matrix<Scalar,R,C>::Identity(r,c);
@@ -98,12 +98,12 @@ inline static Matrix<Scalar,R,C> random(size_t r, size_t c)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline void resize_save_values(size_t r, size_t c)
+inline void resize_save_values(Index r, Index c)
 {
   // With resize() of Eigen, the data is reallocated and all previous values are lost.
   auto copy = *this;
   this->resize(r,c);
-  for(size_t i = 0 ; i < std::min((size_t)copy.rows(),r) ; i++)
-    for(size_t j = 0 ; j < std::min((size_t)copy.cols(),c) ; j++)
+  for(Index i = 0 ; i < std::min((Index)copy.rows(),r) ; i++)
+    for(Index j = 0 ; j < std::min((Index)copy.cols(),c) ; j++)
       (*this)(i,j) = copy(i,j);
 }

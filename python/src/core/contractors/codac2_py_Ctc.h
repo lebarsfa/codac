@@ -29,7 +29,7 @@ class pyCtcIntervalVector : public CtcBase<IntervalVector>
 {
   public:
 
-    pyCtcIntervalVector(size_t_type n)
+    pyCtcIntervalVector(Index_type n)
       : CtcBase<IntervalVector>(n)
     {
       matlab::test_integer(n);

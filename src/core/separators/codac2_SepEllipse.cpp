@@ -45,7 +45,7 @@ BoxPair SepEllipse::separate(const IntervalVector& x) const
       return { x_in, IntervalVector::empty(2) };
   }
 
-  size_t i = Vector(x_out.rad()-p.rad()).max_coeff_index();
+  Index i = Vector(x_out.rad()-p.rad()).max_coeff_index();
 
   double e1 = p[i].lb() - x_out[i].lb();
   double e2 = x_out[i].ub() - p[i].ub();

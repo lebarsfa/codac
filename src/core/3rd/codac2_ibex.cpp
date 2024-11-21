@@ -32,7 +32,7 @@ namespace codac2
   #define cast_vector(OutputType,convert) \
     \
     OutputType x_(x.size()); \
-    for(size_t i = 0 ; i < (size_t)x.size() ; i++) \
+    for(Index i = 0 ; i < (Index)x.size() ; i++) \
       x_[i] = convert(x[i]); \
     return x_; \
 
@@ -59,8 +59,8 @@ namespace codac2
   #define cast_matrix(OutputType,convert_f,output_ij,input_ij,rows_,cols_) \
     \
     OutputType x_(x.rows_(), x.cols_()); \
-    for(size_t i = 0 ; i < (size_t)x.rows_() ; i++) \
-      for(size_t j = 0 ; j < (size_t)x.cols_() ; j++) \
+    for(Index i = 0 ; i < (Index)x.rows_() ; i++) \
+      for(Index j = 0 ; j < (Index)x.cols_() ; j++) \
         output_ij = convert_f(input_ij); \
     return x_; \
 

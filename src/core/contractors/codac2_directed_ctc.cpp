@@ -119,7 +119,7 @@ using namespace codac2;
   void AddOp::bwd(const IntervalVector& y, IntervalVector& x1, IntervalVector& x2)
   {
     assert(y.size() == x1.size() && y.size() == x2.size());
-    for(size_t i = 0 ; i < y.size() ; i++)
+    for(Index i = 0 ; i < y.size() ; i++)
       AddOp::bwd(y[i], x1[i], x2[i]);
   }
 
@@ -142,7 +142,7 @@ using namespace codac2;
   void AddOp::bwd(const IntervalMatrix& y, IntervalMatrix& x1, IntervalMatrix& x2)
   {
     assert(y.size() == x1.size() && y.size() == x2.size());
-    for(size_t i = 0 ; i < y.size() ; i++)
+    for(Index i = 0 ; i < y.size() ; i++)
       AddOp::bwd(*(y.data()+i), *(x1.data()+i), *(x2.data()+i));
   }
 
@@ -188,7 +188,7 @@ using namespace codac2;
   void SubOp::bwd(const IntervalVector& y, IntervalVector& x1)
   {
     assert(y.size() == x1.size());
-    for(size_t i = 0 ; i < y.size() ; i++)
+    for(Index i = 0 ; i < y.size() ; i++)
       bwd(y[i], x1[i]);
   }
 
@@ -210,7 +210,7 @@ using namespace codac2;
   void SubOp::bwd(const IntervalMatrix& y, IntervalMatrix& x1)
   {
     assert(y.size() == x1.size());
-    for(size_t i = 0 ; i < y.size() ; i++)
+    for(Index i = 0 ; i < y.size() ; i++)
       SubOp::bwd(*(y.data()+i), *(x1.data()+i));
   }
 
@@ -258,7 +258,7 @@ using namespace codac2;
   void SubOp::bwd(const IntervalVector& y, IntervalVector& x1, IntervalVector& x2)
   {
     assert(y.size() == x1.size() && y.size() == x2.size());
-    for(size_t i = 0 ; i < y.size() ; i++)
+    for(Index i = 0 ; i < y.size() ; i++)
       bwd(y[i], x1[i], x2[i]);
   }
 
@@ -282,7 +282,7 @@ using namespace codac2;
   void SubOp::bwd(const IntervalMatrix& y, IntervalMatrix& x1, IntervalMatrix& x2)
   {
     assert(y.size() == x1.size() && y.size() == x2.size());
-    for(size_t i = 0 ; i < y.size() ; i++)
+    for(Index i = 0 ; i < y.size() ; i++)
       SubOp::bwd(*(y.data()+i), *(x1.data()+i), *(x2.data()+i));
   }
 
@@ -300,7 +300,7 @@ using namespace codac2;
     assert(x1.da.rows() == x2.da.rows() && x1.da.cols() == x2.da.cols());
 
     IntervalMatrix d(1,x1.da.cols());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)*x2.a + x1.a*x2.da(0,i);
 
     return {
@@ -328,8 +328,8 @@ using namespace codac2;
     assert(x2.a.size() == x2.da.rows());
 
     IntervalMatrix d(x2.da.rows(),x2.da.cols());
-    for(size_t i = 0 ; i < d.rows() ; i++)
-      for(size_t j = 0 ; j < d.cols() ; j++)
+    for(Index i = 0 ; i < d.rows() ; i++)
+      for(Index j = 0 ; j < d.cols() ; j++)
         d(i,j) = x1.da(0,j)*x2.a[i]+x1.a*x2.da(i,j);
     
     return {
@@ -343,7 +343,7 @@ using namespace codac2;
   void MulOp::bwd(const IntervalVector& y, Interval& x1, IntervalVector& x2)
   {
     assert(y.size() == x2.size());
-    for(size_t i = 0 ; i < x2.size() ; i++)
+    for(Index i = 0 ; i < x2.size() ; i++)
       bwd_mul(y[i], x1, x2[i]);
   }
 
@@ -397,18 +397,18 @@ using namespace codac2;
     else*/
     {
       IntervalMatrix Q = gauss_jordan(x1.mid());
-      IntervalVector b_tilde = Q*y;
-      IntervalMatrix A_tilde = Q*x1; // should be a tree matrix
+      auto b_tilde = Q*y;
+      auto A_tilde = Q*x1; // should be a tree matrix
 
       for(int a = 0 ; a < 1 ; a++)
       {
-        for(size_t i = 0 ; i < x2.size() ; i++)
+        for(Index i = 0 ; i < x2.size() ; i++)
         {
-          for(size_t k = 0 ; k < b_tilde.size() ; k++)
+          for(Index k = 0 ; k < b_tilde.size() ; k++)
           {
             Interval u = b_tilde[k];
 
-            for(size_t j = 0 ; j < x2.size() ; j++)
+            for(Index j = 0 ; j < x2.size() ; j++)
               if(i != j)
                 u -= x2[j]*A_tilde(k,j);
 
@@ -435,7 +435,7 @@ using namespace codac2;
     assert(x1.da.size() == x2.da.size());
 
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = (x1.da(0,i)*x2.a-x1.a*x2.da(0,i))/sqr(x2.a);
 
     return {
@@ -474,7 +474,7 @@ using namespace codac2;
   void DivOp::bwd(const IntervalVector& y, IntervalVector& x1, Interval& x2)
   {
     assert(x1.size() == y.size());
-    for(size_t i = 0 ; i < x1.size() ; i++)
+    for(Index i = 0 ; i < x1.size() ; i++)
       bwd_div(y[i], x1[i], x2);
   }
 
@@ -489,7 +489,7 @@ using namespace codac2;
   ScalarOpValue PowOp::fwd(const ScalarOpValue& x1, const ScalarOpValue& x2)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x2.a*x1.da(0,i)*pow(x1.a,x2.a-1.);
 
     return {
@@ -518,7 +518,7 @@ using namespace codac2;
     assert(x1.da.rows() == 1);
 
     IntervalMatrix d(1,x1.da.cols());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = 2.*x1.a*x1.da(0,i);
 
     return {
@@ -545,7 +545,7 @@ using namespace codac2;
   ScalarOpValue SqrtOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)/(2.*sqrt(x1.a));
 
     return {
@@ -574,7 +574,7 @@ using namespace codac2;
   ScalarOpValue ExpOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)*exp(x1.a);
 
     return {
@@ -601,7 +601,7 @@ using namespace codac2;
   ScalarOpValue LogOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)/x1.a;
 
     return {
@@ -630,7 +630,7 @@ using namespace codac2;
   ScalarOpValue CosOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = -sin(x1.a)*x1.da(0,i);
 
     return {
@@ -657,7 +657,7 @@ using namespace codac2;
   ScalarOpValue SinOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = cos(x1.a)*x1.da(0,i);
 
     return {
@@ -684,7 +684,7 @@ using namespace codac2;
   ScalarOpValue TanOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)/sqr(cos(x1.a));
 
     return {
@@ -711,7 +711,7 @@ using namespace codac2;
   ScalarOpValue AcosOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = -x1.da(0,i)/sqrt(1.-sqr(x1.a));
 
     return {
@@ -740,7 +740,7 @@ using namespace codac2;
   ScalarOpValue AsinOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)/sqrt(1.-sqr(x1.a));
 
     return {
@@ -769,7 +769,7 @@ using namespace codac2;
   ScalarOpValue AtanOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)/(1.+sqr(x1.a));
 
     return {
@@ -799,7 +799,7 @@ using namespace codac2;
     assert(x1.da.rows() == x2.da.rows() && x1.da.cols() == x2.da.cols());
 
     IntervalMatrix d(1,x1.da.cols());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = (-x1.a*x2.da(0,i)/(sqr(x2.a)+sqr(x1.a)))+(x2.a*x1.da(0,i)/(sqr(x2.a)+sqr(x1.a)));
 
     return {
@@ -827,7 +827,7 @@ using namespace codac2;
   ScalarOpValue CoshOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = sinh(x1.a)*x1.da(0,i);
 
     return {
@@ -854,7 +854,7 @@ using namespace codac2;
   ScalarOpValue SinhOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = cosh(x1.a)*x1.da(0,i);
 
     return {
@@ -881,7 +881,7 @@ using namespace codac2;
   ScalarOpValue TanhOp::fwd(const ScalarOpValue& x1)
   {    
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = x1.da(0,i)/sqr(cosh(x1.a));
 
     return {
@@ -908,7 +908,7 @@ using namespace codac2;
   ScalarOpValue AbsOp::fwd(const ScalarOpValue& x1)
   {
     IntervalMatrix d(1,x1.da.size());
-    for(size_t i = 0 ; i < d.size() ; i++)
+    for(Index i = 0 ; i < d.size() ; i++)
       d(0,i) = (x1.a/abs(x1.a))*x1.da(0,i);
 
     return {
@@ -927,13 +927,13 @@ using namespace codac2;
 
 // ComponentOp
 
-  Interval ComponentOp::fwd(const IntervalVector& x1, size_t i)
+  Interval ComponentOp::fwd(const IntervalVector& x1, Index i)
   {
     assert(i >= 0 && i < x1.size());
     return x1[i];
   }
 
-  ScalarOpValue ComponentOp::fwd(const VectorOpValue& x1, size_t i)
+  ScalarOpValue ComponentOp::fwd(const VectorOpValue& x1, Index i)
   {
     assert(i >= 0 && i < x1.a.rows());
     return {
@@ -944,7 +944,7 @@ using namespace codac2;
     };
   }
 
-  void ComponentOp::bwd(const Interval& y, IntervalVector& x1, size_t i)
+  void ComponentOp::bwd(const Interval& y, IntervalVector& x1, Index i)
   {
     assert(i >= 0 && i < x1.size());
     x1[i] &= y;
@@ -953,13 +953,13 @@ using namespace codac2;
 
 // SubvectorOp
 
-  IntervalVector SubvectorOp::fwd(const IntervalVector& x1, size_t i, size_t j)
+  IntervalVector SubvectorOp::fwd(const IntervalVector& x1, Index i, Index j)
   {
     assert(i >= 0 && i < x1.size() && j >= i && j < x1.size());
     return x1.subvector(i,j);
   }
 
-  VectorOpValue SubvectorOp::fwd(const VectorOpValue& x1, size_t i, size_t j)
+  VectorOpValue SubvectorOp::fwd(const VectorOpValue& x1, Index i, Index j)
   {
     assert(i >= 0 && i < x1.a.rows() && j >= i && j < x1.a.rows());
     return {
@@ -970,18 +970,18 @@ using namespace codac2;
     };
   }
 
-  void SubvectorOp::bwd(const IntervalVector& y, IntervalVector& x1, size_t i, size_t j)
+  void SubvectorOp::bwd(const IntervalVector& y, IntervalVector& x1, Index i, Index j)
   {
     assert(i >= 0 && i < x1.size() && j >= i && j < x1.size());
     assert(j-i < y.size());
-    for(size_t k = 0 ; k < j-i+1 ; k++)
+    for(Index k = 0 ; k < j-i+1 ; k++)
       x1[i+k] &= y[k];
   }
 
 
 // MatrixOp
 
-  void MatrixOp::fwd_i(IntervalMatrix& m, const IntervalVector& x, size_t i)
+  void MatrixOp::fwd_i(IntervalMatrix& m, const IntervalVector& x, Index i)
   {
     assert(i >= 0 && i < m.cols());
     m.resize(x.size(),m.cols());

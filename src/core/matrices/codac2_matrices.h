@@ -99,7 +99,7 @@ namespace codac2
   {
     Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime> a(x);
 
-    for(size_t i = 0 ; i < x.size() ; i++)
+    for(int i = 0 ; i < x.size() ; i++)
     {
       if constexpr(std::is_same_v<Scalar,double>)
         *(a.data()+i) = fabs(*(x.data()+i));

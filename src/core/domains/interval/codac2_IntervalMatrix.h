@@ -27,10 +27,10 @@ namespace codac2
 
     #if 0 // IBEX style
       os << "(";
-      for(size_t i = 0 ; i < x.rows() ; i++)
+      for(Index i = 0 ; i < x.rows() ; i++)
       {
         os << (i!=0 ? " " : "") << "(";
-        for(size_t j = 0 ; j < x.cols() ; j++)
+        for(Index j = 0 ; j < x.cols() ; j++)
           os << x(i,j) << (j<x.cols()-1 ? " ; " : "");
         os << ")";
         if(i < x.rows()-1) os << std::endl;

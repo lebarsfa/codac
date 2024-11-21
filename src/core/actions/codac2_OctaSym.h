@@ -50,7 +50,7 @@ namespace codac2
       template<typename T>
       Mat<T,-1,1> operator()(const Mat<T,-1,1>& x) const
       {
-        assert_release((size_t)x.size() == size());
+        assert_release(x.size() == (Index)size());
         Mat<T,-1,1> x_(size());
         for(size_t i = 0 ; i < size() ; i++)
           x_[i] = _sign((*this)[i])*x[std::abs((*this)[i])-1];

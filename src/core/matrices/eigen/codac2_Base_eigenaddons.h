@@ -21,29 +21,14 @@ Matrix(const Matrix<Scalar_,R_,C_>& x)
   *this = x.template cast<Scalar>();
 }
 
-/*inline size_t size() const
-{
-  return Base::size();
-}
-
-inline size_t rows() const
-{
-  return Base::rows();
-}
-
-inline size_t cols() const
-{
-  return Base::cols();
-}*/
-
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-inline Scalar& operator()(size_t i, size_t j)
+inline Scalar& operator()(Index i, Index j)
 {
     return const_cast<Scalar&>(static_cast<const Matrix<Scalar,R,C>&>(*this).operator()(i,j));
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-inline const Scalar& operator()(size_t i, size_t j) const
+inline const Scalar& operator()(Index i, Index j) const
 {
   assert_release(i >= 0 && i < this->rows() && j >= 0 && j < this->cols());
 
@@ -60,7 +45,7 @@ inline const Scalar& operator()(size_t i, size_t j) const
 
 inline auto& init(const Scalar& x)
 {
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     *(this->data()+i) = x;
   return *this;
 }
@@ -78,7 +63,7 @@ inline bool is_squared() const
 
 #define minmax_item(op) \
   Scalar m = *(this->data()); /* first element */ \
-  for(size_t i = 1 ; i < this->size() ; i++) \
+  for(Index i = 1 ; i < this->size() ; i++) \
   { \
     if constexpr(std::is_same_v<Scalar,codac2::Interval>) \
       m = codac2::op(m,*(this->data()+i)); \
@@ -112,7 +97,7 @@ inline bool operator==(const Matrix<U_,R_,C_>& x) const
   if(this->rows() != x.rows() || this->cols() != x.cols())
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(*(this->data()+i) != *(x.data()+i))
       return false;
 

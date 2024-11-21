@@ -17,8 +17,8 @@
 
 inline bool is_empty() const
 {
-  for(size_t i = 0 ; i < rows() ; i++)
-    for(size_t j = 0 ; j < cols() ; j++)
+  for(Index i = 0 ; i < rows() ; i++)
+    for(Index j = 0 ; j < cols() ; j++)
       if((*this)(i,j).is_empty())
         return true;
   return false;

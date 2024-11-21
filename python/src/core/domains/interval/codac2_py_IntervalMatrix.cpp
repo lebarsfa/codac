@@ -40,7 +40,7 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
   exported_intervalmatrix_class
 
     .def(py::init(
-        [](size_t_type r, size_t_type c)
+        [](Index_type r, Index_type c)
         {
           matlab::test_integer(r,c);
           return std::make_unique<IntervalMatrix>(r,c);
@@ -49,7 +49,7 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
       "r"_a, "c"_a)
 
     .def(py::init(
-        [](size_t_type r, size_t_type c, const Interval& x)
+        [](Index_type r, Index_type c, const Interval& x)
         {
           matlab::test_integer(r,c);
           return std::make_unique<IntervalMatrix>(r,c,x);
@@ -107,12 +107,12 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
       DOC_TO_BE_DEFINED,
       "v"_a)
     
-    .def_static("empty", [](size_t_type r, size_t_type c)
+    .def_static("empty", [](Index_type r, Index_type c)
         {
           matlab::test_integer(r,c);
           return IntervalMatrix::empty(r,c);
         },
-      INTERVALMATRIXBASE_EIGENADDONS_STATIC_AUTO_EMPTY_SIZET_SIZET,
+      INTERVALMATRIXBASE_EIGENADDONS_STATIC_AUTO_EMPTY_INDEX_INDEX,
       "r"_a, "c"_a)
 
     .def("__repr__", [](const IntervalMatrix& x)

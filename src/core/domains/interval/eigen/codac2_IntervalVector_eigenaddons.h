@@ -27,7 +27,7 @@ Matrix(const std::initializer_list<double>& l)
   )
 {
   assert_release(!std::empty(l));
-  size_t i = 0;
+  Index i = 0;
   for(const auto& li : l)
     (*this)[i++] = codac2::Interval(li);
 }
@@ -41,7 +41,7 @@ Matrix(const std::initializer_list<std::initializer_list<double>>& l)
   )
 {
   assert_release(!std::empty(l));
-  size_t i = 0;
+  Index i = 0;
   for(const auto& li : l)
     (*this)[i++] = codac2::Interval(li);
 }
@@ -55,7 +55,7 @@ Matrix(const std::initializer_list<codac2::Interval>& l)
   )
 {
   assert_release(!std::empty(l));
-  size_t i = 0;
+  Index i = 0;
   for(const auto& li : l)
     (*this)[i++] = li;
 }
@@ -93,7 +93,7 @@ Matrix(int n, const double bounds[][2])
 //  )
 //{
 //  assert_release(!std::empty(l));
-//  size_t i = 0;
+//  Index i = 0;
 //  for(const auto& li : l)
 //  {
 //    assert_release(!std::empty(li));
@@ -103,7 +103,7 @@ Matrix(int n, const double bounds[][2])
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsIntervalDomain<U> && IsVectorOrRow<R,C>
-inline static auto empty(size_t n)
+inline static auto empty(Index n)
 {
   assert_release(n >= 0);
   if constexpr(R == 1)
@@ -128,7 +128,7 @@ inline std::list<Matrix<codac2::Interval,R,C>> diff(const Matrix<codac2::Interva
   // Author: Gilles Chabert
   // It has been revised with modern C++ and templated types
 
-  const size_t n = this->size();
+  const Index n = this->size();
   assert_release(y.size() == n);
 
   if(y == *this)
@@ -148,7 +148,7 @@ inline std::list<Matrix<codac2::Interval,R,C>> diff(const Matrix<codac2::Interva
     // Check if in one dimension y is flat and x not,
     // in which case the diff returns also x directly
     if(compactness)
-      for(size_t i = 0 ; i < n ; i++)
+      for(Index i = 0 ; i < n ; i++)
         if(z[i].is_degenerated() && !x[i].is_degenerated())
         {
           if(x.is_empty()) return { };
@@ -158,7 +158,7 @@ inline std::list<Matrix<codac2::Interval,R,C>> diff(const Matrix<codac2::Interva
 
   std::list<Matrix<codac2::Interval,R,C>> l;
 
-  for(size_t var = 0 ; var < n ; var++)
+  for(Index var = 0 ; var < n ; var++)
   {
     codac2::Interval c1, c2;
     
@@ -167,10 +167,10 @@ inline std::list<Matrix<codac2::Interval,R,C>> diff(const Matrix<codac2::Interva
       assert(!ci.is_empty());
 
       Matrix<codac2::Interval,R,C> v(n);
-      for(size_t i = 0 ; i < var ; i++)
+      for(Index i = 0 ; i < var ; i++)
         v[i] = x[i];
       v[var] = ci;
-      for(size_t i = var+1 ; i < n ; i++)
+      for(Index i = var+1 ; i < n ; i++)
         v[i] = x[i];
       if(!v.is_empty())
         l.push_back(v);

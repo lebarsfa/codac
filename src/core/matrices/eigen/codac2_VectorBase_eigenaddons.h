@@ -34,14 +34,14 @@ inline auto diag_matrix() const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline Scalar& operator()(size_t i)
+inline Scalar& operator()(Index i)
 {
   return const_cast<Scalar&>(const_cast<const Matrix<Scalar,R,C>*>(this)->operator()(i));
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline const Scalar& operator()(size_t i) const
+inline const Scalar& operator()(Index i) const
 {
   assert_release(i >= 0 && i < this->size());
   return this->PlainObjectBase<Matrix<Scalar,R,C>>::operator()(i);
@@ -49,14 +49,14 @@ inline const Scalar& operator()(size_t i) const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline Scalar& operator[](size_t i)
+inline Scalar& operator[](Index i)
 {
   return const_cast<Scalar&>(const_cast<const Matrix<Scalar,R,C>*>(this)->operator[](i));
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline const Scalar& operator[](size_t i) const
+inline const Scalar& operator[](Index i) const
 {
   assert_release(i >= 0 && i < this->size());
   return this->PlainObjectBase<Matrix<Scalar,R,C>>::operator[](i);
@@ -64,7 +64,7 @@ inline const Scalar& operator[](size_t i) const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline static Matrix<Scalar,R,C> zeros(size_t n)
+inline static Matrix<Scalar,R,C> zeros(Index n)
 {
   assert_release(n >= 0);
   if constexpr(R == 1)
@@ -75,7 +75,7 @@ inline static Matrix<Scalar,R,C> zeros(size_t n)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline static Matrix<Scalar,R,C> ones(size_t n)
+inline static Matrix<Scalar,R,C> ones(Index n)
 {
   assert_release(n >= 0);
   if constexpr(R == 1)
@@ -96,7 +96,7 @@ inline static Matrix<Scalar,R,C> random(size_t n)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline auto subvector(size_t start_id, size_t end_id) const
+inline auto subvector(Index start_id, Index end_id) const
 {
   assert_release(end_id >= 0 && start_id >= 0);
   assert_release(end_id < this->size() && start_id <= end_id);
@@ -105,7 +105,7 @@ inline auto subvector(size_t start_id, size_t end_id) const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline void put(size_t start_id, const Matrix<Scalar,R,C>& x)
+inline void put(Index start_id, const Matrix<Scalar,R,C>& x)
 {
   assert_release(start_id >= 0 && start_id < this->size());
   assert_release(start_id+x.size() <= this->size());
@@ -115,11 +115,11 @@ inline void put(size_t start_id, const Matrix<Scalar,R,C>& x)
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline void resize_save_values(size_t n)
+inline void resize_save_values(Index n)
 {
   // With resize() of Eigen, the data is reallocated and all previous values are lost.
   auto copy = *this;
   this->resize(n);
-  for(size_t i = 0 ; i < std::min((size_t)copy.size(),n) ; i++)
+  for(Index i = 0 ; i < std::min((Index)copy.size(),n) ; i++)
     (*this)[i] = copy[i];
 }

@@ -19,6 +19,7 @@
 #include <list>
 #include <array>
 #include <ibex_Interval.h>
+#include "codac2_Index.h"
 #include "codac2_Domain.h"
 
 namespace codac2
@@ -225,7 +226,7 @@ namespace codac2
        * 
        * \return 1
        */
-      size_t size() const;
+      Index size() const;
     
       /**
        * \brief Sets this interval to the empty set

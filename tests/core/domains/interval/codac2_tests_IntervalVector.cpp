@@ -33,7 +33,7 @@ void CHECK_diff(const IntervalVector& x, const IntervalVector& y, bool compactne
   for(const auto& ci : c)
   {
     bool found = false;
-    for(size_t i = 0 ; i < result.rows() ; i++)
+    for(Index i = 0 ; i < result.rows() ; i++)
       if(ci == IntervalMatrix(result.row(i)).transpose().col(0))
       {
         found = true;

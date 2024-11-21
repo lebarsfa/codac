@@ -22,7 +22,7 @@ Matrix(std::initializer_list<double> l)
   )
 {
   assert_release(!std::empty(l));
-  size_t i = 0;
+  Index i = 0;
   for(const auto& li : l)
     (*this)[i++] = li;
 }
@@ -53,9 +53,9 @@ explicit Matrix(int n, double values[])
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
-inline size_t min_coeff_index() const
+inline Index min_coeff_index() const
 {
-  size_t r,c;
+  Index r,c;
   this->minCoeff(&r,&c);
   assert(c == 0);
   return r;
@@ -63,9 +63,9 @@ inline size_t min_coeff_index() const
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
-inline size_t max_coeff_index() const
+inline Index max_coeff_index() const
 {
-  size_t r,c;
+  Index r,c;
   this->maxCoeff(&r,&c);
   assert(c == 0);
   return r;

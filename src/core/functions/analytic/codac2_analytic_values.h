@@ -61,7 +61,7 @@ namespace codac2
   };
 
   template<>
-  struct Wrapper<size_t> {
+  struct Wrapper<Index> {
     using Domain = ScalarOpValue;
   };
 

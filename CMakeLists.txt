@@ -88,7 +88,8 @@
 # Looking for Eigen3
 ################################################################################
 
-  find_package(Eigen3 3.4 REQUIRED NO_MODULE)
+  add_subdirectory(3rd/eigen)
+  #find_package(Eigen3 3.4 REQUIRED NO_MODULE)
   message(STATUS "Found Eigen3 version ${Eigen3_VERSION}")
   add_definitions(${EIGEN3_DEFINITIONS})
 

@@ -8,7 +8,6 @@
  */
 
 #include "codac2_SepEllipse.h"
-#include "codac2_arithmetic.h"
 
 using namespace std;
 using namespace codac2;
@@ -19,15 +18,15 @@ SepEllipse::SepEllipse(const Vector& q)
   assert_release(q.size() == 6);
 }
 
-bool test_ellipse(const Vector& x, const Vector& q)
+bool test_ellipse(const IntervalVector& x, const IntervalVector& q)
 {
   // todo: Interval evaluation:
-  return q[0]
-       + q[1]*x[0]
-       + q[2]*x[1]
-       + q[3]*pow(x[0],2)
-       + q[4]*x[0]*x[1]
-       + q[5]*pow(x[1],2) < 0.;
+  return (q[0]
+        + q[1]*x[0]
+        + q[2]*x[1]
+        + q[3]*pow(x[0],2)
+        + q[4]*x[0]*x[1]
+        + q[5]*pow(x[1],2)).ub() < 0.;
 }
 
 BoxPair SepEllipse::separate(const IntervalVector& x) const

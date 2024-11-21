@@ -13,7 +13,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
-#include <codac2_Vector.h>
+#include <codac2_Matrix.h>
 #include "codac2_py_matlab.h"
 
 using namespace std;
@@ -33,37 +33,37 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.size();
         },
-      SIZET_MATRIXBASE_ST_SIZE_CONST)
+      BASE_EIGENADDONS_SIZET_SIZE_CONST)
 
     .def("size", [](const S& x)
         {
           return x.size();
         },
-      SIZET_MATRIXBASE_ST_SIZE_CONST)
+      BASE_EIGENADDONS_SIZET_SIZE_CONST)
 
-    .def("nb_rows", [](const S& x)
+    .def("rows", [](const S& x)
         {
-          return x.nb_rows();
+          return x.rows();
         },
-      SIZET_MATRIXBASE_ST_NB_ROWS_CONST)
+      BASE_EIGENADDONS_SIZET_ROWS_CONST)
 
-    .def("nb_cols", [](const S& x)
+    .def("cols", [](const S& x)
         {
-          return x.nb_cols();
+          return x.cols();
         },
-      SIZET_MATRIXBASE_ST_NB_COLS_CONST)
+      BASE_EIGENADDONS_SIZET_COLS_CONST)
 
     .def("min_coeff", [](const S& x)
         {
           return x.min_coeff();
         },
-      T_MATRIXBASE_ST_MIN_COEFF_CONST)
+      BASE_EIGENADDONS_SCALAR_MIN_COEFF_CONST)
 
     .def("max_coeff", [](const S& x)
         {
           return x.max_coeff();
         },
-      T_MATRIXBASE_ST_MAX_COEFF_CONST)
+      BASE_EIGENADDONS_SCALAR_MAX_COEFF_CONST)
 
     .def("norm", [](const S& x)
         {
@@ -87,7 +87,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.is_squared();
         },
-      BOOL_MATRIXBASE_ST_IS_SQUARED_CONST)
+      BASE_EIGENADDONS_BOOL_IS_SQUARED_CONST)
 
     .def("__getitem__", [](const S& x, const py::tuple& ij) -> const T&
         {
@@ -99,7 +99,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
           return x(matlab::input_index(i), matlab::input_index(j));
         }, py::return_value_policy::reference_internal,
-      CONST_T_REF_MATRIXBASE_ST_OPERATORCALL_SIZET_SIZET_CONST)
+      BASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCALL_SIZET_SIZET_CONST)
 
     .def("__setitem__", [](S& x, const py::tuple& ij, const T& a)
         {
@@ -111,7 +111,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
           x(matlab::input_index(i), matlab::input_index(j)) = a;
         },
-      T_REF_MATRIXBASE_ST_OPERATORCALL_SIZET_SIZET)
+      BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_SIZET_SIZET)
 
     ;
   }
@@ -122,14 +122,14 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           x.init(a);
         },
-      VOID_MATRIXBASE_ST_INIT_CONST_T_REF,
+      BASE_EIGENADDONS_AUTO_REF_INIT_CONST_SCALAR_REF,
       "x"_a)
 
     .def("init", [](S& x, const S& a)
         {
           x.init(a);
         },
-      VOID_MATRIXBASE_ST_INIT_CONST_S_REF,
+      BASE_EIGENADDONS_AUTO_REF_INIT_CONST_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
       "x"_a)
 
     .def("__repr__", [](const S& x)
@@ -138,7 +138,19 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
           s << x;
           return string(s.str()); 
         },
-      OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_MATRIXBASE_ST_REF)
+      DOC_TO_BE_DEFINED)
+
+    .def("transpose", [](const S& x) -> Eigen::Matrix<T,-1,-1>
+        {
+          return x.transpose().eval();
+        },
+      DOC_TO_BE_DEFINED)
+
+    .def("diag_matrix", [](const S& x)
+        {
+          return x.diagonal().asDiagonal();
+        },
+      DOC_TO_BE_DEFINED)
   ;
 
   if constexpr(!VECTOR_INHERITANCE)
@@ -148,44 +160,50 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
     pyclass
 
-      .def("block", [](S& x, size_t_type i, size_t_type j, size_t_type p, size_t_type q) -> MatrixBaseBlock<EigenMatrix<T>&,T>
+      .def("block", [](S& x, size_t_type i, size_t_type j, size_t_type p, size_t_type q) -> Eigen::Block<S>
           {
             matlab::test_integer(i,j);
             matlab::test_integer(p,q);
             return x.block(matlab::input_index(i),matlab::input_index(j),matlab::input_index(p),matlab::input_index(q));
           },
         py::keep_alive<0,1>(),
-        MATRIXBASEBLOCK_EIGENMATRIX_T_REFT_MATRIXBASE_ST_BLOCK_SIZET_SIZET_SIZET_SIZET)
+        DOC_TO_BE_DEFINED)
 
-      .def("col", [](S& x, size_t_type i) -> MatrixBaseBlock<EigenMatrix<T>&,T>
+      .def("col", [](S& x, size_t_type i) -> Eigen::Matrix<T,-1,1>
           {
             matlab::test_integer(i);
-            return x.col(matlab::input_index(i));
+            return x.col(matlab::input_index(i)).eval();
           },
-        py::keep_alive<0,1>(),
-        MATRIXBASEBLOCK_EIGENMATRIX_T_REFT_MATRIXBASE_ST_COL_SIZET)
+        DOC_TO_BE_DEFINED)
 
-      .def("row", [](S& x, size_t_type i) -> MatrixBaseBlock<EigenMatrix<T>&,T>
+      .def("row", [](S& x, size_t_type i) -> Eigen::Matrix<T,1,-1>
           {
             matlab::test_integer(i);
-            return x.row(matlab::input_index(i));
+            return x.row(matlab::input_index(i)).eval();
           },
-        py::keep_alive<0,1>(),
-        MATRIXBASEBLOCK_EIGENMATRIX_T_REFT_MATRIXBASE_ST_ROW_SIZET)
+        DOC_TO_BE_DEFINED)
 
       .def("__call__", [](S& x, size_t_type i, size_t_type j) -> T&
           {
             matlab::test_integer(i,j);
             return x(matlab::input_index(i),matlab::input_index(j));
           }, py::return_value_policy::reference_internal,
-        T_REF_MATRIXBASE_ST_OPERATORCALL_SIZET_SIZET)
+        BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_SIZET_SIZET)
 
       .def("resize", [](S& x, size_t_type nb_rows, size_t_type nb_cols)
           {
             matlab::test_integer(nb_rows, nb_cols);
             x.resize(nb_rows, nb_cols);
           },
-        VOID_MATRIXBASE_ST_RESIZE_SIZET_SIZET,
+        DOC_TO_BE_DEFINED,
+        "nb_rows"_a, "nb_cols"_a)
+
+      .def("resize_save_values", [](S& x, size_t_type nb_rows, size_t_type nb_cols)
+          {
+            matlab::test_integer(nb_rows, nb_cols);
+            x.resize_save_values(nb_rows, nb_cols);
+          },
+        MATRIXBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_SIZET_SIZET,
         "nb_rows"_a, "nb_cols"_a)
 
       .def_static("zeros", [](size_t_type r, size_t_type c)
@@ -193,7 +211,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(r,c);
             return S::zeros(r,c);
           },
-        STATIC_S_MATRIXBASE_ST_ZEROS_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_SIZET_SIZET,
         "r"_a, "c"_a)
       
       .def_static("ones", [](size_t_type r, size_t_type c)
@@ -201,7 +219,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(r,c);
             return S::ones(r,c);
           },
-        STATIC_S_MATRIXBASE_ST_ONES_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_SIZET_SIZET,
         "r"_a, "c"_a)
       
       .def_static("eye", [](size_t_type r, size_t_type c)
@@ -209,7 +227,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(r,c);
             return S::eye(r,c);
           },
-        STATIC_S_MATRIXBASE_ST_EYE_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_EYE_SIZET_SIZET,
         "r"_a, "c"_a)
       
       .def_static("random", [](size_t_type r, size_t_type c)
@@ -225,5 +243,5 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
   
   //S abs(const MatrixBase<S,T>& x)
   m.def("abs", [](const S& x) { return abs(x); },
-    S_ABS_CONST_MATRIXBASE_ST_REF);
+    AUTO_ABS_CONST_EIGEN_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF);
 }

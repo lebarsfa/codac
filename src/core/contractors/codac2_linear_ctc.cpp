@@ -15,12 +15,12 @@ using namespace codac2;
 
 void CtcGaussElim::contract(IntervalMatrix& A, IntervalVector& x, IntervalVector& b) const
 {
-  assert_release(A.is_squared() && A.nb_rows() == x.size() && A.nb_rows() == b.size());
+  assert_release(A.is_squared() && A.rows() == x.size() && A.rows() == b.size());
 
   IntervalMatrix A_ = A;
   IntervalVector b_ = b;
 
-  size_t n = A_.nb_rows();
+  size_t n = A_.rows();
   for(size_t i = 0 ; i < n ; i++)
     if(A_(i,i).contains(0.))
       return;
@@ -45,10 +45,10 @@ void CtcGaussElim::contract(IntervalMatrix& A, IntervalVector& x, IntervalVector
 
 void CtcGaussSeidel::contract(IntervalMatrix& A, IntervalVector& x, IntervalVector& b) const
 {
-  assert_release(A.is_squared() && A.nb_rows() == x.size() && A.nb_rows() == b.size());
+  assert_release(A.is_squared() && A.rows() == x.size() && A.rows() == b.size());
 
   auto ext_diag = A;
-  for(size_t i = 0 ; i < A.nb_rows() ; i++)
+  for(size_t i = 0 ; i < A.rows() ; i++)
     ext_diag(i,i) = 0.;
-  x &= IntervalVector(A._e.diagonal().asDiagonal().inverse()*(b._e-ext_diag._e*x._e));
+  x &= IntervalVector(A.diagonal().asDiagonal().inverse()*(b-ext_diag*x));
 }

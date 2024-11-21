@@ -2,7 +2,7 @@
 #  Codac - cmake configuration file
 # ==================================================================
 
-  cmake_minimum_required(VERSION 3.0.2)
+  cmake_minimum_required(VERSION 3.14...3.25)
 
   list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/scripts/CMakeModules/)
   include(version_from_git)
@@ -114,7 +114,8 @@
 ################################################################################
   
   if(FAST_RELEASE)
-    add_compile_definitions(FAST_RELEASE=1)
+    add_compile_definitions(FAST_RELEASE)
+    message(STATUS "You are running Codac in fast release mode. (option -DCMAKE_BUILD_TYPE=Release is required)")
   endif()
   
   add_subdirectory(src) # C++ sources

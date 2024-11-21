@@ -4,7 +4,6 @@
 
   list(APPEND CODAC_CORE_SRC
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rd/codac2_eigen.h
     ${CMAKE_CURRENT_SOURCE_DIR}/3rd/codac2_ibex.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/3rd/codac2_ibex.h
 
@@ -15,12 +14,18 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcAction.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcAction.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCartProd.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCtcBoundary.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCtcBoundary.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcDist.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcDist.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEllipse.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEllipse.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEmpty.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEmpty.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcFixpoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcFixpoint.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcIdentity.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcIdentity.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcInnerOuter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcInter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcInverse.h
@@ -31,6 +36,10 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcUnion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcPolar.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcPolar.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcPolygon.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcPolygon.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcProj.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcProj.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcSegment.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcSegment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcWrapper.h
@@ -49,11 +58,12 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval_operations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval_operations.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalMatrix.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalMatrix.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalMatrixBase.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalVector.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalRow.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalVector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen/codac2_IntervalMatrix_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen/codac2_IntervalMatrixBase_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen/codac2_IntervalVector_eigenaddons.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_Paving.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_Paving.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_PavingNode.h
@@ -84,23 +94,25 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_Polygon.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_Polygon.h
     
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_add.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_div.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_mul.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_arithmetic_sub.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_matrices.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_MatrixBase.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_MatrixBaseBlock.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Vector.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Row.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Vector.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_VectorBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_Base_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_eigenaddons_test.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_Matrix_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_MatrixBase_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_Vector_eigenaddons.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_VectorBase_eigenaddons.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/paver/codac2_pave.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/paver/codac2_pave.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/proj/codac2_ProjBase.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/proj/codac2_ProjBase.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_Sep.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepAction.cpp
@@ -154,6 +166,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving
     ${CMAKE_CURRENT_SOURCE_DIR}/functions
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic
@@ -163,7 +176,9 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/graphics/ipe
     ${CMAKE_CURRENT_SOURCE_DIR}/graphics/vibes
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen
     ${CMAKE_CURRENT_SOURCE_DIR}/paver
+    ${CMAKE_CURRENT_SOURCE_DIR}/proj
     ${CMAKE_CURRENT_SOURCE_DIR}/separators
     ${CMAKE_CURRENT_SOURCE_DIR}/tools
   )
@@ -199,7 +214,9 @@
   file(APPEND ${CODAC_CORE_MAIN_HEADER} "#pragma once\n\n")
   foreach(header_path ${CODAC_CORE_HDR})
     get_filename_component(header_name ${header_path} NAME)
-    file(APPEND ${CODAC_CORE_MAIN_HEADER} "#include <${header_name}>\n")
+    if(NOT header_name MATCHES "^.*eigenaddons.*$")
+      file(APPEND ${CODAC_CORE_MAIN_HEADER} "#include <${header_name}>\n")
+    endif()
   endforeach()
   file(COPY ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
 

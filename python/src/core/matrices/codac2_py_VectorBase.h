@@ -36,21 +36,21 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
           matlab::test_integer(index);
           return x[matlab::input_index(index)];
         }, py::return_value_policy::reference_internal,
-      CONST_T_REF_VECTORBASE_SMT_OPERATORCOMPO_SIZET_CONST)
+      VECTORBASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCOMPO_SIZET_CONST)
 
     .def("__setitem__", [](S& x, size_t_type index, const T& a)
         {
           matlab::test_integer(index);
           x[matlab::input_index(index)] = a;
         },
-      T_REF_VECTORBASE_SMT_OPERATORCOMPO_SIZET)
+      VECTORBASE_EIGENADDONS_SCALAR_REF_OPERATORCOMPO_SIZET)
 
-    .def("subvector", [](const S& x, size_t_type start_id, size_t_type end_id)
+    .def("subvector", [](const S& x, size_t_type start_id, size_t_type end_id) -> S
         {
           matlab::test_integer(start_id, end_id);
           return x.subvector(matlab::input_index(start_id), matlab::input_index(end_id));
         },
-      S_VECTORBASE_SMT_SUBVECTOR_SIZET_SIZET_CONST,
+      VECTORBASE_EIGENADDONS_AUTO_SUBVECTOR_SIZET_SIZET_CONST,
       "start_id"_a, "end_id"_a)
 
     .def("resize", [](S& x, size_t_type n)
@@ -58,7 +58,15 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
           matlab::test_integer(n);
           x.resize(n);
         },
-      VOID_VECTORBASE_SMT_RESIZE_SIZET,
+      DOC_TO_BE_DEFINED,
+      "n"_a)
+
+    .def("resize_save_values", [](S& x, size_t_type n)
+        {
+          matlab::test_integer(n);
+          x.resize_save_values(n);
+        },
+      VECTORBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_SIZET,
       "n"_a)
 
     .def("put", [](S& x, size_t_type start_id, const S& x1)
@@ -66,21 +74,15 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
           matlab::test_integer(start_id);
           x.put(matlab::input_index(start_id), x1);
         },
-      VOID_VECTORBASE_SMT_PUT_SIZET_CONST_S_REF,
+      VECTORBASE_EIGENADDONS_VOID_PUT_SIZET_CONST_MATRIX_SCALARRC_REF,
       "start_id"_a, "x"_a)
-
-    .def("transpose", &S::transpose,
-      M_VECTORBASE_SMT_TRANSPOSE_CONST)
-
-    .def("diag_matrix", &S::diag_matrix,
-      M_VECTORBASE_SMT_DIAG_MATRIX_CONST)
     
     .def_static("zeros", [](size_t_type n)
         {
           matlab::test_integer(n);
           return S::zeros(n);
         },
-      STATIC_S_VECTORBASE_SMT_ZEROS_SIZET,
+      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_SIZET,
       "n"_a)
     
     .def_static("ones", [](size_t_type n)
@@ -88,7 +90,7 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
           matlab::test_integer(n);
           return S::ones(n);
         },
-      STATIC_S_VECTORBASE_SMT_ONES_SIZET,
+      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_SIZET,
       "n"_a)
     
     .def_static("random", [](size_t_type n)
@@ -105,12 +107,11 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
           s << x;
           return string(s.str()); 
         },
-      OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_VECTORBASE_SMT_REF)
+      DOC_TO_BE_DEFINED)
 
     .def("__iter__", [](const S &x)
         {
-          auto x_ = x._e.reshaped();
-          return py::make_iterator(x_.begin(), x_.end());
+          return py::make_iterator(x.begin(), x.end());
         },
       py::keep_alive<0, 1>() /*  keep object alive while iterator exists */)
   ;

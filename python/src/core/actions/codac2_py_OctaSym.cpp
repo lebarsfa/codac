@@ -34,7 +34,7 @@ void export_OctaSym(py::module& m)
         {
           vector<int> v(l.size());
 
-          size_t i = 0;
+          Index i = 0;
           for(const auto& li : l)
           {
             matlab::test_integer(li);

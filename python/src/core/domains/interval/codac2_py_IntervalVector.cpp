@@ -42,7 +42,7 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
   exported_intervalvector_class
 
     .def(py::init(
-        [](size_t_type n)
+        [](Index_type n)
         {
           matlab::test_integer(n);
           return std::make_unique<IntervalVector>(n);
@@ -51,7 +51,7 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
       "n"_a)
 
     .def(py::init(
-        [](size_t_type n, const Interval& x)
+        [](Index_type n, const Interval& x)
         {
           matlab::test_integer(n);
           return std::make_unique<IntervalVector>((int)n,x);
@@ -88,12 +88,12 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
       INTERVALVECTOR_EIGENADDONS_LIST_MATRIX_INTERVALRC_DIFF_CONST_MATRIX_INTERVALRC_REF_BOOL_CONST,
       "y"_a, "compactness"_a = true)
     
-    .def_static("empty", [](size_t_type n)
+    .def_static("empty", [](Index_type n)
         {
           matlab::test_integer(n);
           return IntervalVector::empty(n);
         },
-      INTERVALVECTOR_EIGENADDONS_STATIC_AUTO_EMPTY_SIZET,
+      INTERVALVECTOR_EIGENADDONS_STATIC_AUTO_EMPTY_INDEX,
       "n"_a)
 
     .def("__repr__", [](const IntervalVector& x)

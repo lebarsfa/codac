@@ -36,7 +36,7 @@ py::class_<Matrix> export_Matrix(py::module& m)
   exported_matrix_class
 
     .def(py::init(
-        [](size_t_type r, size_t_type c)
+        [](Index_type r, Index_type c)
         {
           matlab::test_integer(r,c);
           return std::make_unique<Matrix>(r,c);
@@ -45,7 +45,7 @@ py::class_<Matrix> export_Matrix(py::module& m)
       "r"_a, "c"_a)
 
     .def(py::init(
-        [](size_t_type r, size_t_type c, double x)
+        [](Index_type r, Index_type c, double x)
         {
           matlab::test_integer(r,c);
           return std::make_unique<Matrix>((int)r,(int)c,x);

@@ -217,16 +217,16 @@ namespace codac2
 
   struct ComponentOp
   {
-    static Interval fwd(const IntervalVector& x1, size_t i);
-    static ScalarOpValue fwd(const VectorOpValue& x1, size_t i);
-    static void bwd(const Interval& y, IntervalVector& x1, size_t i);
+    static Interval fwd(const IntervalVector& x1, Index i);
+    static ScalarOpValue fwd(const VectorOpValue& x1, Index i);
+    static void bwd(const Interval& y, IntervalVector& x1, Index i);
   };
 
   struct SubvectorOp
   {
-    static IntervalVector fwd(const IntervalVector& x1, size_t i, size_t j);
-    static VectorOpValue fwd(const VectorOpValue& x1, size_t i, size_t j);
-    static void bwd(const IntervalVector& y, IntervalVector& x1, size_t i, size_t j);
+    static IntervalVector fwd(const IntervalVector& x1, Index i, Index j);
+    static VectorOpValue fwd(const VectorOpValue& x1, Index i, Index j);
+    static void bwd(const IntervalVector& y, IntervalVector& x1, Index i, Index j);
   };
 
   struct VectorOp
@@ -243,7 +243,7 @@ namespace codac2
     static VectorOpValue fwd(const X&... x)
     {
       IntervalMatrix d(sizeof...(X),std::get<0>(std::tie(x...)).da.cols());
-      size_t i = 0;
+      Index i = 0;
       ((d.row(i++) = x.da), ...);
 
       bool def_domain = true;
@@ -261,14 +261,14 @@ namespace codac2
       requires (std::is_base_of_v<Interval,X> && ...)
     static void bwd(const IntervalVector& y, X&... x)
     {
-      size_t i = 0;
+      Index i = 0;
       ((x &= y[i++]), ...);
     }
   };
 
   struct MatrixOp
   {
-    static void fwd_i(IntervalMatrix& m, const IntervalVector& x, size_t i);
+    static void fwd_i(IntervalMatrix& m, const IntervalVector& x, Index i);
 
     template<typename... X>
       requires (std::is_base_of_v<Domain,X> && ...)
@@ -276,7 +276,7 @@ namespace codac2
     {
       throw std::runtime_error("MatrixOp not fully implemented yet");
       IntervalMatrix m(1, sizeof...(X));
-      size_t i = 0;
+      Index i = 0;
       (MatrixOp::fwd_i(m, x, i++), ...);
       return m;
     }
@@ -299,7 +299,7 @@ namespace codac2
     static void bwd(const IntervalMatrix& y, X&... x)
     {
       throw std::runtime_error("MatrixOp not fully implemented yet");
-      size_t i = 0;
+      Index i = 0;
       ((x &= y.col(i++)), ...);
     }
   };

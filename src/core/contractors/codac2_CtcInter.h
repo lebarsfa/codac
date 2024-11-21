@@ -21,7 +21,7 @@ namespace codac2
   {
     public:
 
-      explicit CtcInter(size_t n)
+      explicit CtcInter(Index n)
         : Ctc<CtcInter<X>,X>(n)
       {
         if constexpr(std::is_same_v<X,Interval>)

@@ -31,29 +31,29 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
 
   pyclass
 
-    .def("__getitem__", [](const S& x, size_t_type index) -> const T&
+    .def("__getitem__", [](const S& x, Index_type index) -> const T&
         {
           matlab::test_integer(index);
           return x[matlab::input_index(index)];
         }, py::return_value_policy::reference_internal,
-      VECTORBASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCOMPO_SIZET_CONST)
+      VECTORBASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCOMPO_INDEX_CONST)
 
-    .def("__setitem__", [](S& x, size_t_type index, const T& a)
+    .def("__setitem__", [](S& x, Index_type index, const T& a)
         {
           matlab::test_integer(index);
           x[matlab::input_index(index)] = a;
         },
-      VECTORBASE_EIGENADDONS_SCALAR_REF_OPERATORCOMPO_SIZET)
+      VECTORBASE_EIGENADDONS_SCALAR_REF_OPERATORCOMPO_INDEX)
 
-    .def("subvector", [](const S& x, size_t_type start_id, size_t_type end_id) -> S
+    .def("subvector", [](const S& x, Index_type start_id, Index_type end_id) -> S
         {
           matlab::test_integer(start_id, end_id);
           return x.subvector(matlab::input_index(start_id), matlab::input_index(end_id));
         },
-      VECTORBASE_EIGENADDONS_AUTO_SUBVECTOR_SIZET_SIZET_CONST,
+      VECTORBASE_EIGENADDONS_AUTO_SUBVECTOR_INDEX_INDEX_CONST,
       "start_id"_a, "end_id"_a)
 
-    .def("resize", [](S& x, size_t_type n)
+    .def("resize", [](S& x, Index_type n)
         {
           matlab::test_integer(n);
           x.resize(n);
@@ -61,36 +61,36 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
       DOC_TO_BE_DEFINED,
       "n"_a)
 
-    .def("resize_save_values", [](S& x, size_t_type n)
+    .def("resize_save_values", [](S& x, Index_type n)
         {
           matlab::test_integer(n);
           x.resize_save_values(n);
         },
-      VECTORBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_SIZET,
+      VECTORBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_INDEX,
       "n"_a)
 
-    .def("put", [](S& x, size_t_type start_id, const S& x1)
+    .def("put", [](S& x, Index_type start_id, const S& x1)
         {
           matlab::test_integer(start_id);
           x.put(matlab::input_index(start_id), x1);
         },
-      VECTORBASE_EIGENADDONS_VOID_PUT_SIZET_CONST_MATRIX_SCALARRC_REF,
+      VECTORBASE_EIGENADDONS_VOID_PUT_INDEX_CONST_MATRIX_SCALARRC_REF,
       "start_id"_a, "x"_a)
     
-    .def_static("zeros", [](size_t_type n)
+    .def_static("zeros", [](Index_type n)
         {
           matlab::test_integer(n);
           return S::zeros(n);
         },
-      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_SIZET,
+      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_INDEX,
       "n"_a)
     
-    .def_static("ones", [](size_t_type n)
+    .def_static("ones", [](Index_type n)
         {
           matlab::test_integer(n);
           return S::ones(n);
         },
-      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_SIZET,
+      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_INDEX,
       "n"_a)
 
     .def("__repr__", [](const S& x)

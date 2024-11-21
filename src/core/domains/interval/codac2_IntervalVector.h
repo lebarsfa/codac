@@ -41,12 +41,12 @@ namespace codac2
     std::vector<IntervalVector> v_x;
     ((v_x.push_back(to_IntervalVector(x))), ...);
 
-    size_t n = 0;
+    Index n = 0;
     for(const auto& xi : v_x)
       n += xi.size();
     IntervalVector x_(n);
 
-    size_t i = 0;
+    Index i = 0;
     for(const auto& xi : v_x)
     {
       x_.put(i, xi);
@@ -66,7 +66,7 @@ namespace codac2
 
     #if 0 // IBEX style
       os << "(";
-      for(size_t i = 0 ; i < x.size() ; i++)
+      for(Index i = 0 ; i < x.size() ; i++)
         os << x[i] << (i<x.size()-1 ? " ; " : "");
       os << ")";
       return os;

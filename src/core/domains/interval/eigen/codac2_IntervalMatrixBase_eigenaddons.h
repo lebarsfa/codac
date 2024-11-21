@@ -31,7 +31,7 @@ Matrix(const Matrix<double,R,C>& lb, const Matrix<double,R,C>& ub)
 {
   assert_release(lb.size() == ub.size());
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
   {
     auto& lbi = *(this->data()+i);
     const auto& ubi = *(ub.data()+i);
@@ -54,9 +54,9 @@ Matrix(int r, int c, const double bounds[][2])
 {
   assert_release(r > 0 && c > 0);
 
-  size_t k = 0;
-  for(size_t i = 0 ; i < this->rows() ; i++)
-    for(size_t j = 0 ; j < this->cols() ; j++)
+  Index k = 0;
+  for(Index i = 0 ; i < this->rows() ; i++)
+    for(Index j = 0 ; j < this->cols() ; j++)
     {
       (*this)(i,j) = codac2::Interval(bounds[k][0],bounds[k][1]);
       k++;
@@ -85,7 +85,7 @@ inline double volume() const
     return 0.;
 
   double v = 0.;
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
   {
     if((this->data()+i)->is_unbounded()) return codac2::oo;
     if((this->data()+i)->is_degenerated()) return 0.;
@@ -102,7 +102,7 @@ inline double volume() const
   \
   else \
   { \
-    for(size_t i = 0 ; i < this->size() ; i++) \
+    for(Index i = 0 ; i < this->size() ; i++) \
       *(op.data()+i) = (this->data()+i)->op(); \
   } \
   \
@@ -181,21 +181,21 @@ inline double max_diam() const
 
 template<typename U=Scalar>
   requires IsIntervalDomain<U>
-inline size_t min_diam_index() const
+inline Index min_diam_index() const
 {
   return extr_diam_index(true);
 }
 
 template<typename U=Scalar>
   requires IsIntervalDomain<U>
-inline size_t max_diam_index() const
+inline Index max_diam_index() const
 {
   return extr_diam_index(false);
 }
 
 template<typename U=Scalar>
   requires IsIntervalDomain<U>
-inline size_t extr_diam_index(bool min) const
+inline Index extr_diam_index(bool min) const
 {
   // This code originates from the ibex-lib
   // See: ibex_TemplateVector.h
@@ -206,7 +206,7 @@ inline size_t extr_diam_index(bool min) const
   bool unbounded = false;
   assert_release(!this->is_empty() && "Diameter of an empty IntervalVector is undefined");
 
-  size_t i;
+  Index i;
 
   for(i = 0 ; i < this->size() ; i++) 
   {
@@ -274,7 +274,7 @@ inline size_t extr_diam_index(bool min) const
 // to MatrixBase   requires IsIntervalDomain<U>
 // to MatrixBase inline bool is_empty() const
 // to MatrixBase {
-// to MatrixBase   for(size_t i = 0 ; i < this->size() ; i++)
+// to MatrixBase   for(Index i = 0 ; i < this->size() ; i++)
 // to MatrixBase     if((this->data()+i)->is_empty())
 // to MatrixBase       return true;
 // to MatrixBase   return false;
@@ -296,7 +296,7 @@ inline bool contains(const Matrix<double,RowsAtCompileTime,ColsAtCompileTime>& x
   if(this->is_empty())
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->contains(*(x.data()+i)))
       return false;
 
@@ -312,7 +312,7 @@ inline bool interior_contains(const Matrix<double,RowsAtCompileTime,ColsAtCompil
   if(this->is_empty())
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->interior_contains(*(x.data()+i)))
       return false;
 
@@ -324,7 +324,7 @@ template<typename U=Scalar>
 inline bool is_unbounded() const
 {
   if(this->is_empty()) return false;
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if((this->data()+i)->is_unbounded())
       return true;
   return false;
@@ -334,7 +334,7 @@ template<typename U=Scalar>
   requires IsIntervalDomain<U>
 inline bool is_degenerated() const
 {
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->is_degenerated())
       return false;
   return true;
@@ -345,7 +345,7 @@ template<typename U=Scalar>
 inline bool is_flat() const
 {
   if(this->is_empty()) return true;
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if((this->data()+i)->is_degenerated()) // don't use diam() because of roundoff
       return true;
   return false;
@@ -360,7 +360,7 @@ inline bool intersects(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtCom
   if(this->is_empty())
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->intersects(*(x.data()+i)))
       return false;
 
@@ -376,7 +376,7 @@ inline bool is_disjoint(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtCo
   if(this->is_empty())
     return true;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if((this->data()+i)->is_disjoint(*(x.data()+i)))
       return true;
 
@@ -392,7 +392,7 @@ inline bool overlaps(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtCompi
   if(this->is_empty())
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->overlaps(*(x.data()+i)))
       return false;
 
@@ -408,7 +408,7 @@ inline bool is_subset(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtComp
   if(this->is_empty())
     return true;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->is_subset(*(x.data()+i)))
       return false;
 
@@ -427,7 +427,7 @@ inline bool is_strict_subset(const Matrix<codac2::Interval,RowsAtCompileTime,Col
   if(!is_subset(x))
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if((this->data()+i)->is_strict_subset(*(x.data()+i)))
       return true;
 
@@ -443,7 +443,7 @@ inline bool is_interior_subset(const Matrix<codac2::Interval,RowsAtCompileTime,C
   if(this->is_empty())
     return true;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->is_interior_subset(*(x.data()+i)))
       return false;
 
@@ -459,7 +459,7 @@ inline bool is_strict_interior_subset(const Matrix<codac2::Interval,RowsAtCompil
   if(this->is_empty())
     return true;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(this->data()+i)->is_strict_interior_subset(*(x.data()+i)))
       return false;
 
@@ -475,7 +475,7 @@ inline bool is_superset(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtCo
   if(this->is_empty())
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if(!(x.data()+i)->is_subset(*(this->data()+i)))
       return false;
 
@@ -494,7 +494,7 @@ inline bool is_strict_superset(const Matrix<codac2::Interval,RowsAtCompileTime,C
   if(!is_superset(x))
     return false;
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if((x.data()+i)->is_strict_subset(*(this->data()+i)))
       return true;
 
@@ -505,7 +505,7 @@ template<typename U=Scalar>
   requires IsIntervalDomain<U>
 inline bool is_bisectable() const
 {
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     if((this->data()+i)->is_bisectable())
       return true;
   return false;
@@ -517,7 +517,7 @@ inline auto& inflate(double r)
 {
   assert_release(r >= 0.);
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     (this->data()+i)->inflate(r);
   return *this;
 }
@@ -529,7 +529,7 @@ inline auto& inflate(const Matrix<double,RowsAtCompileTime,ColsAtCompileTime>& r
   assert_release(this->size() == r.size());
   assert_release(r.min_coeff() >= 0.);
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     (this->data()+i)->inflate(*(r.data()+i));
   return *this;
 }
@@ -549,7 +549,7 @@ inline auto& operator&=(const Matrix<U_,RowsAtCompileTime,ColsAtCompileTime>& x)
     }
   }
   
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     *(this->data()+i) &= *(x.data()+i);
   return *this;
 }
@@ -560,8 +560,8 @@ inline auto& operator&=(const MatrixBase<OtherDerived>& x)
 {
   assert_release(this->size() == x.size());
 
-  for(size_t i = 0 ; i < this->rows() ; i++)
-    for(size_t j = 0 ; j < this->cols() ; j++)
+  for(Index i = 0 ; i < this->rows() ; i++)
+    for(Index j = 0 ; j < this->cols() ; j++)
       (*this)(i,j) &= x(i,j);
   return *this;
 }
@@ -578,7 +578,7 @@ inline auto& operator|=(const Matrix<U_,RowsAtCompileTime,ColsAtCompileTime>& x)
       return *this;
   }
 
-  for(size_t i = 0 ; i < this->size() ; i++)
+  for(Index i = 0 ; i < this->size() ; i++)
     *(this->data()+i) |= *(x.data()+i);
   return *this;
 }
@@ -601,7 +601,7 @@ inline auto operator|(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtComp
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsIntervalDomain<U>
-inline static auto empty(size_t r, size_t c)
+inline static auto empty(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
   Matrix<codac2::Interval,R,C> e(r,c);
@@ -610,7 +610,7 @@ inline static auto empty(size_t r, size_t c)
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsIntervalDomain<U>
-inline auto bisect(size_t i, float ratio = 0.49) const
+inline auto bisect(Index i, float ratio = 0.49) const
 {
   assert_release(i >= 0 && i < this->size());
   assert_release((this->data()+i)->is_bisectable());

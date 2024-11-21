@@ -16,10 +16,10 @@ namespace codac2
   Matrix rising(const Matrix& R_, const Matrix& U_, const Matrix& A)
   {
     Matrix R = R_, U = U_;
-    size_t n = A.rows(), m = A.cols();
-    size_t p = m-n;
+    Index n = A.rows(), m = A.cols();
+    Index p = m-n;
 
-    for(int i = n-1 ; i > 0 ; i--)
+    for(Index i = n-1 ; i > 0 ; i--)
     {
       Matrix K = U(i,i+p)*Matrix::Identity(n,n);
       K.block(0,i,i,1) = -U.block(0,i+p,i,1);
@@ -40,7 +40,7 @@ namespace codac2
 
   Matrix gauss_jordan(const Matrix& A)
   {
-    size_t n = A.rows(), m = A.cols();
+    Index n = A.rows(), m = A.cols();
     Eigen::FullPivLU<Matrix> lu(A);
 
     Matrix L = Matrix::Identity(n,n);

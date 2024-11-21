@@ -19,7 +19,7 @@
 //Matrix(const IV&... x)
 //  : Matrix<codac2::Interval,-1,-1>(sizeof...(IV), std::get<0>(std::tie(x...)).size())
 //{
-//  size_t i = 0;
+//  Index i = 0;
 //  ((this->row(i++) = x), ...);
 //  assert_release(i == rows() && "invalid input size");
 //}

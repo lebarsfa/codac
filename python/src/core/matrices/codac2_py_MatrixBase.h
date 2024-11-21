@@ -87,7 +87,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
           return x(matlab::input_index(i), matlab::input_index(j));
         }, py::return_value_policy::reference_internal,
-      BASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCALL_SIZET_SIZET_CONST)
+      BASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCALL_INDEX_INDEX_CONST)
 
     .def("__setitem__", [](S& x, const py::tuple& ij, const T& a)
         {
@@ -99,7 +99,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
           x(matlab::input_index(i), matlab::input_index(j)) = a;
         },
-      BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_SIZET_SIZET)
+      BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_INDEX_INDEX)
 
     ;
   }
@@ -148,7 +148,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
     pyclass
 
-      .def("block", [](S& x, size_t_type i, size_t_type j, size_t_type p, size_t_type q) -> Eigen::Block<S>
+      .def("block", [](S& x, Index_type i, Index_type j, Index_type p, Index_type q) -> Eigen::Block<S>
           {
             matlab::test_integer(i,j);
             matlab::test_integer(p,q);
@@ -157,28 +157,28 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         py::keep_alive<0,1>(),
         DOC_TO_BE_DEFINED)
 
-      .def("col", [](S& x, size_t_type i) -> Eigen::Matrix<T,-1,1>
+      .def("col", [](S& x, Index_type i) -> Eigen::Matrix<T,-1,1>
           {
             matlab::test_integer(i);
             return x.col(matlab::input_index(i)).eval();
           },
         DOC_TO_BE_DEFINED)
 
-      .def("row", [](S& x, size_t_type i) -> Eigen::Matrix<T,1,-1>
+      .def("row", [](S& x, Index_type i) -> Eigen::Matrix<T,1,-1>
           {
             matlab::test_integer(i);
             return x.row(matlab::input_index(i)).eval();
           },
         DOC_TO_BE_DEFINED)
 
-      .def("__call__", [](S& x, size_t_type i, size_t_type j) -> T&
+      .def("__call__", [](S& x, Index_type i, Index_type j) -> T&
           {
             matlab::test_integer(i,j);
             return x(matlab::input_index(i),matlab::input_index(j));
           }, py::return_value_policy::reference_internal,
-        BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_SIZET_SIZET)
+        BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_INDEX_INDEX)
 
-      .def("resize", [](S& x, size_t_type nb_rows, size_t_type nb_cols)
+      .def("resize", [](S& x, Index_type nb_rows, Index_type nb_cols)
           {
             matlab::test_integer(nb_rows, nb_cols);
             x.resize(nb_rows, nb_cols);
@@ -186,36 +186,36 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         DOC_TO_BE_DEFINED,
         "nb_rows"_a, "nb_cols"_a)
 
-      .def("resize_save_values", [](S& x, size_t_type nb_rows, size_t_type nb_cols)
+      .def("resize_save_values", [](S& x, Index_type nb_rows, Index_type nb_cols)
           {
             matlab::test_integer(nb_rows, nb_cols);
             x.resize_save_values(nb_rows, nb_cols);
           },
-        MATRIXBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_INDEX_INDEX,
         "nb_rows"_a, "nb_cols"_a)
 
-      .def_static("zeros", [](size_t_type r, size_t_type c)
+      .def_static("zeros", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
             return S::zeros(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_INDEX_INDEX,
         "r"_a, "c"_a)
       
-      .def_static("ones", [](size_t_type r, size_t_type c)
+      .def_static("ones", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
             return S::ones(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_INDEX_INDEX,
         "r"_a, "c"_a)
       
-      .def_static("eye", [](size_t_type r, size_t_type c)
+      .def_static("eye", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
             return S::ones(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_EYE_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_EYE_INDEX_INDEX,
         "r"_a, "c"_a)
 
     ;

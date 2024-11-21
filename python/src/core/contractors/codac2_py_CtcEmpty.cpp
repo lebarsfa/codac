@@ -24,8 +24,8 @@ void export_CtcEmpty(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcInte
   py::class_<CtcEmpty> exported(m, "CtcEmpty", pyctc, CTCEMPTY_MAIN);
   exported
 
-    .def(py::init<size_t>(),
-      CTCEMPTY_CTCEMPTY_SIZET
+    .def(py::init<Index>(),
+      CTCEMPTY_CTCEMPTY_INDEX
       "n"_a)
 
     .def(CONTRACT_BOX_METHOD(CtcEmpty,

@@ -81,7 +81,6 @@ namespace Eigen
 namespace codac2
 {
   using Eigen::Dynamic;
-  using Eigen::Index;
   
   inline const Interval& conj(const Interval& x) { return x; }
   inline const Interval& real(const Interval& x) { return x; }

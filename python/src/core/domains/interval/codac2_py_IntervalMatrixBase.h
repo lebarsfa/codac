@@ -71,19 +71,19 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return matlab::output_index(x.min_diam_index());
         },
-      INTERVALMATRIXBASE_EIGENADDONS_SIZET_MIN_DIAM_INDEX_CONST)
+      INTERVALMATRIXBASE_EIGENADDONS_INDEX_MIN_DIAM_INDEX_CONST)
 
     .def("max_diam_index", [](const S& x)
         {
           return matlab::output_index(x.max_diam_index());
         },
-      INTERVALMATRIXBASE_EIGENADDONS_SIZET_MAX_DIAM_INDEX_CONST)
+      INTERVALMATRIXBASE_EIGENADDONS_INDEX_MAX_DIAM_INDEX_CONST)
 
     .def("extr_diam_index", [](const S& x, bool min)
         {
           return matlab::output_index(x.extr_diam_index(min));
         },
-      INTERVALMATRIXBASE_EIGENADDONS_SIZET_EXTR_DIAM_INDEX_BOOL_CONST,
+      INTERVALMATRIXBASE_EIGENADDONS_INDEX_EXTR_DIAM_INDEX_BOOL_CONST,
       "min"_a)
 
     .def("__contains__", &S::contains,
@@ -142,12 +142,12 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
       INTERVALMATRIXBASE_EIGENADDONS_AUTO_REF_INFLATE_CONST_MATRIX_DOUBLEROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
       "r"_a)
 
-    .def("bisect", [](const S& x, size_t_type i, double ratio)
+    .def("bisect", [](const S& x, Index_type i, double ratio)
         {
           matlab::test_integer(i);
           return x.bisect(matlab::input_index(i),ratio);
         },
-      INTERVALMATRIXBASE_EIGENADDONS_AUTO_BISECT_SIZET_FLOAT_CONST,
+      INTERVALMATRIXBASE_EIGENADDONS_AUTO_BISECT_INDEX_FLOAT_CONST,
       "i"_a, "ratio"_a = 0.49)
 
     .def("bisect_largest", [](const S& x, double ratio = 0.49) { return x.bisect_largest(); },

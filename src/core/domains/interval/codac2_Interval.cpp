@@ -133,7 +133,7 @@ namespace codac2
     return ibex::Interval::diam();
   }
 
-  size_t Interval::size() const
+  Index Interval::size() const
   {
     return 1;
   }

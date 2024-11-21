@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "codac2_Index.h"
+
 namespace codac2
 {
   template<typename T>
@@ -27,7 +29,7 @@ namespace codac2
         return std::make_shared<ConstValueExpr<T>>(*this);
       }
 
-      T fwd_eval(ValuesMap& v, size_t total_input_size) const
+      T fwd_eval(ValuesMap& v, Index total_input_size) const
       {
         return AnalyticExpr<T>::init_value(v, T(
             // the mid is not considered for const values in centered form expression:

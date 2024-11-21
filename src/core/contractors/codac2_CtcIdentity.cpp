@@ -12,7 +12,7 @@
 using namespace std;
 using namespace codac2;
 
-CtcIdentity::CtcIdentity(size_t n)
+CtcIdentity::CtcIdentity(Index n)
   : Ctc<CtcIdentity,IntervalVector>(n)
 { }
 

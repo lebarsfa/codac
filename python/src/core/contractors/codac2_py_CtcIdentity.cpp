@@ -24,8 +24,8 @@ void export_CtcIdentity(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcI
   py::class_<CtcIdentity> exported(m, "CtcIdentity", pyctc, CTCIDENTITY_MAIN);
   exported
 
-    .def(py::init<size_t>(),
-      CTCIDENTITY_CTCIDENTITY_SIZET
+    .def(py::init<Index>(),
+      CTCIDENTITY_CTCIDENTITY_INDEX
       "n"_a)
 
     .def(CONTRACT_BOX_METHOD(CtcIdentity,

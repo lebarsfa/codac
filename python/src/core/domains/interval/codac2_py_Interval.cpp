@@ -96,7 +96,7 @@ py::class_<Interval> export_Interval(py::module& m)
       DOUBLE_INTERVAL_VOLUME_CONST)
 
     .def("size", &Interval::size,
-      SIZET_INTERVAL_SIZE_CONST)
+      INDEX_INTERVAL_SIZE_CONST)
 
     .def("set_empty", &Interval::set_empty,
       VOID_INTERVAL_SET_EMPTY)

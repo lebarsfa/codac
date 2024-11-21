@@ -24,8 +24,8 @@ void export_CtcInter(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcInte
   py::class_<CtcInter<IntervalVector>> exported(m, "CtcInter", pyctc, CTCINTER_MAIN);
   exported
 
-    .def(py::init<size_t>(),
-      CTCINTER_X_CTCINTER_SIZET,
+    .def(py::init<Index>(),
+      CTCINTER_X_CTCINTER_INDEX,
       "n"_a)
 
     .def(py::init(

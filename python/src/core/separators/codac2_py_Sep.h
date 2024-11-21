@@ -26,7 +26,7 @@ class pySep : public SepBase
 {
   public:
 
-    pySep(size_t_type n)
+    pySep(Index_type n)
       : SepBase(n)
     {
       matlab::test_integer(n);

@@ -54,7 +54,7 @@ namespace codac2
       fig->draw_box(x0, StyleProperties::outside());
 
     list<IntervalVector> l { x0 };
-    size_t n = 0;
+    Index n = 0;
 
     while(!l.empty())
     {
@@ -103,7 +103,7 @@ namespace codac2
     clock_t t_start = clock();
 
     list<IntervalVector> l { x0 };
-    size_t n_inner = 0, n_boundary = 0;
+    Index n_inner = 0, n_boundary = 0;
 
     while(!l.empty())
     {

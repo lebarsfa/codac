@@ -13,9 +13,9 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-template<typename Scalar_,int R_,int C_>
+template<typename Scalar__,int R_,int C_>
   requires (R_ != RowsAtCompileTime || C_ != ColsAtCompileTime)
-Matrix(const Matrix<Scalar_,R_,C_>& x)
+Matrix(const Matrix<Scalar__,R_,C_>& x)
   : Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>(x.rows(),x.cols())
 {
   *this = x.template cast<Scalar>();

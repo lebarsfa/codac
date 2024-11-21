@@ -32,8 +32,9 @@ namespace codac2
 
   Matrix precond(const Matrix& P, const Matrix& L, const Matrix& U)
   {
-    Matrix A = P.inverse()*(L*U);
-    Matrix R = (P.inverse().eval()*L).inverse().eval();
+    auto P_inv = P.inverse();
+    Matrix A = P_inv*(L*U);
+    Matrix R = (P_inv*L).inverse();
     return rising(R,U,A);
   }
 

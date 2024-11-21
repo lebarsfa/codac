@@ -33,25 +33,25 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.size();
         },
-      BASE_EIGENADDONS_SIZET_SIZE_CONST)
+      DOC_TO_BE_DEFINED)
 
     .def("size", [](const S& x)
         {
           return x.size();
         },
-      BASE_EIGENADDONS_SIZET_SIZE_CONST)
+      DOC_TO_BE_DEFINED)
 
     .def("rows", [](const S& x)
         {
           return x.rows();
         },
-      BASE_EIGENADDONS_SIZET_ROWS_CONST)
+      DOC_TO_BE_DEFINED)
 
     .def("cols", [](const S& x)
         {
           return x.cols();
         },
-      BASE_EIGENADDONS_SIZET_COLS_CONST)
+      DOC_TO_BE_DEFINED)
 
     .def("min_coeff", [](const S& x)
         {

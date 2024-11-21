@@ -32,32 +32,32 @@ void export_arithmetic_div(py::module& m,
   // ====== First operand: vector
 
     //inline Vector operator/(const Vector& x1, double x2)
-    py_V.def("__truediv__", [](const Vector& x1, double x2) { return Vector(x1/x2); }, py::is_operator());
+    py_V.def("__truediv__", [](const Vector& x1, double x2) -> Vector { return x1/x2; }, py::is_operator());
 
     //inline IntervalVector operator/(const Vector& x1, const Interval& x2)
-    py_V.def("__truediv__", [](const Vector& x1, const Interval& x2) { return IntervalVector(x1/x2); }, py::is_operator());
+    py_V.def("__truediv__", [](const Vector& x1, const Interval& x2) -> IntervalVector { return x1.template cast<Interval>()/x2; }, py::is_operator());
 
     py_V.def("__itruediv__", [](Vector& x1, double x2) { return x1/=x2; }, py::is_operator());
 
   // ====== First operand: matrix
 
     //Matrix operator/(const M& x1, double x2)
-    py_M.def("__truediv__", [](const Matrix& x1, double x2) { return Matrix(x1/x2); }, py::is_operator());
-    py_B.def("__truediv__", [](const Eigen::Block<Matrix>& x1, double x2) { return Matrix(x1/x2); }, py::is_operator());
+    py_M.def("__truediv__", [](const Matrix& x1, double x2) -> Matrix { return x1/x2; }, py::is_operator());
+    py_B.def("__truediv__", [](const Eigen::Block<Matrix>& x1, double x2) -> Matrix { return x1/x2; }, py::is_operator());
 
     //IntervalMatrix operator/(const M& x1, const Interval& x2)
-    py_M.def("__truediv__", [](const Matrix& x1, const Interval& x2) { return IntervalMatrix(x1/x2); }, py::is_operator());
-    py_B.def("__truediv__", [](const B& x1, const Interval& x2) { return IntervalMatrix(x1/x2); }, py::is_operator());
+    py_M.def("__truediv__", [](const Matrix& x1, const Interval& x2) -> IntervalMatrix { return x1.template cast<Interval>()/x2; }, py::is_operator());
+    py_B.def("__truediv__", [](const B& x1, const Interval& x2) -> IntervalMatrix { return x1.template cast<Interval>()/x2; }, py::is_operator());
 
     py_M.def("__itruediv__", [](Matrix& x1, double x2) { return x1/=x2; }, py::is_operator());
 
   // ====== First operand: interval vector
 
     //inline IntervalVector operator/(const IntervalVector& x1, double x2)
-    py_IV.def("__truediv__", [](const IntervalVector& x1, double x2) { return IntervalVector(x1/x2); }, py::is_operator());
+    py_IV.def("__truediv__", [](const IntervalVector& x1, double x2) -> IntervalVector { return x1/x2; }, py::is_operator());
 
     //inline IntervalVector operator/(const IntervalVector& x1, const Interval& x2)
-    py_IV.def("__truediv__", [](const IntervalVector& x1, const Interval& x2) { return IntervalVector(x1/x2); }, py::is_operator());
+    py_IV.def("__truediv__", [](const IntervalVector& x1, const Interval& x2) -> IntervalVector { return x1/x2; }, py::is_operator());
 
     py_IV.def("__itruediv__", [](IntervalVector& x1, double x2) { return x1/=x2; }, py::is_operator());
     py_IV.def("__itruediv__", [](IntervalVector& x1, const Interval& x2) { return x1/=x2; }, py::is_operator());
@@ -65,12 +65,12 @@ void export_arithmetic_div(py::module& m,
   // ====== First operand: interval matrix
 
     //IntervalMatrix operator/(const IM& x1, double x2)
-    py_IM.def("__truediv__", [](const IntervalMatrix& x1, double x2) { return IntervalMatrix(x1/x2); }, py::is_operator());
-    py_IB.def("__truediv__", [](const IB& x1, double x2) { return IntervalMatrix(x1/x2); }, py::is_operator());
+    py_IM.def("__truediv__", [](const IntervalMatrix& x1, double x2) -> IntervalMatrix { return x1/x2; }, py::is_operator());
+    py_IB.def("__truediv__", [](const IB& x1, double x2) -> IntervalMatrix { return x1/x2; }, py::is_operator());
 
     //IntervalMatrix operator/(const IM& x1, const Interval& x2)
-    py_IM.def("__truediv__", [](const IntervalMatrix& x1, const Interval& x2) { return IntervalMatrix(x1/x2); }, py::is_operator());
-    py_IB.def("__truediv__", [](const IB& x1, const Interval& x2) { return IntervalMatrix(x1/x2); }, py::is_operator());
+    py_IM.def("__truediv__", [](const IntervalMatrix& x1, const Interval& x2) -> IntervalMatrix { return x1/x2; }, py::is_operator());
+    py_IB.def("__truediv__", [](const IB& x1, const Interval& x2) -> IntervalMatrix { return x1/x2; }, py::is_operator());
 
     py_IM.def("__itruediv__", [](IntervalMatrix& x1, double x2) { return x1/=x2; }, py::is_operator());
     py_IM.def("__itruediv__", [](IntervalMatrix& x1, const Interval& x2) { return x1/=x2; }, py::is_operator());

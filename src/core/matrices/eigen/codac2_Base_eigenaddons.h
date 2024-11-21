@@ -21,21 +21,6 @@ Matrix(const Matrix<Scalar_,R_,C_>& x)
   *this = x.template cast<Scalar>();
 }
 
-inline size_t size() const
-{
-  return Base::size();
-}
-
-inline size_t rows() const
-{
-  return Base::rows();
-}
-
-inline size_t cols() const
-{
-  return Base::cols();
-}
-
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline Scalar& operator()(size_t i, size_t j)
 {

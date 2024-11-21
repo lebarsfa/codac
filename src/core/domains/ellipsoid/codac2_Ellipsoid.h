@@ -47,7 +47,7 @@ namespace codac2
        * 
        * \param n number of dimensions
        */
-      Ellipsoid(size_t n);
+      Ellipsoid(Index n);
 
       /**
        * \brief Create an ellipsoid from a center and a shape matrix
@@ -62,7 +62,7 @@ namespace codac2
        *
        * \return number of dimensions
        */
-      size_t size() const;
+      Index size() const;
 
       /**
        * \brief Return a random vector inside this ellipsoid

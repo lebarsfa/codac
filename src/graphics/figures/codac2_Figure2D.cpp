@@ -205,8 +205,8 @@ void Figure2D::draw_ellipsoid(const Ellipsoid &e, const StyleProperties &s) {
         // 2d projection of the ellipsoid
         if (e.size() > 2) {
             // affine space of the projection
-            Vector d(Eigen::VectorXd::Zero(e.mu.nb_rows()));
-            Matrix T(Eigen::MatrixXd::Zero(e.G.nb_rows(), 2));
+            Vector d(Eigen::VectorXd::Zero(e.mu.rows()));
+            Matrix T(Eigen::MatrixXd::Zero(e.G.rows(), 2));
             T(output_fig->i(), 0) = 1;
             T(output_fig->j(), 1) = 1;
 
@@ -214,19 +214,19 @@ void Figure2D::draw_ellipsoid(const Ellipsoid &e, const StyleProperties &s) {
             // on the affine plan A = {x|x=d+Tt} [Pope -2008]
             // reduce the dimensions of mu and Q
 
-            auto TTG = T._e.transpose() * e.G._e;
+            auto TTG = T.transpose() * e.G;
             Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
             Matrix U(bdcsvd.matrixU());
             Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
-            G_draw = U._e * E._e;
-            mu_draw = T._e.transpose() * (d._e + T._e * T._e.transpose() * (e.mu._e - d._e));
+            G_draw = U * E;
+            mu_draw = T.transpose() * (d + T * T.transpose() * (e.mu - d));
         } else {
             G_draw = e.G;
             mu_draw = e.mu;
         }
 
         // draw the 2d ellipsoid
-        Eigen::JacobiSVD<Eigen::MatrixXd> jsvd(G_draw._e, Eigen::ComputeThinU);
+        Eigen::JacobiSVD<Eigen::MatrixXd> jsvd(G_draw, Eigen::ComputeThinU);
         Matrix U(jsvd.matrixU());
         Vector ab(jsvd.singularValues());
 

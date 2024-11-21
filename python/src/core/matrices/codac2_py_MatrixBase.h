@@ -65,6 +65,18 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         },
       BASE_EIGENADDONS_SCALAR_MAX_COEFF_CONST)
 
+    .def("norm", [](const S& x)
+        {
+          return x.norm();
+        },
+      DOC_TO_BE_DEFINED)
+
+    .def("squared_norm", [](const S& x)
+        {
+          return x.squared_norm();
+        },
+      BASE_EIGENADDONS_AUTO_SQUARED_NORM_CONST)
+
   ;
 
   if constexpr(!VECTOR_INHERITANCE)
@@ -213,9 +225,17 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
       .def_static("eye", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
-            return S::ones(r,c);
+            return S::eye(r,c);
           },
         MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_EYE_INDEX_INDEX,
+        "r"_a, "c"_a)
+      
+      .def_static("random", [](Index_type r, Index_type c)
+          {
+            matlab::test_integer(r,c);
+            return S::random(r,c);
+          },
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_RANDOM_INDEX_INDEX,
         "r"_a, "c"_a)
 
     ;

@@ -46,24 +46,6 @@ explicit Matrix(int r, int c, const Scalar values[])
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline auto block(Index i, Index j, Index p, Index q)
-{
-  assert_release(i >= 0 && p > 0 && i+p <= this->rows());
-  assert_release(j >= 0 && q > 0 && j+q <= this->cols());
-  return this->PlainObjectBase<Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>::block(i,j,p,q);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsVectorOrRow<R,C>)
-inline auto block(Index i, Index j, Index p, Index q) const
-{
-  assert_release(i >= 0 && p > 0 && i+p <= this->rows());
-  assert_release(j >= 0 && q > 0 && j+q <= this->cols());
-  return this->PlainObjectBase<Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>>::block(i,j,p,q);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsVectorOrRow<R,C>)
 inline static Matrix<Scalar,R,C> zeros(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
@@ -84,6 +66,16 @@ inline static Matrix<Scalar,R,C> eye(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
   return Matrix<Scalar,R,C>::Identity(r,c);
+}
+
+// Note that this static function is not called "rand"
+// because of ambiguity with the member function "rand"
+template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires (!IsVectorOrRow<R,C>)
+inline static Matrix<Scalar,R,C> random(Index r, Index c)
+{
+  assert_release(r >= 0 && c >= 0);
+  return Matrix<Scalar,R,C>::Random(r,c);
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>

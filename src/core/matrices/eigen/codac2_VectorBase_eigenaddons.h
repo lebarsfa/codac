@@ -84,6 +84,16 @@ inline static Matrix<Scalar,R,C> ones(Index n)
     return Matrix<Scalar,R,C>::Ones(n,1);
 }
 
+// Note that this static function is not called "rand"
+// because of ambiguity with the member function "rand"
+template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires IsVectorOrRow<R,C>
+inline static Matrix<Scalar,R,C> random(Index n)
+{
+  assert_release(n >= 0);
+  return Matrix<Scalar,R,C>::Random(n);
+}
+
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
 inline auto subvector(Index start_id, Index end_id) const

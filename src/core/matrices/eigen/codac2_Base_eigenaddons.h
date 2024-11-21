@@ -24,7 +24,7 @@ Matrix(const Matrix<Scalar_,R_,C_>& x)
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline Scalar& operator()(Index i, Index j)
 {
-    return const_cast<Scalar&>(const_cast<const Matrix<Scalar,R,C>*>(this)->operator()(i,j));
+    return const_cast<Scalar&>(static_cast<const Matrix<Scalar,R,C>&>(*this).operator()(i,j));
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -59,6 +59,11 @@ inline auto& init(const Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>& x) /
 inline bool is_squared() const
 {
   return this->rows() == this->cols();
+}
+
+inline auto squared_norm() const
+{
+  return this->squaredNorm();
 }
 
 #define minmax_item(op) \

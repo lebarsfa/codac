@@ -61,6 +61,11 @@ inline bool is_squared() const
   return this->rows() == this->cols();
 }
 
+inline auto squared_norm() const
+{
+  return this->squaredNorm();
+}
+
 #define minmax_item(op) \
   Scalar m = *(this->data()); /* first element */ \
   for(Index i = 1 ; i < this->size() ; i++) \

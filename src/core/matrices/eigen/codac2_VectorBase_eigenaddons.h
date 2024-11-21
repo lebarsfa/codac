@@ -88,7 +88,7 @@ inline static Matrix<Scalar,R,C> ones(Index n)
 // because of ambiguity with the member function "rand"
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline static Matrix<Scalar,R,C> random(size_t n)
+inline static Matrix<Scalar,R,C> random(Index n)
 {
   assert_release(n >= 0);
   return Matrix<Scalar,R,C>::Random(n);

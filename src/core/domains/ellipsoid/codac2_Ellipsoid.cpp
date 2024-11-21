@@ -7,9 +7,9 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-#include <unsupported/Eigen/MatrixFunctions>
 #include "codac2_Ellipsoid.h"
 #include "codac2_template_tools.h"
+#include <unsupported/Eigen/MatrixFunctions>
 
 using namespace std;
 using namespace codac2;
@@ -66,7 +66,7 @@ namespace codac2 {
         {
             // diagonal element
             Interval s = 0.;
-            for (size_t k = 0; k < j; k++)
+            for (Index k = 0; k < j; k++)
                 s += L(j, k) * L(j, k);
             Interval u = D(j, j) - s;
             if (u.lb() < 0) {
@@ -156,7 +156,7 @@ namespace codac2 {
         Matrix JG = J * G; // note: reliability may be lost here!
         IntervalMatrix G_(G);
         IntervalMatrix JG_ = IntervalMatrix(JG);
-        IntervalVector unit_box(G.rows(), Interval(-1, 1));
+        IntervalVector unit_box(G.rows()); unit_box.init(Interval(-1,1));
 
         // normal case
         IntervalMatrix I_ = IntervalMatrix(Eigen::MatrixXd::Identity(G.rows(),G.cols()));

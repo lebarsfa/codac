@@ -93,12 +93,12 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
       VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_INDEX,
       "n"_a)
     
-    .def_static("random", [](size_t_type n)
+    .def_static("random", [](Index_type n)
         {
           matlab::test_integer(n);
           return S::random(n);
         },
-      STATIC_S_VECTORBASE_SMT_RANDOM_SIZET,
+      VECTORBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_RANDOM_INDEX,
       "n"_a)
 
     .def("__repr__", [](const S& x)

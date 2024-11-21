@@ -69,13 +69,13 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.norm();
         },
-      T_MATRIXBASE_ST_NORM_CONST)
+      DOC_TO_BE_DEFINED)
 
     .def("squared_norm", [](const S& x)
         {
           return x.squared_norm();
         },
-      T_MATRIXBASE_ST_SQUARED_NORM_CONST)
+      BASE_EIGENADDONS_AUTO_SQUARED_NORM_CONST)
 
   ;
 
@@ -230,12 +230,12 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_EYE_INDEX_INDEX,
         "r"_a, "c"_a)
       
-      .def_static("random", [](size_t_type r, size_t_type c)
+      .def_static("random", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
             return S::random(r,c);
           },
-        STATIC_S_MATRIXBASE_ST_RANDOM_SIZET_SIZET,
+        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_RANDOM_INDEX_INDEX,
         "r"_a, "c"_a)
 
     ;

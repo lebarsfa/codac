@@ -30,7 +30,7 @@ void export_Ellipsoid(py::module& m)
       MATRIX_ELLIPSOID_G)
   
     .def(py::init<size_t>(),
-      ELLIPSOID_ELLIPSOID_SIZET,
+      ELLIPSOID_ELLIPSOID_INDEX,
       "n"_a)
 
     .def(py::init<const Vector&,const Matrix&>(),
@@ -48,7 +48,7 @@ void export_Ellipsoid(py::module& m)
       OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_ELLIPSOID_REF)
 
     .def("size", &Ellipsoid::size,
-      SIZET_ELLIPSOID_SIZE_CONST)
+      INDEX_ELLIPSOID_SIZE_CONST)
 
     .def("rand", &Ellipsoid::rand,
       VECTOR_ELLIPSOID_RAND_CONST)

@@ -7,9 +7,9 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
+#include "codac2_Ellipsoid_utils.h"
 #include <unsupported/Eigen/MatrixFunctions>
 #include <unsupported/Eigen/KroneckerProduct>
-#include "codac2_Ellipsoid_utils.h"
 
 using namespace std;
 using namespace codac2;
@@ -22,14 +22,14 @@ namespace codac2
         // works well under dimension 10
         // https://github.com/scipy/scipy/blob/v1.14.1/scipy/linalg/_solvers.py#L235-L323
         // Solves the discrete Lyapunov equation :math:`AXA^H - X + Q = 0`
-        assert(a.nb_rows() == a.nb_cols());
-        assert(a.nb_rows() == q.nb_rows());
-        assert(a.nb_cols() == q.nb_cols());
+        assert(a.rows() == a.cols());
+        assert(a.rows() == q.rows());
+        assert(a.cols() == q.cols());
 
-        Eigen::MatrixXd lhs = Eigen::KroneckerProduct(a._e, a._e);
+        Eigen::MatrixXd lhs = Eigen::KroneckerProduct(a, a);
         lhs = Eigen::MatrixXd::Identity(lhs.rows(),lhs.cols()) - lhs;
-        Eigen::MatrixXd x = lhs.colPivHouseholderQr().solve((Eigen::VectorXd)q._e.reshaped());
-        return Matrix(x.reshaped(q.nb_rows(),q.nb_cols()));
+        Eigen::MatrixXd x = lhs.colPivHouseholderQr().solve((Eigen::VectorXd)q.reshaped());
+        return Matrix(x.reshaped(q.rows(),q.cols()));
     }
 
     BoolInterval stability_analysis(const AnalyticFunction<VectorOpValue> &f, int alpha_max, Ellipsoid &e, Ellipsoid &e_out)
@@ -43,7 +43,7 @@ namespace codac2
 
         // solve the axis aligned discrete lyapunov equation J.T * P * J − P = −J.T * J
         Matrix P = solve_discrete_lyapunov(J.transpose(),J.transpose()*J); // TODO solve the Lyapunov equation !!!
-        Matrix G0((P._e.inverse()).sqrt());
+        Matrix G0((P.inverse()).sqrt());
         int alpha = 0;
 
         while(alpha <= alpha_max)

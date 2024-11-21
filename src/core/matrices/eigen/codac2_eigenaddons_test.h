@@ -23,3 +23,24 @@ inline bool is_empty() const
         return true;
   return false;
 }
+
+
+#define degenerate_matt(op) \
+  Matrix<double,RowsAtCompileTime,ColsAtCompileTime> op(this->rows(),this->cols()); \
+  \
+  if(this->is_empty()) \
+    op.init(std::numeric_limits<double>::quiet_NaN()); \
+  \
+  else \
+  { \
+    for(Index i = 0 ; i < this->rows() ; i++) \
+      for(Index j = 0 ; j < this->cols() ; j++) \
+        op(i,j) = (*this)(i,j).mid(); \
+  } \
+  \
+  return op; \
+
+inline auto mid() const
+{
+  degenerate_matt(mid);
+}

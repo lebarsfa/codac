@@ -32,8 +32,8 @@ namespace Eigen
   concept IsIntervalDomain = std::is_same_v<Scalar,codac2::Interval>;
 }
 
-#define EIGEN_MATRIX_PLUGIN "codac2_eigenaddons.h"
-#define EIGEN_MATRIXBASE_PLUGIN "codac2_eigenaddons_test.h"
+#define EIGEN_MATRIXBASE_PLUGIN "codac2_MatrixBase_addons_include.h"
+#define EIGEN_MATRIX_PLUGIN "codac2_Matrix_addons_include.h"
 
 #ifndef EIGEN_NO_DEBUG
 /* Disables Eigen's assertions if defined.

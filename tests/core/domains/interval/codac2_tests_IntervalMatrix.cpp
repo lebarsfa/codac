@@ -631,6 +631,27 @@ TEST_CASE("IntervalMatrix - mixing type")
     IntervalMatrix im_empty(m1,m2);
     CHECK(im_empty == IntervalMatrix::empty(2,2));
   }
+
+  {
+    IntervalMatrix m1 = IntervalMatrix::ones(3,3);
+    IntervalMatrix m2 = IntervalMatrix::zeros(3,3);
+    CHECK(m1.volume() == 0.);
+    CHECK(m2.volume() == 0.);
+    CHECK((m1+m2).volume() == 0.);
+  }
+
+  {
+    IntervalMatrix m1 {
+      { {1,2},{2,3} },
+      { {3,4},{4,5} }
+    };
+    Matrix m2 {
+      { 1.5, 2.5 },
+      { 3.5, 4.5 }
+    };
+    CHECK(m1.contains(m2));
+    CHECK(m2.template cast<Interval>().is_strict_subset(m1));
+  }
 }
 
 #if 0

@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_eigenaddons.h
+ *  \file codac2_Matrix_addons_include.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.
@@ -13,11 +13,11 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-#include "codac2_Base_eigenaddons.h"
-#include "codac2_MatrixBase_eigenaddons.h"
-#include "codac2_Matrix_eigenaddons.h"
-#include "codac2_VectorBase_eigenaddons.h"
-#include "codac2_Vector_eigenaddons.h"
-#include "codac2_IntervalMatrixBase_eigenaddons.h"
-#include "codac2_IntervalMatrix_eigenaddons.h"
-#include "codac2_IntervalVector_eigenaddons.h"
+#include "codac2_Matrix_addons_Base.h"
+#include "codac2_Matrix_addons_IntervalMatrix.h"
+#include "codac2_Matrix_addons_IntervalMatrixBase.h"
+#include "codac2_Matrix_addons_IntervalVector.h"
+#include "codac2_Matrix_addons_Matrix.h"
+#include "codac2_Matrix_addons_MatrixBase.h"
+#include "codac2_Matrix_addons_Vector.h"
+#include "codac2_Matrix_addons_VectorBase.h"

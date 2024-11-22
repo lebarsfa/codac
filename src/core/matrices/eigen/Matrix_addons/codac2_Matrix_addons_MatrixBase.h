@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_MatrixBase_eigenaddons.h
+ *  \file codac2_Matrix_addons_MatrixBase.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.

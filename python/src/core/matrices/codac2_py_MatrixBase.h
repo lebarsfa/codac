@@ -243,5 +243,5 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
   
   //S abs(const MatrixBase<S,T>& x)
   m.def("abs", [](const S& x) { return abs(x); },
-    AUTO_ABS_CONST_EIGEN_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF);
+    AUTO_ABS_CONST_EIGEN_MATRIXBASE_OTHERDERIVED_REF);
 }

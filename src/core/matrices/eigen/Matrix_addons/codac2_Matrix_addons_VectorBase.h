@@ -87,9 +87,9 @@ inline static Matrix<Scalar,R,C> random(Index n)
   return Matrix<Scalar,R,C>::Random(n);
 }
 
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline void put(Index start_id, const Matrix<Scalar,R,C>& x)
+template<typename OtherDerived,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires IsVectorOrRow<R,C> && IsVectorOrRow<MatrixBase<OtherDerived>::RowsAtCompileTime,MatrixBase<OtherDerived>::ColsAtCompileTime>
+inline void put(Index start_id, const MatrixBase<OtherDerived>& x)
 {
   assert_release(start_id >= 0 && start_id < this->size());
   assert_release(start_id+x.size() <= this->size());

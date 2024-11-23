@@ -74,7 +74,7 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
           matlab::test_integer(start_id);
           x.put(matlab::input_index(start_id), x1);
         },
-      MATRIX_ADDONS_VECTORBASE_VOID_PUT_INDEX_CONST_MATRIX_SCALARRC_REF,
+      MATRIX_ADDONS_VECTORBASE_VOID_PUT_INDEX_CONST_MATRIXBASE_OTHERDERIVED_REF,
       "start_id"_a, "x"_a)
     
     .def_static("zeros", [](Index_type n)

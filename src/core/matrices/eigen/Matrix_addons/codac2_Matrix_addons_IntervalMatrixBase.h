@@ -200,25 +200,26 @@ inline auto& inflate(double r)
   return *this;
 }
 
-template<typename U=Scalar>
+template<typename OtherDerived,typename U=Scalar>
   requires IsIntervalDomain<U>
-inline auto& inflate(const Matrix<double,RowsAtCompileTime,ColsAtCompileTime>& r)
+inline auto& inflate(const MatrixBase<OtherDerived>& r)
 {
   assert_release(this->size() == r.size());
   assert_release(r.min_coeff() >= 0.);
 
-  for(Index i = 0 ; i < this->size() ; i++)
-    (this->data()+i)->inflate(*(r.data()+i));
+  for(Index i = 0 ; i < this->rows() ; i++)
+    for(Index j = 0 ; j < this->cols() ; j++)
+      (*this)(i,j).inflate(r(i,j));
   return *this;
 }
 
-template<typename U=Scalar,typename U_>
+template<typename OtherDerived,typename U=Scalar>
   requires IsIntervalDomain<U>
-inline auto& operator&=(const Matrix<U_,RowsAtCompileTime,ColsAtCompileTime>& x)
+inline auto& operator&=(const MatrixBase<OtherDerived>& x)
 {
   assert_release(this->size() == x.size());
 
-  if constexpr(std::is_same_v<U_,codac2::Interval>)
+  if constexpr(std::is_same_v<typename MatrixBase<OtherDerived>::Scalar,codac2::Interval>)
   {
     if(x.is_empty())
     {
@@ -227,51 +228,41 @@ inline auto& operator&=(const Matrix<U_,RowsAtCompileTime,ColsAtCompileTime>& x)
     }
   }
   
-  for(Index i = 0 ; i < this->size() ; i++)
-    *(this->data()+i) &= *(x.data()+i);
-  return *this;
-}
-
-template<typename U=Scalar,typename OtherDerived>
-  requires IsIntervalDomain<U>
-inline auto& operator&=(const MatrixBase<OtherDerived>& x)
-{
-  assert_release(this->size() == x.size());
-
   for(Index i = 0 ; i < this->rows() ; i++)
     for(Index j = 0 ; j < this->cols() ; j++)
       (*this)(i,j) &= x(i,j);
   return *this;
 }
 
-template<typename U=Scalar,typename U_>
+template<typename OtherDerived,typename U=Scalar>
   requires IsIntervalDomain<U>
-inline auto& operator|=(const Matrix<U_,RowsAtCompileTime,ColsAtCompileTime>& x)
+inline auto& operator|=(const MatrixBase<OtherDerived>& x)
 {
   assert_release(this->size() == x.size());
 
-  if constexpr(std::is_same_v<U_,codac2::Interval>)
+  if constexpr(std::is_same_v<typename MatrixBase<OtherDerived>::Scalar,codac2::Interval>)
   {
     if(x.is_empty())
       return *this;
   }
 
-  for(Index i = 0 ; i < this->size() ; i++)
-    *(this->data()+i) |= *(x.data()+i);
+  for(Index i = 0 ; i < this->rows() ; i++)
+    for(Index j = 0 ; j < this->cols() ; j++)
+      (*this)(i,j) |= x(i,j);
   return *this;
 }
 
-template<typename U=Scalar>
+template<typename OtherDerived,typename U=Scalar>
   requires IsIntervalDomain<U>
-inline auto operator&(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtCompileTime>& x) const
+inline auto operator&(const MatrixBase<OtherDerived>& x) const
 {
   auto y = *this;
   return y &= x;
 }
 
-template<typename U=Scalar>
+template<typename OtherDerived,typename U=Scalar>
   requires IsIntervalDomain<U>
-inline auto operator|(const Matrix<codac2::Interval,RowsAtCompileTime,ColsAtCompileTime>& x) const
+inline auto operator|(const MatrixBase<OtherDerived>& x) const
 {
   auto y = *this;
   return y |= x;

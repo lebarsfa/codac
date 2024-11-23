@@ -574,14 +574,14 @@ void Figure2D_IPE::print_header_page()
     <textsize name=\"Huge\" value=\"\\Huge\"/> \n \
     <textsize name=\"LARGE\" value=\"\\LARGE\"/> \n \
     <textsize name=\"Large\" value=\"\\Large\"/> \n \
-    <textsize name=\"footnote\" value=\"\footnotesize\"/> \n \
+    <textsize name=\"footnote\" value=\"\\footnotesize\"/> \n \
     <textsize name=\"huge\" value=\"\\huge\"/> \n \
     <textsize name=\"large\" value=\"\\large\"/> \n \
     <textsize name=\"small\" value=\"\\small\"/> \n \
-    <textsize name=\"tiny\" value=\"\tiny\"/> \n \
-    <textstyle name=\"center\" begin=\"\begin{center}\" end=\"\end{center}\"/> \n \
-    <textstyle name=\"item\" begin=\"\begin{itemize}\\item{}\" end=\"\end{itemize}\"/> \n \
-    <textstyle name=\"itemize\" begin=\"\begin{itemize}\" end=\"\end{itemize}\"/> \n \
+    <textsize name=\"tiny\" value=\"\\tiny\"/> \n \
+    <textstyle name=\"center\" begin=\"\\begin{center}\" end=\"\\end{center}\"/> \n \
+    <textstyle name=\"item\" begin=\"\\begin{itemize}\\item{}\" end=\"\\end{itemize}\"/> \n \
+    <textstyle name=\"itemize\" begin=\"\\begin{itemize}\" end=\"\\end{itemize}\"/> \n \
     <tiling name=\"falling\" angle=\"-60\" step=\"4\" width=\"1\"/> \n \
     <tiling name=\"rising\" angle=\"30\" step=\"4\" width=\"1\"/> \n \
     </ipestyle> \n \

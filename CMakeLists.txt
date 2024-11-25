@@ -64,11 +64,6 @@
 #    message(FATAL_ERROR "Codac needs a compiler with C++17 support")
 #  endif()
 
-#  if(WIN32)
-#    # We need this for strdup under Windows (see issue #287 of ibex-lib repo)
-#    add_definitions(-U__STRICT_ANSI__)
-#  endif()
-
   #if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)

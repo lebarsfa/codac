@@ -26,12 +26,12 @@ namespace codac2
   concept IsSepBaseOrPtr = (std::is_base_of_v<SepBase,S>
     || std::is_base_of_v<S,std::shared_ptr<SepBase>>);
 
-  inline Index size_of(int x)
+  inline Index size_of([[maybe_unused]] int x)
   {
     return 1;
   }
   
-  inline Index size_of(double x)
+  inline Index size_of([[maybe_unused]] double x)
   {
     return 1;
   }

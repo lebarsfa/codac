@@ -18,7 +18,7 @@ using namespace codac2;
 OctaSym::OctaSym(const vector<int>& s)
   : std::vector<int>(s)
 {
-  for(const auto& i : s)
+  for([[maybe_unused]] const auto& i : s)
   {
     assert_release(std::abs(i) > 0 && std::abs(i) <= size());
   }

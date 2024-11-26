@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_VectorBase_eigenaddons.h
+ *  \file codac2_Matrix_addons_VectorBase.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.
@@ -12,25 +12,6 @@
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-explicit Matrix(int n, const Scalar& x)
-  : Matrix<Scalar,R,C>(
-    [&]() -> int { if(R == 1) return 1; else return n; }(),
-    [&]() -> int { if(C == 1) return 1; else return n; }()
-  )
-{
-  assert_release(n > 0);
-  init(x);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline auto diag_matrix() const
-{
-  return this->asDiagonal().toDenseMatrix();
-}
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
@@ -64,13 +45,10 @@ inline const Scalar& operator[](Index i) const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline static Matrix<Scalar,R,C> zeros(Index n)
+inline static Matrix<Scalar,R,C> zero(Index n)
 {
   assert_release(n >= 0);
-  if constexpr(R == 1)
-    return Matrix<Scalar,R,C>::Zero(1,n);
-  else
-    return Matrix<Scalar,R,C>::Zero(n,1);
+  return DenseBase<Matrix<Scalar,R,C>>::Zero(n);
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -78,10 +56,15 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> ones(Index n)
 {
   assert_release(n >= 0);
-  if constexpr(R == 1)
-    return Matrix<Scalar,R,C>::Ones(1,n);
-  else
-    return Matrix<Scalar,R,C>::Ones(n,1);
+  return DenseBase<Matrix<Scalar,R,C>>::Ones(n);
+}
+
+template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires IsVectorOrRow<R,C>
+inline static Matrix<Scalar,R,C> constant(Index n, const Scalar& x)
+{
+  assert_release(n >= 0);
+  return DenseBase<Matrix<Scalar,R,C>>::Constant(n,x);
 }
 
 // Note that this static function is not called "rand"
@@ -91,21 +74,12 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> random(Index n)
 {
   assert_release(n >= 0);
-  return Matrix<Scalar,R,C>::Random(n);
+  return DenseBase<Matrix<Scalar,R,C>>::Random(n);
 }
 
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline auto subvector(Index start_id, Index end_id) const
-{
-  assert_release(end_id >= 0 && start_id >= 0);
-  assert_release(end_id < this->size() && start_id <= end_id);
-  return this->segment(start_id,end_id-start_id+1);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline void put(Index start_id, const Matrix<Scalar,R,C>& x)
+template<typename OtherDerived,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires IsVectorOrRow<R,C> && IsVectorOrRow<MatrixBase<OtherDerived>::RowsAtCompileTime,MatrixBase<OtherDerived>::ColsAtCompileTime>
+inline void put(Index start_id, const MatrixBase<OtherDerived>& x)
 {
   assert_release(start_id >= 0 && start_id < this->size());
   assert_release(start_id+x.size() <= this->size());

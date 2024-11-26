@@ -57,13 +57,13 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.min_coeff();
         },
-      BASE_EIGENADDONS_SCALAR_MIN_COEFF_CONST)
+      MATRIXBASE_ADDONS_BASE_SCALAR_MIN_COEFF_CONST)
 
     .def("max_coeff", [](const S& x)
         {
           return x.max_coeff();
         },
-      BASE_EIGENADDONS_SCALAR_MAX_COEFF_CONST)
+      MATRIXBASE_ADDONS_BASE_SCALAR_MAX_COEFF_CONST)
 
     .def("norm", [](const S& x)
         {
@@ -75,7 +75,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.squared_norm();
         },
-      BASE_EIGENADDONS_AUTO_SQUARED_NORM_CONST)
+      MATRIXBASE_ADDONS_BASE_AUTO_SQUARED_NORM_CONST)
 
   ;
 
@@ -87,7 +87,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           return x.is_squared();
         },
-      BASE_EIGENADDONS_BOOL_IS_SQUARED_CONST)
+      MATRIXBASE_ADDONS_BASE_BOOL_IS_SQUARED_CONST)
 
     .def("__getitem__", [](const S& x, const py::tuple& ij) -> const T&
         {
@@ -99,7 +99,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
           return x(matlab::input_index(i), matlab::input_index(j));
         }, py::return_value_policy::reference_internal,
-      BASE_EIGENADDONS_CONST_SCALAR_REF_OPERATORCALL_INDEX_INDEX_CONST)
+      MATRIX_ADDONS_BASE_CONST_SCALAR_REF_OPERATORCALL_INDEX_INDEX_CONST)
 
     .def("__setitem__", [](S& x, const py::tuple& ij, const T& a)
         {
@@ -111,7 +111,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
 
           x(matlab::input_index(i), matlab::input_index(j)) = a;
         },
-      BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_INDEX_INDEX)
+      MATRIX_ADDONS_BASE_SCALAR_REF_OPERATORCALL_INDEX_INDEX)
 
     ;
   }
@@ -122,14 +122,14 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         {
           x.init(a);
         },
-      BASE_EIGENADDONS_AUTO_REF_INIT_CONST_SCALAR_REF,
+      MATRIX_ADDONS_BASE_AUTO_REF_INIT_CONST_SCALAR_REF,
       "x"_a)
 
     .def("init", [](S& x, const S& a)
         {
           x.init(a);
         },
-      BASE_EIGENADDONS_AUTO_REF_INIT_CONST_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
+      MATRIX_ADDONS_BASE_AUTO_REF_INIT_CONST_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
       "x"_a)
 
     .def("__repr__", [](const S& x)
@@ -188,7 +188,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(i,j);
             return x(matlab::input_index(i),matlab::input_index(j));
           }, py::return_value_policy::reference_internal,
-        BASE_EIGENADDONS_SCALAR_REF_OPERATORCALL_INDEX_INDEX)
+        MATRIX_ADDONS_BASE_SCALAR_REF_OPERATORCALL_INDEX_INDEX)
 
       .def("resize", [](S& x, Index_type nb_rows, Index_type nb_cols)
           {
@@ -203,15 +203,15 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(nb_rows, nb_cols);
             x.resize_save_values(nb_rows, nb_cols);
           },
-        MATRIXBASE_EIGENADDONS_VOID_RESIZE_SAVE_VALUES_INDEX_INDEX,
+        MATRIX_ADDONS_MATRIXBASE_VOID_RESIZE_SAVE_VALUES_INDEX_INDEX,
         "nb_rows"_a, "nb_cols"_a)
 
-      .def_static("zeros", [](Index_type r, Index_type c)
+      .def_static("zero", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
-            return S::zeros(r,c);
+            return S::zero(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ZEROS_INDEX_INDEX,
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_ZERO_INDEX_INDEX,
         "r"_a, "c"_a)
       
       .def_static("ones", [](Index_type r, Index_type c)
@@ -219,15 +219,23 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(r,c);
             return S::ones(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_ONES_INDEX_INDEX,
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_ONES_INDEX_INDEX,
         "r"_a, "c"_a)
+      
+      .def_static("constant", [](Index_type r, Index_type c, const T& x)
+          {
+            matlab::test_integer(r,c);
+            return S::constant(r,c,x);
+          },
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_CONSTANT_INDEX_INDEX_CONST_SCALAR_REF,
+        "r"_a, "c"_a, "x"_a)
       
       .def_static("eye", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
             return S::eye(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_EYE_INDEX_INDEX,
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_EYE_INDEX_INDEX,
         "r"_a, "c"_a)
       
       .def_static("random", [](Index_type r, Index_type c)
@@ -235,7 +243,7 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
             matlab::test_integer(r,c);
             return S::random(r,c);
           },
-        MATRIXBASE_EIGENADDONS_STATIC_MATRIX_SCALARRC_RANDOM_INDEX_INDEX,
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_RANDOM_INDEX_INDEX,
         "r"_a, "c"_a)
 
     ;
@@ -243,5 +251,5 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
   
   //S abs(const MatrixBase<S,T>& x)
   m.def("abs", [](const S& x) { return abs(x); },
-    AUTO_ABS_CONST_EIGEN_MATRIX_SCALARROWSATCOMPILETIMECOLSATCOMPILETIME_REF);
+    AUTO_ABS_CONST_EIGEN_MATRIXBASE_OTHERDERIVED_REF);
 }

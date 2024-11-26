@@ -61,9 +61,6 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalMatrix.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalRow.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_IntervalVector.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen/codac2_IntervalMatrix_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen/codac2_IntervalMatrixBase_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen/codac2_IntervalVector_eigenaddons.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_Paving.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_Paving.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_PavingNode.h
@@ -93,6 +90,26 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_geometry.h
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_Polygon.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/geometry/codac2_Polygon.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_Base.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_include.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_IntervalMatrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_IntervalMatrixBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_IntervalVector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_Matrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_MatrixBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_Vector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons/codac2_Matrix_addons_VectorBase.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_Base.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_include.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_IntervalMatrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_IntervalMatrixBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_IntervalVector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_Matrix.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_MatrixBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_Vector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons/codac2_MatrixBase_addons_VectorBase.h
     
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.h
@@ -100,13 +117,6 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Row.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Vector.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_Base_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_eigenaddons_test.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_Matrix_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_MatrixBase_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_Vector_eigenaddons.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/codac2_VectorBase_eigenaddons.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/paver/codac2_pave.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/paver/codac2_pave.h
@@ -177,7 +187,8 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/graphics/ipe
     ${CMAKE_CURRENT_SOURCE_DIR}/graphics/vibes
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons
     ${CMAKE_CURRENT_SOURCE_DIR}/paver
     ${CMAKE_CURRENT_SOURCE_DIR}/proj
     ${CMAKE_CURRENT_SOURCE_DIR}/separators
@@ -215,7 +226,7 @@
   file(APPEND ${CODAC_CORE_MAIN_HEADER} "#pragma once\n\n")
   foreach(header_path ${CODAC_CORE_HDR})
     get_filename_component(header_name ${header_path} NAME)
-    if(NOT header_name MATCHES "^.*eigenaddons.*$")
+    if(NOT header_name MATCHES "^.*_addons.*$")
       file(APPEND ${CODAC_CORE_MAIN_HEADER} "#include <${header_name}>\n")
     endif()
   endforeach()

@@ -50,7 +50,7 @@ class TestIntervalVector(unittest.TestCase):
     x = IntervalVector(2)
     x[0] = Interval(0,1)
     x[1] = Interval(0,1)
-    self.assertTrue(x == IntervalVector(2,Interval(0,1)))
+    self.assertTrue(x == IntervalVector([[0,1],[0,1]]))
     self.assertTrue(x == IntervalVector(x))
     #self.assertTrue(x == (IntervalVector(2)=x))
 
@@ -219,8 +219,8 @@ class TestIntervalVector(unittest.TestCase):
 
     self.assertTrue(not IntervalVector([[0,1],[2,3],[4,5]]).is_flat())
     self.assertTrue(IntervalVector.empty(3).is_flat())
-    self.assertTrue(IntervalVector(1,Interval(0,0)).is_flat())
-    self.assertTrue(not IntervalVector(1,Interval(0,1)).is_flat())
+    self.assertTrue(IntervalVector([[0,0]]).is_flat())
+    self.assertTrue(not IntervalVector([[0,1]]).is_flat())
     self.assertTrue(IntervalVector([[0,1],[2,2],[3,4]]).is_flat())
     self.assertTrue(IntervalVector([[0,1],[2,3],[4,4]]).is_flat())
     self.assertTrue(not IntervalVector.empty(3).is_unbounded())

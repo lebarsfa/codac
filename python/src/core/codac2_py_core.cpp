@@ -74,19 +74,19 @@ void export_geometry(py::module& m);
 void export_Polygon(py::module& m);
 
 // matrices
-void export_arithmetic_add(py::module& m,
+void export_arithmetic_add(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
   py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
-void export_arithmetic_sub(py::module& m,
+void export_arithmetic_sub(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
   py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
-void export_arithmetic_mul(py::module& m,
+void export_arithmetic_mul(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
   py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
-void export_arithmetic_div(py::module& m,
+void export_arithmetic_div(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
   py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
@@ -171,10 +171,10 @@ PYBIND11_MODULE(_core, m)
   export_EigenBlock<IntervalRow>(m, "IntervalRowBlock");
   export_EigenBlock<IntervalVector>(m, "IntervalVectorBlock");
 
-  export_arithmetic_add(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
-  export_arithmetic_sub(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
-  export_arithmetic_mul(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
-  export_arithmetic_div(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_add(py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_sub(py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_mul(py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_div(py_V, py_IV, py_M, py_IM, py_B, py_IB);
   
   export_Paving(m);
   export_PavingNode(m);

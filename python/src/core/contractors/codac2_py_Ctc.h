@@ -62,6 +62,8 @@ class pyCtcIntervalVector : public CtcBase<IntervalVector>
       assert_release(overload && "CtcBase<IntervalVector>: copy method not found");
 
       auto obj = overload();
-      return std::shared_ptr<CtcBase<IntervalVector>>(obj.cast<CtcBase<IntervalVector>*>(), [](auto p) { /* no delete */ });
+      return std::shared_ptr<CtcBase<IntervalVector>>(obj.cast<CtcBase<IntervalVector>*>(),
+        []([[maybe_unused]] auto p)
+        { /* no delete */ });
     }
 };

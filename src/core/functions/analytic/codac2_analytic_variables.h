@@ -28,15 +28,15 @@ namespace codac2
         return AnalyticExpr<T>::unique_id();
       }
 
-      T fwd_eval(ValuesMap& v, Index total_input_size) const
+      T fwd_eval(ValuesMap& v, [[maybe_unused]] Index total_input_size) const
       {
         return AnalyticExpr<T>::value(v);
       }
       
-      void bwd_eval(ValuesMap& v) const
+      void bwd_eval([[maybe_unused]] ValuesMap& v) const
       { }
 
-      void replace_expr(const ExprID& old_expr_id, const std::shared_ptr<ExprBase>& new_expr)
+      void replace_expr([[maybe_unused]] const ExprID& old_expr_id, [[maybe_unused]] const std::shared_ptr<ExprBase>& new_expr)
       { }
       
       operator std::shared_ptr<AnalyticExpr<T>>() const

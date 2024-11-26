@@ -32,8 +32,8 @@ namespace Eigen
   concept IsIntervalDomain = std::is_same_v<Scalar,codac2::Interval>;
 }
 
-#define EIGEN_MATRIX_PLUGIN "codac2_eigenaddons.h"
-#define EIGEN_MATRIXBASE_PLUGIN "codac2_eigenaddons_test.h"
+#define EIGEN_MATRIXBASE_PLUGIN "codac2_MatrixBase_addons_include.h"
+#define EIGEN_MATRIX_PLUGIN "codac2_Matrix_addons_include.h"
 
 #ifndef EIGEN_NO_DEBUG
 /* Disables Eigen's assertions if defined.
@@ -94,18 +94,20 @@ namespace codac2
 
 namespace codac2
 {
-  template<typename Scalar,int RowsAtCompileTime,int ColsAtCompileTime>
-  inline auto abs(const Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>& x)
+  template<typename OtherDerived>
+  inline auto abs(const Eigen::MatrixBase<OtherDerived>& x)
   {
-    Eigen::Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime> a(x);
+    using M = Eigen::MatrixBase<OtherDerived>;
+    Eigen::Matrix<typename M::Scalar,M::RowsAtCompileTime,M::ColsAtCompileTime> a(x);
 
-    for(int i = 0 ; i < x.size() ; i++)
-    {
-      if constexpr(std::is_same_v<Scalar,double>)
-        *(a.data()+i) = fabs(*(x.data()+i));
-      else
-        *(a.data()+i) = abs(*(x.data()+i));
-    }
+    for(Index i = 0 ; i < x.rows() ; i++)
+      for(Index j = 0 ; j < x.cols() ; j++)
+      {
+        if constexpr(std::is_same_v<typename M::Scalar,double>)
+          a(i,j) = fabs(x(i,j));
+        else
+          a(i,j) = abs(x(i,j));
+      }
 
     return a;
   }

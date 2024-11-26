@@ -112,7 +112,7 @@ namespace codac2
         return eval_(x...).da;
       }
 
-      friend std::ostream& operator<<(std::ostream& os, const AnalyticFunction<T>& f)
+      friend std::ostream& operator<<(std::ostream& os, [[maybe_unused]] const AnalyticFunction<T>& f)
       {
         if constexpr(std::is_same_v<typename T::Domain,Interval>) 
           os << "scalar function";
@@ -132,7 +132,7 @@ namespace codac2
         assert(i >= 0 && i < (Index)this->args().size());
         assert_release(size_of(x) == this->args()[i]->size() && "provided arguments do not match function inputs");
 
-        IntervalMatrix d = IntervalMatrix::zeros(size_of(x), this->args().total_size());
+        IntervalMatrix d = IntervalMatrix::zero(size_of(x), this->args().total_size());
         
         Index p = 0, j = 0;
         for( ; j < i ; j++)
@@ -186,7 +186,7 @@ namespace codac2
       template<typename... Args>
       void check_valid_inputs(const Args&... x) const
       {
-        Index n = 0;
+        [[maybe_unused]] Index n = 0;
         ((n += size_of(x)), ...);
 
         assert_release(this->_args.total_size() == n && 

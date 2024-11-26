@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_Vector_eigenaddons.h
+ *  \file codac2_Matrix_addons_Vector.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.
@@ -29,18 +29,6 @@ Matrix(std::initializer_list<double> l)
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
-explicit Matrix(int n)
-  : Matrix<double,R,C>(
-    [&]() -> int { if(R == 1) return 1; else return n; }(),
-    [&]() -> int { if(C == 1) return 1; else return n; }()
-  )
-{
-  assert_release(n >= 0);
-  this->init(0.);
-}
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
 explicit Matrix(int n, double values[])
   : Matrix<double,R,C>(
     [&]() -> int { if(R == 1) return 1; else return n; }(),
@@ -49,24 +37,4 @@ explicit Matrix(int n, double values[])
   )
 {
   assert_release(n > 0);
-}
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
-inline Index min_coeff_index() const
-{
-  Index r,c;
-  this->minCoeff(&r,&c);
-  assert(c == 0);
-  return r;
-}
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
-inline Index max_coeff_index() const
-{
-  Index r,c;
-  this->maxCoeff(&r,&c);
-  assert(c == 0);
-  return r;
 }

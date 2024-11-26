@@ -13,14 +13,6 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-template<typename Scalar__,int R_,int C_>
-  requires (R_ != RowsAtCompileTime || C_ != ColsAtCompileTime)
-Matrix(const Matrix<Scalar__,R_,C_>& x)
-  : Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>(x.rows(),x.cols())
-{
-  *this = x.template cast<Scalar>();
-}
-
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline Scalar& operator()(Index i, Index j)
 {

@@ -15,18 +15,6 @@
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-explicit Matrix(int n, const Scalar& x)
-  : Matrix<Scalar,R,C>(
-    [&]() -> int { if(R == 1) return 1; else return n; }(),
-    [&]() -> int { if(C == 1) return 1; else return n; }()
-  )
-{
-  assert_release(n > 0);
-  init(x);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
 inline Scalar& operator()(Index i)
 {
   return const_cast<Scalar&>(const_cast<const Matrix<Scalar,R,C>*>(this)->operator()(i));
@@ -57,13 +45,10 @@ inline const Scalar& operator[](Index i) const
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsVectorOrRow<R,C>
-inline static Matrix<Scalar,R,C> zeros(Index n)
+inline static Matrix<Scalar,R,C> zero(Index n)
 {
   assert_release(n >= 0);
-  if constexpr(R == 1)
-    return Matrix<Scalar,R,C>::Zero(1,n);
-  else
-    return Matrix<Scalar,R,C>::Zero(n,1);
+  return DenseBase<Matrix<Scalar,R,C>>::Zero(n);
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -71,10 +56,15 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> ones(Index n)
 {
   assert_release(n >= 0);
-  if constexpr(R == 1)
-    return Matrix<Scalar,R,C>::Ones(1,n);
-  else
-    return Matrix<Scalar,R,C>::Ones(n,1);
+  return DenseBase<Matrix<Scalar,R,C>>::Ones(n);
+}
+
+template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires IsVectorOrRow<R,C>
+inline static Matrix<Scalar,R,C> constant(Index n, const Scalar& x)
+{
+  assert_release(n >= 0);
+  return DenseBase<Matrix<Scalar,R,C>>::Constant(n,x);
 }
 
 // Note that this static function is not called "rand"
@@ -84,7 +74,7 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> random(Index n)
 {
   assert_release(n >= 0);
-  return Matrix<Scalar,R,C>::Random(n);
+  return DenseBase<Matrix<Scalar,R,C>>::Random(n);
 }
 
 template<typename OtherDerived,int R=RowsAtCompileTime,int C=ColsAtCompileTime>

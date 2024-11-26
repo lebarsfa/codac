@@ -121,7 +121,7 @@ TEST_CASE("IntervalMatrix")
   }
 
   {
-    IntervalMatrix m1(2,3, 0.);
+    IntervalMatrix m1 = IntervalMatrix::zero(2,3);
     auto r1_0 = IntervalVector({{0,1},{0,2},{0,3}});
     CHECK(r1_0.cols() == 1);
     CHECK(r1_0.rows() == 3);
@@ -164,7 +164,7 @@ TEST_CASE("IntervalMatrix")
 
   {
     Interval x(-1,2);
-    IntervalMatrix m(2,3,x);
+    IntervalMatrix m = IntervalMatrix::constant(2,3,x);
 
     CHECK(m.rows() == 2);
     CHECK(m.cols() == 3);
@@ -634,7 +634,7 @@ TEST_CASE("IntervalMatrix - mixing type")
 
   {
     IntervalMatrix m1 = IntervalMatrix::ones(3,3);
-    IntervalMatrix m2 = IntervalMatrix::zeros(3,3);
+    IntervalMatrix m2 = IntervalMatrix::zero(3,3);
     CHECK(m1.volume() == 0.);
     CHECK(m2.volume() == 0.);
     CHECK((m1+m2).volume() == 0.);
@@ -658,6 +658,18 @@ TEST_CASE("IntervalMatrix - mixing type")
     CHECK(m3 == Matrix({
       { 3, 5 },
       { 7, 9 }
+    }));
+
+    IntervalMatrix m4(m2+m2);
+    CHECK(m4 == IntervalMatrix({
+      {{3,3},{5,5}},
+      {{7,7},{9,9}}
+    }));
+
+    IntervalMatrix m5(m2*m2);
+    CHECK(m5 == IntervalMatrix({
+      {{11,11},{15,15}},
+      {{21,21},{29,29}}
     }));
   }
 }

@@ -29,18 +29,6 @@ Matrix(std::initializer_list<double> l)
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
-explicit Matrix(int n)
-  : Matrix<double,R,C>(
-    [&]() -> int { if(R == 1) return 1; else return n; }(),
-    [&]() -> int { if(C == 1) return 1; else return n; }()
-  )
-{
-  assert_release(n >= 0);
-  this->init(0.);
-}
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsIntervalDomain<U>) && (IsVectorOrRow<R,C>)
 explicit Matrix(int n, double values[])
   : Matrix<double,R,C>(
     [&]() -> int { if(R == 1) return 1; else return n; }(),

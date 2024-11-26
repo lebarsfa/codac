@@ -13,17 +13,31 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 #include <codac2_Row.h>
+#include <codac2_Matrix.h>
 #include <codac2_IntervalRow.h>
 #include <codac2_IntervalVector.h>
 #include <codac2_IntervalMatrix.h>
 
 #include "codac2_py_doc.h"
-#include "codac2_py_MatrixBase_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_IntervalMatrixBase_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_Base_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_eigenaddons_test_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_Base_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_Matrix_addons_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_Matrix_addons_Matrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_Base_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_Matrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
 #include "codac2_py_matrices_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_matrices_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_IntervalMatrix_docs.h"
 
 #include "codac2_py_IntervalMatrixBase.h"
 
@@ -54,18 +68,18 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
           matlab::test_integer(r,c);
           return std::make_unique<IntervalMatrix>(r,c,x);
         }),
-      MATRIXBASE_EIGENADDONS_MATRIX_INT_INT_CONST_SCALAR_REF,
+      MATRIX_ADDONS_MATRIXBASE_MATRIX_INT_INT_CONST_SCALAR_REF,
       "r"_a, "c"_a, "x"_a)
 
     .def(py::init<const IntervalMatrix&>(),
       "x"_a)
 
     .def(py::init<const Matrix&>(),
-      INTERVALMATRIXBASE_EIGENADDONS_MATRIX_CONST_MATRIX_DOUBLEROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
+      MATRIX_ADDONS_INTERVALMATRIXBASE_MATRIX_CONST_MATRIX_DOUBLEROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
       "x"_a)
 
     .def(py::init<const Matrix&,const Matrix&>(),
-      INTERVALMATRIXBASE_EIGENADDONS_MATRIX_CONST_MATRIX_DOUBLERC_REF_CONST_MATRIX_DOUBLERC_REF,
+      MATRIX_ADDONS_INTERVALMATRIXBASE_MATRIX_CONST_MATRIX_DOUBLERC_REF_CONST_MATRIX_DOUBLERC_REF,
       "lb"_a, "ub"_a)
 
     .def(py::init<const Row&>(),
@@ -112,7 +126,7 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
           matlab::test_integer(r,c);
           return IntervalMatrix::empty(r,c);
         },
-      INTERVALMATRIXBASE_EIGENADDONS_STATIC_AUTO_EMPTY_INDEX_INDEX,
+      MATRIX_ADDONS_INTERVALMATRIXBASE_STATIC_AUTO_EMPTY_INDEX_INDEX,
       "r"_a, "c"_a)
 
     .def("__repr__", [](const IntervalMatrix& x)

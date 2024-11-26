@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_VectorBase_eigenaddons.h
+ *  \file codac2_Matrix_addons_VectorBase.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.
@@ -23,13 +23,6 @@ explicit Matrix(int n, const Scalar& x)
 {
   assert_release(n > 0);
   init(x);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline auto diag_matrix() const
-{
-  return this->asDiagonal().toDenseMatrix();
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -94,18 +87,9 @@ inline static Matrix<Scalar,R,C> random(Index n)
   return Matrix<Scalar,R,C>::Random(n);
 }
 
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline auto subvector(Index start_id, Index end_id) const
-{
-  assert_release(end_id >= 0 && start_id >= 0);
-  assert_release(end_id < this->size() && start_id <= end_id);
-  return this->segment(start_id,end_id-start_id+1);
-}
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsVectorOrRow<R,C>
-inline void put(Index start_id, const Matrix<Scalar,R,C>& x)
+template<typename OtherDerived,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires IsVectorOrRow<R,C> && IsVectorOrRow<MatrixBase<OtherDerived>::RowsAtCompileTime,MatrixBase<OtherDerived>::ColsAtCompileTime>
+inline void put(Index start_id, const MatrixBase<OtherDerived>& x)
 {
   assert_release(start_id >= 0 && start_id < this->size());
   assert_release(start_id+x.size() <= this->size());

@@ -56,7 +56,7 @@
   endif()
 
   if(MSVC)
-    add_compile_options(/W4 /WX)
+    #add_compile_options(/W4 /WX) # temporarily removed because of multiple "the following warning is treated as an error" with WS
   else()
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()

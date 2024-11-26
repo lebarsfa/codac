@@ -138,7 +138,7 @@ namespace codac2
       }
     }
     
-    printf("Computation time: %.4fs, %zd inner boxes, %zd boundary boxes\n",
+    printf("Computation time: %.4fs, %ld inner boxes, %ld boundary boxes\n",
       (double)(clock()-t_start)/CLOCKS_PER_SEC, n_inner, n_boundary);
   }
 }

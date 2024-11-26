@@ -186,7 +186,7 @@ namespace codac2
       template<typename... Args>
       void check_valid_inputs(const Args&... x) const
       {
-        Index n = 0;
+        [[maybe_unused]] Index n = 0;
         ((n += size_of(x)), ...);
 
         assert_release(this->_args.total_size() == n && 

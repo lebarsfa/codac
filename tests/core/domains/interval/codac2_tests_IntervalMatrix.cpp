@@ -338,7 +338,7 @@ TEST_CASE("IntervalMatrix")
   }
 
   {
-    CHECK(-IntervalMatrix::empty(2,3).is_empty());
+    CHECK((-IntervalMatrix::empty(2,3)).is_empty());
   }
 
   {

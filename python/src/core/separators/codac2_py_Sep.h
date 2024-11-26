@@ -63,6 +63,8 @@ class pySep : public SepBase
       assert(overload && "SepBase: copy method not found");
 
       auto obj = overload();
-      return std::shared_ptr<SepBase>(obj.cast<SepBase*>(), [](auto p) { /* no delete */ });
+      return std::shared_ptr<SepBase>(obj.cast<SepBase*>(),
+        []([[maybe_unused]] auto p)
+        { /* no delete */ });
     }
 };

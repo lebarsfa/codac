@@ -22,9 +22,11 @@ namespace codac2
       { }
 
       FunctionArgsList(const FunctionArgsList& args)
+        : std::vector<std::shared_ptr<VarBase>>(args.size())
       {
+        size_t i = 0;
         for(const auto& arg : args)
-          push_back(arg->arg_copy());
+          (*this)[i++] = arg->arg_copy();
       }
 
       FunctionArgsList(const std::vector<std::reference_wrapper<VarBase>>& args)

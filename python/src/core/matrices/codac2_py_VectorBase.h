@@ -22,7 +22,7 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 template<typename S,typename M,typename T>
-void export_VectorBase(py::module& m, py::class_<S>& pyclass)
+void export_VectorBase([[maybe_unused]] py::module& m, py::class_<S>& pyclass)
 {
   //export_MatrixBase<S,T,true>(m, pyclass);
   // ^ We do not "inherit" from export_MatrixBase here, in order to

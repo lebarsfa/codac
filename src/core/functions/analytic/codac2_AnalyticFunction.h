@@ -112,7 +112,7 @@ namespace codac2
         return eval_(x...).da;
       }
 
-      friend std::ostream& operator<<(std::ostream& os, const AnalyticFunction<T>& f)
+      friend std::ostream& operator<<(std::ostream& os, [[maybe_unused]] const AnalyticFunction<T>& f)
       {
         if constexpr(std::is_same_v<typename T::Domain,Interval>) 
           os << "scalar function";

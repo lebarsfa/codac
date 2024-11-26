@@ -28,13 +28,13 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
 
   pyclass
 
-    .def("volume", &S::volume,
+    .def("volume", [](const S& x) { return x.volume(); },
       MATRIXBASE_ADDONS_INTERVALMATRIXBASE_DOUBLE_VOLUME_CONST)
 
-    .def("is_empty", &S::is_empty,
+    .def("is_empty", [](const S& x) { return x.is_empty(); },
       MATRIXBASE_ADDONS_INTERVALMATRIXBASE_BOOL_IS_EMPTY_CONST)
 
-    .def("set_empty", &S::set_empty,
+    .def("set_empty", [](S& x) { x.set_empty(); },
       MATRIX_ADDONS_INTERVALMATRIXBASE_VOID_SET_EMPTY)
 
     .def("lb", [](const S& x) { return x.lb(); },
@@ -134,7 +134,7 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
     .def("is_bisectable", [](const S& x) { return x.is_bisectable(); },
       MATRIXBASE_ADDONS_INTERVALMATRIXBASE_BOOL_IS_BISECTABLE_CONST)
 
-    .def("inflate", (S&(S::*)(double))&S::inflate,
+    .def("inflate", [](S& x, double r) { return x.inflate(r); },
       MATRIX_ADDONS_INTERVALMATRIXBASE_AUTO_REF_INFLATE_DOUBLE,
       "r"_a)
 
@@ -150,7 +150,7 @@ void export_IntervalMatrixBase(py::module& m, py::class_<S>& pyclass)
       MATRIX_ADDONS_INTERVALMATRIXBASE_AUTO_BISECT_INDEX_FLOAT_CONST,
       "i"_a, "ratio"_a = 0.49)
 
-    .def("bisect_largest", [](const S& x, double ratio = 0.49) { return x.bisect_largest(); },
+    .def("bisect_largest", [](const S& x, double ratio = 0.49) { return x.bisect_largest(ratio); },
       MATRIX_ADDONS_INTERVALMATRIXBASE_AUTO_BISECT_LARGEST_FLOAT_CONST,
       "ratio"_a = 0.49)
 

@@ -28,15 +28,6 @@
   set(PROJECT_HOMEPAGE_URL "http://codac.io")
   message(STATUS "Configuring build for ${PROJECT_NAME} ${PROJECT_VERSION}")
 
-  if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
-    message(STATUS "Configuring ${PROJECT_NAME} in DEBUG mode as none was specified.")
-    if(MSVC)
-      add_compile_options(/MD) # Temporary fix to avoid debug vs release inconsistencies...
-    else()
-      add_compile_options(-O3)
-    endif()
-  endif()
 
 ################################################################################
 # Options for directories
@@ -53,6 +44,22 @@
 ################################################################################
 # Compilation configuration
 ################################################################################
+
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+    message(STATUS "Configuring ${PROJECT_NAME} in DEBUG mode as none was specified.")
+    if(MSVC)
+      add_compile_options(/MD) # Temporary fix to avoid debug vs release inconsistencies...
+    else()
+      add_compile_options(-O3)
+    endif()
+  endif()
+
+  if(MSVC)
+    add_compile_options(/W4 /WX)
+  else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+  endif()
 
 #  # Check that the compiler supports c++20
 #  include(CheckCXXCompilerFlag)
@@ -84,7 +91,6 @@
 ################################################################################
 
   add_subdirectory(3rd/eigen)
-  #find_package(Eigen3 3.4 REQUIRED NO_MODULE)
   message(STATUS "Found Eigen3 version ${Eigen3_VERSION}")
   add_definitions(${EIGEN3_DEFINITIONS})
 

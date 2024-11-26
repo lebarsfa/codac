@@ -32,7 +32,7 @@ using namespace codac2;
     };
   }
 
-  void AddOp::bwd(const Interval& y, Interval& x1)
+  void AddOp::bwd([[maybe_unused]] const Interval& y, [[maybe_unused]] Interval& x1)
   { }
 
   IntervalVector AddOp::fwd(const IntervalVector& x1)

@@ -24,7 +24,7 @@ using namespace pybind11::literals;
 using B = Eigen::Block<Matrix>;
 using IB = Eigen::Block<IntervalMatrix>;
 
-void export_arithmetic_div(py::module& m,
+void export_arithmetic_div(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
   py::class_<B>& py_B, py::class_<IB>& py_IB)

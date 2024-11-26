@@ -20,6 +20,6 @@ namespace codac2
 
       CtcIdentity(Index n);
 
-      void contract(IntervalVector& x) const;
+      void contract([[maybe_unused]] IntervalVector& x) const;
   };
 }

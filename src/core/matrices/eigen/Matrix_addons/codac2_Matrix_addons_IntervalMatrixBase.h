@@ -18,12 +18,6 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-template<typename U=Scalar>
-  requires IsIntervalDomain<U>
-Matrix(const Matrix<double,RowsAtCompileTime,ColsAtCompileTime>& x)
-  : Matrix<U,RowsAtCompileTime,ColsAtCompileTime>(x.template cast<codac2::Interval>())
-{ }
-
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsIntervalDomain<U>
 Matrix(const Matrix<double,R,C>& lb, const Matrix<double,R,C>& ub)
@@ -63,12 +57,6 @@ Matrix(int r, int c, const double bounds[][2])
     }
   assert_release(k == this->size() && "incorrect array size");
 }
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime,typename OtherDerived>
-  requires IsIntervalDomain<U>
-Matrix(const MatrixBase<OtherDerived>& x)
-  : Matrix<U,R,C>(x.eval().template cast<codac2::Interval>())
-{ }
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime,typename OtherDerived>
   requires IsIntervalDomain<U>
@@ -273,8 +261,7 @@ template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static auto empty(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
-  Matrix<codac2::Interval,R,C> e(r,c);
-  return e.init(codac2::Interval::empty());
+  return Matrix<U,R,C>::constant(r,c,codac2::Interval::empty());
 }
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>

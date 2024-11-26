@@ -62,20 +62,10 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
       DOC_TO_BE_DEFINED,
       "r"_a, "c"_a)
 
-    .def(py::init(
-        [](Index_type r, Index_type c, const Interval& x)
-        {
-          matlab::test_integer(r,c);
-          return std::make_unique<IntervalMatrix>(r,c,x);
-        }),
-      MATRIX_ADDONS_MATRIXBASE_MATRIX_INT_INT_CONST_SCALAR_REF,
-      "r"_a, "c"_a, "x"_a)
-
     .def(py::init<const IntervalMatrix&>(),
       "x"_a)
 
     .def(py::init<const Matrix&>(),
-      MATRIX_ADDONS_INTERVALMATRIXBASE_MATRIX_CONST_MATRIX_DOUBLEROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
       "x"_a)
 
     .def(py::init<const Matrix&,const Matrix&>(),

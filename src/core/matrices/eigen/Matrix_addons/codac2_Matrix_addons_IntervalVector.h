@@ -62,18 +62,6 @@ Matrix(const std::initializer_list<codac2::Interval>& l)
 
 template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires IsIntervalDomain<U> && IsVectorOrRow<R,C>
-explicit Matrix(int n)
-  : Matrix<codac2::Interval,R,C>(
-    [&]() -> int { if(R == 1) return 1; else return n; }(),
-    [&]() -> int { if(C == 1) return 1; else return n; }()
-  )
-{
-  assert_release(n >= 0);
-  this->init(codac2::Interval());
-}
-
-template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires IsIntervalDomain<U> && IsVectorOrRow<R,C>
 Matrix(int n, const double bounds[][2])
   : Matrix<codac2::Interval,R,C>(
     [&]() -> int { if(R == 1) return 1; else return n; }(),
@@ -89,8 +77,5 @@ template<typename U=Scalar,int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static auto empty(Index n)
 {
   assert_release(n >= 0);
-  if constexpr(R == 1)
-    return Matrix<codac2::Interval,R,C>((int)n,codac2::Interval::empty());
-  else
-    return Matrix<codac2::Interval,R,C>((int)n,codac2::Interval::empty());
+  return Matrix<codac2::Interval,R,C>::constant((int)n,codac2::Interval::empty());
 }

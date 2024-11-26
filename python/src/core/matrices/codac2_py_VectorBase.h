@@ -77,12 +77,12 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
       MATRIX_ADDONS_VECTORBASE_VOID_PUT_INDEX_CONST_MATRIXBASE_OTHERDERIVED_REF,
       "start_id"_a, "x"_a)
     
-    .def_static("zeros", [](Index_type n)
+    .def_static("zero", [](Index_type n)
         {
           matlab::test_integer(n);
-          return S::zeros(n);
+          return S::zero(n);
         },
-      MATRIX_ADDONS_VECTORBASE_STATIC_MATRIX_SCALARRC_ZEROS_INDEX,
+      MATRIX_ADDONS_VECTORBASE_STATIC_MATRIX_SCALARRC_ZERO_INDEX,
       "n"_a)
     
     .def_static("ones", [](Index_type n)
@@ -92,6 +92,14 @@ void export_VectorBase(py::module& m, py::class_<S>& pyclass)
         },
       MATRIX_ADDONS_VECTORBASE_STATIC_MATRIX_SCALARRC_ONES_INDEX,
       "n"_a)
+    
+    .def_static("constant", [](Index_type n, const T& x)
+        {
+          matlab::test_integer(n);
+          return S::constant(n,x);
+        },
+      MATRIX_ADDONS_VECTORBASE_STATIC_MATRIX_SCALARRC_CONSTANT_INDEX_CONST_SCALAR_REF,
+      "n"_a, "x"_a)
     
     .def_static("random", [](Index_type n)
         {

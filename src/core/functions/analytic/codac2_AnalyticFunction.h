@@ -132,7 +132,7 @@ namespace codac2
         assert(i >= 0 && i < (Index)this->args().size());
         assert_release(size_of(x) == this->args()[i]->size() && "provided arguments do not match function inputs");
 
-        IntervalMatrix d = IntervalMatrix::zeros(size_of(x), this->args().total_size());
+        IntervalMatrix d = IntervalMatrix::zero(size_of(x), this->args().total_size());
         
         Index p = 0, j = 0;
         for( ; j < i ; j++)

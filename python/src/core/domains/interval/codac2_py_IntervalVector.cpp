@@ -57,14 +57,13 @@ py::class_<IntervalVector> export_IntervalVector(py::module& m)
           matlab::test_integer(n);
           return std::make_unique<IntervalVector>(n);
         }),
-      MATRIX_ADDONS_INTERVALVECTOR_MATRIX_INT,
+      DOC_TO_BE_DEFINED,
       "n"_a)
 
     .def(py::init<const IntervalVector&>(),
       "x"_a)
 
     .def(py::init<const Vector&>(),
-      MATRIX_ADDONS_INTERVALMATRIXBASE_MATRIX_CONST_MATRIX_DOUBLEROWSATCOMPILETIMECOLSATCOMPILETIME_REF,
       "x"_a)
 
     .def(py::init<const Vector&,const Vector&>(),

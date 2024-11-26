@@ -206,12 +206,12 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
         MATRIX_ADDONS_MATRIXBASE_VOID_RESIZE_SAVE_VALUES_INDEX_INDEX,
         "nb_rows"_a, "nb_cols"_a)
 
-      .def_static("zeros", [](Index_type r, Index_type c)
+      .def_static("zero", [](Index_type r, Index_type c)
           {
             matlab::test_integer(r,c);
-            return S::zeros(r,c);
+            return S::zero(r,c);
           },
-        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_ZEROS_INDEX_INDEX,
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_ZERO_INDEX_INDEX,
         "r"_a, "c"_a)
       
       .def_static("ones", [](Index_type r, Index_type c)
@@ -221,6 +221,14 @@ void export_MatrixBase(py::module& m, py::class_<S>& pyclass)
           },
         MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_ONES_INDEX_INDEX,
         "r"_a, "c"_a)
+      
+      .def_static("constant", [](Index_type r, Index_type c, const T& x)
+          {
+            matlab::test_integer(r,c);
+            return S::constant(r,c,x);
+          },
+        MATRIX_ADDONS_MATRIXBASE_STATIC_MATRIX_SCALARRC_CONSTANT_INDEX_INDEX_CONST_SCALAR_REF,
+        "r"_a, "c"_a, "x"_a)
       
       .def_static("eye", [](Index_type r, Index_type c)
           {

@@ -55,7 +55,7 @@ py::class_<Vector> export_Vector(py::module& m)
           matlab::test_integer(n);
           return std::make_unique<Vector>(n);
         }),
-      MATRIX_ADDONS_VECTOR_MATRIX_INT,
+      DOC_TO_BE_DEFINED,
       "n"_a)
 
     .def(py::init<const Vector&>(),

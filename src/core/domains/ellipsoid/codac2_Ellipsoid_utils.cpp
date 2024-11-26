@@ -12,7 +12,9 @@
 #include <unsupported/Eigen/KroneckerProduct>
 
 using namespace std;
-using namespace codac2;
+using codac2::Matrix;
+using codac2::Vector;
+using codac2::BoolInterval;
 
 namespace codac2
 {

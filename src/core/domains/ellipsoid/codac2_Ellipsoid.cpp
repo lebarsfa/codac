@@ -12,7 +12,7 @@
 #include <unsupported/Eigen/MatrixFunctions>
 
 using namespace std;
-using namespace codac2;
+using codac2::Vector;
 
 namespace codac2 {
     Ellipsoid::Ellipsoid(Index n)
@@ -132,7 +132,7 @@ namespace codac2 {
         auto e_G_ = e.G.template cast<Interval>();
         auto A_ = A.template cast<Interval>();
         auto b_ = b.template cast<Interval>();
-        IntervalVector unit_box_(n, {-1,1});
+        IntervalVector unit_box_ = IntervalVector::constant(n, {-1,1});
 
         // compute rounding error as a small box
         auto mu_res_guaranteed = A_ * e_mu_ + b_;
@@ -141,7 +141,7 @@ namespace codac2 {
                 (G_res_guaranteed - e_res_G_) * unit_box_;
 
         double rho = error_box_.norm().ub(); // max radius of error_box
-        Ellipsoid elli_error(Vector::zeros(n),
+        Ellipsoid elli_error(Vector::zero(n),
                              Matrix::eye(n,n) * rho); // = rho*unit_ball
         return e_res + elli_error;
     }

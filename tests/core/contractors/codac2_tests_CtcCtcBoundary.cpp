@@ -13,6 +13,7 @@
 #include <codac2_CtcUnion.h>
 #include <codac2_pave.h>
 #include <codac2_Figure2D.h>
+#include <codac2_IntervalVector.h>
 
 using namespace std;
 using namespace codac2;
@@ -29,8 +30,8 @@ BoolInterval test_inside_diamond(const Vector& x)
 
 TEST_CASE("CtcCtcBoundary")
 {
-  auto ctc_bound_diamond = CtcSegment({{-1},{0}}, {{0},{-1}}) | CtcSegment({{0},{-1}}, {{1},{0}})
-    | CtcSegment({{1},{0}}, {{0},{1}}) | CtcSegment({{0},{1}}, {{-1},{0}});
+  auto ctc_bound_diamond = CtcSegment({-1,0}, {0,-1}) | CtcSegment({0,-1}, {1,0})
+    | CtcSegment({1,0}, {0,1}) | CtcSegment({0,1}, {-1,0});
 
   CtcCtcBoundary ctc_diamond(ctc_bound_diamond,test_inside_diamond);
 
@@ -54,5 +55,5 @@ TEST_CASE("CtcCtcBoundary")
   x = IntervalVector({{0.5,10},{0.5,10}});
   ctc_diamond.contract(x);
   //DefaultView::draw_box(x,Color::blue());
-  CHECK(x == IntervalVector({{0.5},{0.5}}));
+  CHECK(x == IntervalVector({0.5,0.5}));
 }

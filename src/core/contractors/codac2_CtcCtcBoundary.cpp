@@ -16,7 +16,7 @@ void CtcCtcBoundary::contract(IntervalVector& x) const
 {
   assert_release(x.size() == this->size());
   
-  size_t attempt_nb = 5;
+  Index attempt_nb = 5;
   IntervalVector prev_x(x);
   _ctc_boundary.front().contract(x);
 
@@ -27,7 +27,7 @@ void CtcCtcBoundary::contract(IntervalVector& x) const
 
     Vector m = b.mid(); // first try: midpoint of the box
     BoolInterval d;
-    size_t k = 0;
+    Index k = 0;
 
     do
     {

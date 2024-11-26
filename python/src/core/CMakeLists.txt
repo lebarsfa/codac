@@ -57,7 +57,7 @@
     matrices/codac2_py_arithmetic_div.cpp
     matrices/codac2_py_Matrix.cpp
     matrices/codac2_py_MatrixBase.h
-    matrices/codac2_py_MatrixBaseBlock.h
+    matrices/codac2_py_MatrixBlock.h
     matrices/codac2_py_Vector.cpp
     matrices/codac2_py_VectorBase.h
 

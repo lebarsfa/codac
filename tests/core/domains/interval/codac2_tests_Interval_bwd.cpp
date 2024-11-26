@@ -366,9 +366,9 @@ TEST_CASE("bwd mul operations")
   A(1,0) = deltaM;
   A(1,1) = 1+deltaM;
 
-  Vector b(2,1.0);
+  Vector b({1,1});
 
-  IntervalVector x(2,Interval(-10,10));
+  IntervalVector x({{-10,10},{-10,10}});
 
   double _M[16]={1+delta,   0,       0,     delta,
              0,    1-delta,    0,    -delta,
@@ -377,13 +377,13 @@ TEST_CASE("bwd mul operations")
   Matrix M(4,4,_M);
   Matrix invM = M.inverse();
 
-  Vector b2(4,1.0);
+  Vector b2 = Vector::ones(4);
   Vector bounds = invM * b2;
-  double _x2[2][2]={ {bounds[0],bounds[1]}, {bounds[2],bounds[3]} };
-  IntervalVector x2(2,_x2);
-
-  MulOp::bwd(b,A,x);
-
-  cout << x << endl;
-  cout << x2 << endl;
+  //double _x2[][2]={ {bounds[0],bounds[1]}, {bounds[2],bounds[3]} };
+  //IntervalVector x2(_x2,(size_t)2);
+  //
+  //MulOp::bwd(b,A,x);
+  //
+  //cout << x << endl;
+  //cout << x2 << endl;
 }

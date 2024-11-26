@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_arithmetic.h
+ *  \file codac2_Index.h
  * ----------------------------------------------------------------------------
  *  \date       2024
  *  \author     Simon Rohou
@@ -9,7 +9,8 @@
 
 #pragma once
 
-#include "codac2_arithmetic_add.h"
-#include "codac2_arithmetic_sub.h"
-#include "codac2_arithmetic_mul.h"
-#include "codac2_arithmetic_div.h"
+namespace codac2
+{
+  // The Index type is the same as for Eigen
+  typedef long int Index;
+}

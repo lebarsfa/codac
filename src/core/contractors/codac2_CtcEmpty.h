@@ -18,7 +18,7 @@ namespace codac2
   {
     public:
 
-      CtcEmpty(size_t n);
+      CtcEmpty(Index n);
 
       void contract(IntervalVector& x) const;
   };

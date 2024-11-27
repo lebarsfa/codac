@@ -92,6 +92,7 @@ void export_arithmetic_div(
 py::class_<Row> export_Row(py::module& m);
 py::class_<Vector> export_Vector(py::module& m);
 py::class_<Matrix> export_Matrix(py::module& m);
+void export_Inversion(py::module& m);
 
 // paver
 void export_pave(py::module& m);
@@ -157,6 +158,7 @@ PYBIND11_MODULE(_core, m)
   auto py_B = export_EigenBlock<Matrix>(m, "MatrixBlock");
   export_EigenBlock<Row>(m, "RowBlock");
   export_EigenBlock<Vector>(m, "VectorBlock");
+  export_Inversion(m);
 
   // domains
   export_BoolInterval(m);

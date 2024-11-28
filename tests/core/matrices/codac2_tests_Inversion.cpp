@@ -41,6 +41,14 @@ TEST_CASE("Matrix")
    });
 
    IntervalMatrix v=inverse_enclosure(u);
-  CHECK((IntervalMatrix(u)*v).contains(Matrix::Identity(3,3)));
+  CHECK((u.template cast<Interval>()*v).contains(Matrix::Identity(3,3)));
 
+  Matrix w({
+    { 1, 2, 0 },
+    { 3, 4, 1 },
+    { 0, 1, 0 },
+  });
+
+  y = inverse_enclosure(w);
+  CHECK((w.template cast<Interval>()*y).contains(Matrix::Identity(3,3)));
 }

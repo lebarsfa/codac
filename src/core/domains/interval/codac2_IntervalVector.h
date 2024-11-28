@@ -58,18 +58,12 @@ namespace codac2
   inline std::ostream& operator<<(std::ostream& os, const IntervalVector& x)
   {
     if(x.is_empty())
-      return os << "( empty vector )";
+      return os << "[ empty vector ]";
 
     else
-      return operator<<(os,
-        static_cast<const Eigen::DenseBase<IntervalVector>&>(x));
-
-    #if 0 // IBEX style
-      os << "(";
-      for(Index i = 0 ; i < x.size() ; i++)
-        os << x[i] << (i<x.size()-1 ? " ; " : "");
-      os << ")";
+    {
+      os << x.format(codac_vector_fmt());
       return os;
-    #endif
+    }
   }
 }

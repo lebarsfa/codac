@@ -12,7 +12,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
-#include <codac2_IntervalVector.h>
+#include <codac2_Row.h>
+#include <codac2_IntervalRow.h>
 #include <codac2_IntervalMatrix.h>
 
 #include "codac2_py_doc.h"
@@ -42,9 +43,9 @@ using namespace codac2;
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-py::class_<IntervalVector> export_IntervalVector(py::module& m)
+py::class_<IntervalRow> export_IntervalRow(py::module& m)
 {
-  py::class_<IntervalVector> exported_intervalvector_class(m, "IntervalVector", DOC_TO_BE_DEFINED);
-  export_IntervalVector_<IntervalVector,Vector>(m, exported_intervalvector_class);
-  return exported_intervalvector_class;
+  py::class_<IntervalRow> exported_intervalrow_class(m, "IntervalRow", DOC_TO_BE_DEFINED);
+  export_IntervalVector_<IntervalRow,Row>(m, exported_intervalrow_class);
+  return exported_intervalrow_class;
 }

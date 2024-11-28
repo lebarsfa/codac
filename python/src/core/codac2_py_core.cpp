@@ -162,7 +162,7 @@ PYBIND11_MODULE(_core, m)
   export_BoolInterval(m);
   auto py_Interval = export_Interval(m);
   export_Interval_operations(m, py_Interval);
-  py::class_<IntervalRow> exported_intervalrow_class(m, "IntervalRow", DOC_TO_BE_DEFINED);
+  auto py_IR = export_IntervalRow(m);
   auto py_IV = export_IntervalVector(m);
   auto py_IM = export_IntervalMatrix(m);
   auto py_IB = export_EigenBlock<IntervalMatrix>(m, "IntervalMatrixBlock");

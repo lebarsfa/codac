@@ -375,6 +375,7 @@ namespace codac2
 
   ostream& operator<<(ostream& os, const Interval& x)
   {
+    gaol::interval::precision(os.precision());
     ibex::operator<<(os,x);
     return os;
   }

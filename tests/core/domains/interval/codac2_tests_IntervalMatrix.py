@@ -250,8 +250,8 @@ class TestIntervalMatrix(unittest.TestCase):
     self.assertTrue(m1 == m2)
 
     self.assertTrue(self.M1().block(0,0,2,3) == self.M1())
-    self.assertTrue(self.M1().block(0,0,1,3) == IntervalMatrix([[0,1],[0,2],[0,3]]))
-    self.assertTrue(self.M1().block(1,0,1,3) == IntervalMatrix([[-1,0],[-2,0],[-3,0]]))
+    self.assertTrue(self.M1().block(0,0,1,3) == IntervalMatrix([[[0,1],[0,2],[0,3]]]))
+    self.assertTrue(self.M1().block(1,0,1,3) == IntervalMatrix([[[-1,0],[-2,0],[-3,0]]]))
     self.assertTrue(self.M1().block(0,0,2,1) == IntervalMatrix([[[0,1]],[[-1,0]]]))
     self.assertTrue(self.M1().block(0,1,2,1) == IntervalMatrix([[[0,2]],[[-2,0]]]))
     self.assertTrue(self.M1().block(0,2,2,1) == IntervalMatrix([[[0,3]],[[-3,0]]]))
@@ -602,6 +602,62 @@ class TestIntervalMatrix(unittest.TestCase):
       [[11,11],[15,15]],
       [[21,21],[29,29]]
     ]))
+
+    test1 = IntervalMatrix([
+      [ [0,1], [0,2], [0,0] ]
+    ])
+    self.assertTrue(test1.rows() == 1)
+    self.assertTrue(test1.cols() == 3)
+    self.assertTrue(test1(0,0) == Interval(0,1))
+    self.assertTrue(test1(0,1) == Interval(0,2))
+    self.assertTrue(test1(0,2) == Interval(0,0))
+
+    test2 = IntervalMatrix([
+      [0,1],
+      [2,3],
+      [4,5]
+    ])
+    self.assertTrue(test2.rows() == 3)
+    self.assertTrue(test2.cols() == 2)
+    self.assertTrue(test2(0,0) == Interval(0))
+    self.assertTrue(test2(0,1) == Interval(1))
+    self.assertTrue(test2(1,0) == Interval(2))
+    self.assertTrue(test2(1,1) == Interval(3))
+    self.assertTrue(test2(2,0) == Interval(4))
+    self.assertTrue(test2(2,1) == Interval(5))
+
+    test3 = IntervalMatrix([
+      [[1,oo],[2,oo]],
+      [[3,oo],[4,oo]],
+      [[5,oo],[6,oo]]
+    ])
+    self.assertTrue(test3.rows() == 3)
+    self.assertTrue(test3.cols() == 2)
+    self.assertTrue(test3(0,0) == Interval(1,oo))
+    self.assertTrue(test3(0,1) == Interval(2,oo))
+    self.assertTrue(test3(1,0) == Interval(3,oo))
+    self.assertTrue(test3(1,1) == Interval(4,oo))
+    self.assertTrue(test3(2,0) == Interval(5,oo))
+    self.assertTrue(test3(2,1) == Interval(6,oo))
+
+    test4 = IntervalMatrix([
+      [[1,2]],
+      [[3,4]],
+      [[5,6]]
+    ])
+    self.assertTrue(test4.rows() == 3)
+    self.assertTrue(test4.cols() == 1)
+    self.assertTrue(test4(0,0) == Interval(1,2))
+    self.assertTrue(test4(1,0) == Interval(3,4))
+    self.assertTrue(test4(2,0) == Interval(5,6))
+
+    iv = IntervalVector([[1,2],[3,4],[5,6]])
+    test5 = IntervalMatrix(iv)
+    self.assertTrue(test5.rows() == 3)
+    self.assertTrue(test5.cols() == 1)
+    self.assertTrue(test5(0,0) == Interval(1,2))
+    self.assertTrue(test5(1,0) == Interval(3,4))
+    self.assertTrue(test5(2,0) == Interval(5,6))
 
 
 if __name__ ==  '__main__':

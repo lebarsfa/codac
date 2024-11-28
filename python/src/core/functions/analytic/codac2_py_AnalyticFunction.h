@@ -115,7 +115,7 @@ void export_AnalyticFunction(py::module& m, const std::string& export_name)
     .def("__repr__", [](const AnalyticFunction<T>& f) {
           std::ostringstream stream;
           stream << f;
-          return string(stream.str()); 
+          return std::string(stream.str()); 
         },
       OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_ANALYTICFUNCTION_T_REF)
   ;

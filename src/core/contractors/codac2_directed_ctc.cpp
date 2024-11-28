@@ -32,7 +32,7 @@ using namespace codac2;
     };
   }
 
-  void AddOp::bwd(const Interval& y, Interval& x1)
+  void AddOp::bwd([[maybe_unused]] const Interval& y, [[maybe_unused]] Interval& x1)
   { }
 
   IntervalVector AddOp::fwd(const IntervalVector& x1)
@@ -50,7 +50,7 @@ using namespace codac2;
     };
   }
 
-  void AddOp::bwd(const IntervalVector& y, IntervalVector& x1)
+  void AddOp::bwd([[maybe_unused]] const IntervalVector& y, [[maybe_unused]] IntervalVector& x1)
   {
     assert(y.size() == x1.size());
   }
@@ -70,7 +70,7 @@ using namespace codac2;
     };
   }
 
-  void AddOp::bwd(const IntervalMatrix& y, IntervalMatrix& x1)
+  void AddOp::bwd([[maybe_unused]] const IntervalMatrix& y, [[maybe_unused]] IntervalMatrix& x1)
   {
     assert(y.size() == x1.size());
   }
@@ -373,7 +373,7 @@ using namespace codac2;
     return {
       fwd(x1.a, /* <<----- x1.m */ x2.m),
       fwd(x1.a, x2.a),
-      IntervalMatrix::zeros(x1.a.rows(),x1.a.cols()), // todo
+      IntervalMatrix::zero(x1.a.rows(),x1.a.cols()), // todo
       x1.def_domain && x2.def_domain
     };
   }

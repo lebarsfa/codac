@@ -69,7 +69,7 @@ void Figure2D_IPE::update_window_properties()
 
 }
 
-void Figure2D_IPE::center_viewbox(const Vector& c, const Vector& r)
+void Figure2D_IPE::center_viewbox([[maybe_unused]] const Vector& c, [[maybe_unused]] const Vector& r)
 {
   assert(_fig.size() <= c.size() && _fig.size() <= r.size());
   assert(r.min_coeff() > 0.);

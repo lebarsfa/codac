@@ -40,7 +40,7 @@ namespace codac2
 
   Matrix gauss_jordan(const Matrix& A)
   {
-    Index n = A.rows(), m = A.cols();
+    Index n = A.rows();//, m = A.cols();
     Eigen::FullPivLU<Matrix> lu(A);
 
     Matrix L = Matrix::Identity(n,n);

@@ -15,13 +15,24 @@
 #include <codac2_IntervalMatrix.h>
 
 #include "codac2_py_doc.h"
-#include "codac2_py_MatrixBase_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_Vector_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_VectorBase_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_Base_eigenaddons_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
-#include "codac2_py_eigenaddons_test_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_Base_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_Matrix_addons_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_Matrix_addons_Matrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Matrix_addons_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_Base_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_IntervalMatrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_IntervalMatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_IntervalVector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_Matrix_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+//#include "codac2_py_MatrixBase_addons_MatrixBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_Vector_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_MatrixBase_addons_VectorBase_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
 #include "codac2_py_matrices_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
+#include "codac2_py_Vector_docs.h"
 
 #include "codac2_py_VectorBase.h"
 
@@ -44,7 +55,7 @@ py::class_<Vector> export_Vector(py::module& m)
           matlab::test_integer(n);
           return std::make_unique<Vector>(n);
         }),
-      VECTOR_EIGENADDONS_MATRIX_INT,
+      DOC_TO_BE_DEFINED,
       "n"_a)
 
     .def(py::init<const Vector&>(),
@@ -58,20 +69,20 @@ py::class_<Vector> export_Vector(py::module& m)
             (*v)[i] = v_[i];
           return v;
         }),
-      VECTOR_EIGENADDONS_MATRIX_INITIALIZER_LIST_DOUBLE,
+      MATRIX_ADDONS_VECTOR_MATRIX_INITIALIZER_LIST_DOUBLE,
       "v"_a)
 
     .def("min_coeff_index", [](const Vector& x)
         {
           return matlab::output_index(x.min_coeff_index());
         },
-      VECTOR_EIGENADDONS_INDEX_MIN_COEFF_INDEX_CONST)
+      MATRIXBASE_ADDONS_VECTOR_INDEX_MIN_COEFF_INDEX_CONST)
 
     .def("max_coeff_index", [](const Vector& x)
         {
           return matlab::output_index(x.max_coeff_index());
         },
-      VECTOR_EIGENADDONS_INDEX_MAX_COEFF_INDEX_CONST)
+      MATRIXBASE_ADDONS_VECTOR_INDEX_MAX_COEFF_INDEX_CONST)
 
     .def("__repr__", [](const Vector& x)
         {

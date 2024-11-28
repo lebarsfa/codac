@@ -147,7 +147,7 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 {
   assert_release(x.size() > 1);
   assert_release(tip_length >= 0.); // 0 = disabled tip
-  for(const auto& xi : x)
+  for([[maybe_unused]] const auto& xi : x)
   {
     assert_release(this->size() <= xi.size());
   }
@@ -159,7 +159,7 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 void Figure2D::draw_polygone(const vector<Vector>& x, const StyleProperties& s)
 {
   assert_release(x.size() > 1);
-  for(const auto& xi : x)
+  for([[maybe_unused]] const auto& xi : x)
   {
     assert_release(this->size() <= xi.size());
   }

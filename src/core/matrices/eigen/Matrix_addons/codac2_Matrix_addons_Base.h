@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_Base_eigenaddons.h
+ *  \file codac2_Matrix_addons_Base.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.
@@ -12,14 +12,6 @@
  *  \copyright  Copyright 2023 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
-
-template<typename Scalar__,int R_,int C_>
-  requires (R_ != RowsAtCompileTime || C_ != ColsAtCompileTime)
-Matrix(const Matrix<Scalar__,R_,C_>& x)
-  : Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>(x.rows(),x.cols())
-{
-  *this = x.template cast<Scalar>();
-}
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline Scalar& operator()(Index i, Index j)
@@ -56,37 +48,11 @@ inline auto& init(const Matrix<Scalar,RowsAtCompileTime,ColsAtCompileTime>& x) /
   return *this;
 }
 
-inline bool is_squared() const
-{
-  return this->rows() == this->cols();
-}
-
-inline auto squared_norm() const
-{
-  return this->squaredNorm();
-}
-
-#define minmax_item(op) \
-  Scalar m = *(this->data()); /* first element */ \
-  for(Index i = 1 ; i < this->size() ; i++) \
-  { \
-    if constexpr(std::is_same_v<Scalar,codac2::Interval>) \
-      m = codac2::op(m,*(this->data()+i)); \
-    else \
-      m = std::op(m,*(this->data()+i)); \
-  } \
-  return m; \
-
-inline Scalar min_coeff() const
-{
-  minmax_item(min);
-}
-
-inline Scalar max_coeff() const
-{
-  minmax_item(max);
-}
-
+// This operator should be related to Eigen::MatrixBase,
+// for allowing a comparison between two matrix expressions.
+// However, it is not possible to overwrite Eigen::MatrixBase::operator==.
+// Therefore, only comparisons between Eigen::Matrix types is possible.
+// This must be corrected...
 template<typename U_,int R_,int C_>
 inline bool operator==(const Matrix<U_,R_,C_>& x) const
 {

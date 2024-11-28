@@ -85,7 +85,7 @@ namespace codac2
       std::list<ConnectedSubset_> connected_subsets(const IntervalVector& x0, const NodeValue_& node_value) const
       {
         std::list<IntervalVector> l_boxes = intersecting_boxes(x0, node_value);
-        Index nb_boxes = l_boxes.size();
+        [[maybe_unused]] Index nb_boxes = l_boxes.size();
         std::list<ConnectedSubset_> l_subsets;
 
         while(!l_boxes.empty())

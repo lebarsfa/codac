@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_MatrixBase_eigenaddons.h
+ *  \file codac2_Matrix_addons_MatrixBase.h
  * 
  *  This file is included in the declaration of Eigen::MatrixBase,
  *  thanks to the preprocessor token EIGEN_MATRIX_PLUGIN.
@@ -12,16 +12,6 @@
  *  \copyright  Copyright 2023 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
-
-template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
-  requires (!IsVectorOrRow<R,C>)
-explicit Matrix(int r, int c, const Scalar& x)
-  : Matrix<Scalar,R,C>(r,c)
-{
-  assert((R==(int)r || R==-1) && (C==(int)c || C==-1));
-  assert(r >= 0 && c >= 0);
-  init(x);
-}
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
@@ -46,10 +36,10 @@ explicit Matrix(int r, int c, const Scalar values[])
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
   requires (!IsVectorOrRow<R,C>)
-inline static Matrix<Scalar,R,C> zeros(Index r, Index c)
+inline static Matrix<Scalar,R,C> zero(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
-  return Matrix<Scalar,R,C>::Zero(r,c);
+  return DenseBase<Matrix<Scalar,R,C>>::Zero(r,c);
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -57,7 +47,7 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> ones(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
-  return Matrix<Scalar,R,C>::Ones(r,c);
+  return DenseBase<Matrix<Scalar,R,C>>::Ones(r,c);
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
@@ -65,7 +55,15 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> eye(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
-  return Matrix<Scalar,R,C>::Identity(r,c);
+  return MatrixBase<Matrix<Scalar,R,C>>::Identity(r,c);
+}
+
+template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
+  requires (!IsVectorOrRow<R,C>)
+inline static Matrix<Scalar,R,C> constant(Index r, Index c, const Scalar& x)
+{
+  assert_release(r >= 0 && c >= 0);
+  return DenseBase<Matrix<Scalar,R,C>>::Constant(r,c,x);
 }
 
 // Note that this static function is not called "rand"
@@ -75,7 +73,7 @@ template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>
 inline static Matrix<Scalar,R,C> random(Index r, Index c)
 {
   assert_release(r >= 0 && c >= 0);
-  return Matrix<Scalar,R,C>::Random(r,c);
+  return DenseBase<Matrix<Scalar,R,C>>::Random(r,c);
 }
 
 template<int R=RowsAtCompileTime,int C=ColsAtCompileTime>

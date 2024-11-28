@@ -18,7 +18,7 @@ namespace codac2
 {
   /** \brief Compute an upper bound of A+A^2+A^3 with A a matrix of intervals
    *  \param A matrix of intervals (supposed around 0)
-   *  \param mrad the maximum radius of the result added (output argument)
+   *  \param mrad the maximum radius of the result added (output argument, not available in Python)
    *  \return the enclosure. May include (-oo,oo) 
    */
   IntervalMatrix infinite_sum_enclosure(const IntervalMatrix& A, double &mrad) {
@@ -69,112 +69,7 @@ namespace codac2
       }
       return res;
   }
-      
-  /** \brief Correct the approximate inverse of a matrix
-   *  \param A a matrix
-   *  \param B a punctual approximation of its inverse
-   *  \param left use BA
-   *  \return the enclosure
-   */
-  IntervalMatrix inverse_correction(const Matrix &A, const Matrix &B, bool left) {
-      assert_release(A.is_squared());
-      assert_release(B.is_squared());
-      Index N = A.rows();
-      assert_release(N==B.rows());
-  
-      IntervalMatrix Id = IntervalMatrix::Identity(N,N);
-      IntervalMatrix erMat = (left ? 
-		IntervalMatrix(-IntervalMatrix(B)*IntervalMatrix(A)+Id) : 
-	        IntervalMatrix(-IntervalMatrix(A)*IntervalMatrix(B)+Id));
-      
-      double mrad=0.0;
-      IntervalMatrix E = infinite_sum_enclosure(erMat,mrad);
-      IntervalMatrix Ep = Id+erMat*(Id+E); 
-          /* one could use several iterations here, either
-             using mrad, or directly */
-      
-      IntervalMatrix res(N,N);
-      if (left) 
-          res = Ep*IntervalMatrix(B);
-      else
-          res = IntervalMatrix(B)*Ep;
-      /* small problem with the matrix product : 0*oo = 0. We correct that
-         "by hand" (?) */
-      if (mrad==oo) {
-         for (Index c=0;c<N;c++) {
-           for (Index r=0;r<N;r++) {
-             if (Ep(r,c).is_unbounded()) {
-                for (Index k=0;k<N;k++) {
-                     if (left) 
-                         res(r,k) = Interval();
-                     else 
-                         res(k,c) = Interval();
-                }
-             }
-           }
-         }
-      }
-      return  res;
-  }
 
-  /** \brief Correct the approximate inverse of a matrix
-   *  \param A a matrix
-   *  \param B a punctual approximation of its inverse
-   *  \param left use BA
-   *  \return the enclosure
-   */
-  IntervalMatrix inverse_correction(const IntervalMatrix &A, const Matrix &B, bool left) {
-      assert_release(A.is_squared());
-      assert_release(B.is_squared());
-      Index N = A.rows();
-      assert_release(N==B.rows());
-  
-      IntervalMatrix Id = IntervalMatrix::Identity(N,N);
-      IntervalMatrix erMat = (left ? 
-		IntervalMatrix(-IntervalMatrix(B)*IntervalMatrix(A)+Id) : 
-	        IntervalMatrix(-IntervalMatrix(A)*IntervalMatrix(B)+Id));
-      
-      double mrad=0.0;
-      IntervalMatrix E = infinite_sum_enclosure(erMat,mrad);
-      IntervalMatrix Ep = Id+erMat*(Id+E); 
-          /* one could use several iterations here, either
-             using mrad, or directly */
- 
-      IntervalMatrix res(N,N);
-      if (left) 
-          res = Ep*IntervalMatrix(B);
-      else
-          res = IntervalMatrix(B)*Ep;
-      /* small problem with the matrix product : 0*oo = 0. We correct that
-         "by hand" (?) */
-      if (mrad==oo) {
-         for (Index c=0;c<N;c++) {
-           for (Index r=0;r<N;r++) {
-             if (Ep(r,c).is_unbounded()) {
-                for (Index k=0;k<N;k++) {
-                     if (left) 
-                         res(r,k) = Interval();
-                     else 
-                         res(k,c) = Interval();
-                }
-             }
-           }
-         }
-      }
-      return  res;
-  }
-
-  /** \brief Enclosure of the inverse of a (non-singular) matrix
-   *  \param A matrix
-   *  \return the enclosure. Can have (-oo,oo) coefficients if A is singular
-   *  or almost singular
-   */
-  IntervalMatrix inverse_enclosure(const Matrix &A) {
-     assert_release(A.is_squared());
-     Index N=A.rows();
-     return inverse_correction(A, 
-		A.fullPivLu().solve(Matrix::Identity(N,N)));
-  }
  
   /** \brief Enclosure of the inverse of a matrix of intervals
    *  \param A matrix of intervals
@@ -184,7 +79,7 @@ namespace codac2
   IntervalMatrix inverse_enclosure(const IntervalMatrix &A) {
      assert_release(A.is_squared());
      Index N=A.rows();
-     return inverse_correction(A, 
+     return inverse_correction<LEFT_INV>(A, 
 	(A.mid()).fullPivLu().solve(Matrix::Identity(N,N)));
   }
 }

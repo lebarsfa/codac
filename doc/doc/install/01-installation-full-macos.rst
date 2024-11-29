@@ -2,9 +2,9 @@
 
 .. _sec-installation-full-macos:
 
-#####################################
-Installing Codac on macOS for C++ use
-#####################################
+########################################
+Installing Codac v1 on macOS for C++ use
+########################################
 
 
 Quick start
@@ -18,7 +18,7 @@ Install `Homebrew package manager <https://brew.sh/>`_ and build tools:
   brew install wget autoconf automake libtool
   brew install --cask cmake
 
-Download and extract *e.g.* ``codac_standalone_arm64_monterey.zip`` (for macOS 12 Monterey on a Mac with Apple silicon (arm64 processor), use ``codac_standalone_x86_64_monterey.zip`` for a Mac with an Intel processor (x86_64 processor), see https://support.apple.com/en-us/116943) from `<https://github.com/codac-team/codac/releases/latest/>`_, then in ``example`` folder run:
+Download and extract *e.g.* ``codac_standalone_arm64_monterey.zip`` (for macOS 12 Monterey on a Mac with Apple silicon (arm64 processor), use ``codac_standalone_x86_64_monterey.zip`` for a Mac with an Intel processor (x86_64 processor), see https://support.apple.com/en-us/116943) from `<https://github.com/codac-team/codac/releases/tag/v1.5.6/>`_, then in ``example`` folder run:
 
 .. code-block:: bash
 
@@ -47,4 +47,4 @@ Optionally, for Python and documentation:
   python -m pip install --upgrade pip
   pip install --upgrade wheel setuptools sphinx breathe sphinx-issues sphinx-tabs sphinx_rtd_theme sphinx-reredirects
 
-The logic to follow will then be similar to `Linux <01-installation-full-linux.html>`_. See also `Information for developers </dev/info_dev.html>`_.
+The logic to follow will then be similar to :ref:`Linux <sec-installation-full-linux>`. See also :ref:`Information for developers <sec-manual-dev>`.

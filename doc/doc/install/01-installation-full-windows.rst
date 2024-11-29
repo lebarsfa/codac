@@ -2,9 +2,9 @@
 
 .. _sec-installation-full-windows:
 
-#######################################
-Installing Codac on Windows for C++ use
-#######################################
+##########################################
+Installing Codac v1 on Windows for C++ use
+##########################################
 
 
 Quick start
@@ -17,7 +17,7 @@ Check https://community.chocolatey.org/packages/codac.
 
 .. rubric:: Using Visual Studio
 
-Download and extract *e.g.* ``codac_standalone_x64_vc17.zip`` (for Visual Studio 2022) from `<https://github.com/codac-team/codac/releases/latest/>`_, open ``example\CMakelists.txt``, choose ``x64-Release`` configuration in Visual Studio (instead of ``x64-Debug``), double-click on ``main.cpp`` in the Solution Explorer and then click on the green Start button, finally check that "My first tube:Tube [0, 10]" appears.
+Download and extract *e.g.* ``codac_standalone_x64_vc17.zip`` (for Visual Studio 2022) from `<https://github.com/codac-team/codac/releases/tag/v1.5.6>`_, open ``example\CMakelists.txt``, choose ``x64-Release`` configuration in Visual Studio (instead of ``x64-Debug``), double-click on ``main.cpp`` in the Solution Explorer and then click on the green Start button, finally check that "My first tube:Tube [0, 10]" appears.
 
 Optionally, download and run `<https://github.com/ENSTABretagneRobotics/VIBES/releases/download/0.2.3/VIBes-0.2.3-win32.exe>`_ before running the project, and check that a tube appears in :ref:`VIBes viewer <sec-installation-graphics>`.
 
@@ -43,7 +43,7 @@ Optionally, for Python (*e.g.* ``choco install python --version=3.10.4``) and do
   python -m pip install --upgrade pip
   pip install --upgrade wheel setuptools sphinx breathe sphinx-issues sphinx-tabs sphinx_rtd_theme sphinx-reredirects
 
-The logic to follow will then be similar to `Linux <01-installation-full-linux.html>`_ (note that for Visual Studio, commands such as ``make install`` need to be replaced with something similar to:
+The logic to follow will then be similar to :ref:`Linux <sec-installation-full-linux>` (note that for Visual Studio, commands such as ``make install`` need to be replaced with something similar to:
 
 .. code-block:: bash
 
@@ -53,4 +53,4 @@ The logic to follow will then be similar to `Linux <01-installation-full-linux.h
 
   | You might need to replace all occurences of :literal:`PATH_SUFFIXES \ ` with something similar to :literal:`PATHS ${CMAKE_CURRENT_LIST_FILE}/../../../../ PATH_SUFFIXES \ ` in all ``.cmake`` in ``codac/share/codac/cmake/`` (where Codac was installed) if a CMake project that tries to use Codac appears to find its installation location but fails to configure the project properly.
 
-See also `Information for developers </dev/info_dev.html>`_.
+See also :ref:`Information for developers <sec-manual-dev>`.

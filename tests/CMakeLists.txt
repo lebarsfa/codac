@@ -4,16 +4,28 @@
 
 # Finding Catch2
 
-  message(STATUS "Getting Catch2 library... (an Internet connection is required)")
+  #message(STATUS "Getting Catch2 library... (an Internet connection might be required)")
 
   Include(FetchContent)
-  FetchContent_Declare(
-    Catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG        v3.6.0
-  )
 
+  #find_package(Catch2 3.6.0 EXACT QUIET)
+  find_package(Catch2 3.6.0 QUIET)
+  if(Catch2_FOUND)
+    message(STATUS "Found Catch2 version ${Catch2_VERSION} in ${Catch2_DIR}")
+  else()
+    message(STATUS "Attempt to install Catch2 automatically...")
+    FetchContent_Declare(
+    Catch2
+    #GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    #GIT_TAG        v3.6.0
+    #URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.6.0.zip
+    URL ${CMAKE_SOURCE_DIR}/3rd/Catch2-3.6.0.zip
+    #SOURCE_DIR "P:/devel/GitHub/Catch2"
+    #FIND_PACKAGE_ARGS
+  )
   FetchContent_MakeAvailable(Catch2)
+  # Adds Catch2::Catch2WithMain
+  endif()
 
 list(APPEND SRC_TESTS # listing files without extension
 
@@ -55,6 +67,7 @@ list(APPEND SRC_TESTS # listing files without extension
   core/matrices/codac2_tests_arithmetic_sub
   core/matrices/codac2_tests_Matrix
   core/matrices/codac2_tests_Vector
+  core/matrices/codac2_tests_Inversion
 
   core/separators/codac2_tests_SepCartProd
   core/separators/codac2_tests_SepCtcBoundary
@@ -64,6 +77,7 @@ list(APPEND SRC_TESTS # listing files without extension
   core/separators/codac2_tests_SepTransform
   
   core/tools/codac2_tests_Approx
+
   
 )
 

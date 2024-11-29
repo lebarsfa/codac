@@ -37,7 +37,7 @@ DefaultView.draw_box([[2.2,2.5],[2.2,2.5]],[Color.black(),Color.green(0.8)])
 DefaultView.set(fig1)
 DefaultView.draw_box([[2.2,2.5],[2.2,2.5]],[Color.blue(),Color.cyan(0.8)])
 
-fig2.draw_AUV([1,1,3.14/2],1.,[Color.black(),Color.yellow()])
+fig2.draw_AUV([1,1,3.14/2],2.,[Color.black(),Color.yellow()])
 fig2.draw_tank([2,1,3.14/2],1.,[Color.black(),Color.yellow()])
 fig2.draw_pie([2,2],[1.5,2.5],[(3*3.14/4)-0.5,(3*3.14/4)+0.5],[Color.blue(),Color.cyan()])
 fig2.draw_polyline([[2,-0.5],[4,0.5],[3,1.5],[4,2.5],[3,3]], Color.red())

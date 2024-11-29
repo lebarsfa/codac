@@ -12,7 +12,7 @@
 using namespace std;
 using namespace codac2;
 
-CtcEmpty::CtcEmpty(size_t n)
+CtcEmpty::CtcEmpty(Index n)
   : Ctc<CtcEmpty,IntervalVector>(n)
 { }
 

@@ -18,8 +18,8 @@ namespace codac2
   {
     public:
 
-      CtcIdentity(size_t n);
+      CtcIdentity(Index n);
 
-      void contract(IntervalVector& x) const;
+      void contract([[maybe_unused]] IntervalVector& x) const;
   };
 }

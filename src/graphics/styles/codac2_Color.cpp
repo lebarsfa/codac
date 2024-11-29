@@ -2,7 +2,7 @@
  *  codac2_Color.cpp
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Simon Rohou, Maël Godard
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
@@ -42,6 +42,7 @@ Color::Color(const std::string& hex_str_)
 {
   assert(hex_str_.size() == 7 || hex_str_.size() == 9);
   assert(hex_str_[0] == '#');
+
   int red,green,blue,a;
   std::istringstream(hex_str_.substr(1,2)) >> std::hex >> red;
   std::istringstream(hex_str_.substr(3,2)) >> std::hex >> green;
@@ -49,11 +50,12 @@ Color::Color(const std::string& hex_str_)
   r = (float)red/255.;
   g = (float)green/255.;
   b = (float)blue/255.;
+
+  // Alpha (transparency) component may be appended to the #hexa notation.
+  // Value is '1' (max opacity) by default.
   if(hex_str_.size() == 9)
   {
     std::istringstream(hex_str_.substr(7,2)) >> std::hex >> a;
     alpha = (float)a/255.;
   }
-  else
-    alpha = 1.;
 }

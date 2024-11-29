@@ -12,9 +12,9 @@
 using namespace std;
 using namespace codac2;
 
-CtcIdentity::CtcIdentity(size_t n)
+CtcIdentity::CtcIdentity(Index n)
   : Ctc<CtcIdentity,IntervalVector>(n)
 { }
 
-void CtcIdentity::contract(IntervalVector& x) const
+void CtcIdentity::contract([[maybe_unused]] IntervalVector& x) const
 { }

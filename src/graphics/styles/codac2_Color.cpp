@@ -12,50 +12,131 @@
 using namespace std;
 using namespace codac2;
 
+std::string DataRGB::to_hex_str() const
+{
+  stringstream ss;
+  ss << "#" << hex << setfill('0') << setw(2) << (int)(r*255) << setw(2) << (int)(g*255) << setw(2) << (int)(b*255) << setw(2) << (int)(a*255);
+  return ss.str();
+}
+
+DataRGB DataHSV::to_rgb() const
+{
+  float r = 1., g = 1., b = 1.;
+
+  int i = static_cast<int>(h * 6);
+  float f = (h * 6) - i;
+  i = i % 6;
+
+  float p = v * (1 - s);
+  float q = v * (1 - f * s);
+  float t = v * (1 - (1 - f) * s);
+
+  switch (i) {
+      case 0: r = v; g = t; b = p; break;
+      case 1: r = q; g = v; b = p; break;
+      case 2: r = p; g = v; b = t; break;
+      case 3: r = p; g = q; b = v; break;
+      case 4: r = t; g = p; b = v; break;
+      case 5: r = v; g = p; b = q; break;
+  }
+
+  return DataRGB{r, g, b, a};
+}
+
+std::string DataHSV::to_hex_str() const
+{
+  return to_rgb().to_hex_str();
+}
+
 Color::Color()
-  : r(1.), g(1.), b(1.), alpha(1.), hex_str("#FFFFFF")
+  : data("#FFFFFFFF")
 {}
 
-Color::Color(float r_, float g_, float b_, float alpha_)
-  : r(r_), g(g_), b(b_), alpha(alpha_),
-  hex_str([&]
-  {
-    std::stringstream s;
-    s << std::hex << std::setfill('0');
-    s << std::setw(2) << (int)(r*255) << std::setw(2) << (int)(g*255) << std::setw(2) << (int)(b*255);
-    if(alpha != 1.)
-      s << std::setw(2) << (int)(alpha*255);
-    return "#"+s.str();
-  }())
+Color::Color(float x1, float x2, float x3, float alpha,InterpolMode interpol_mode)
 { 
-  assert(r_ >= 0. && r_ <= 1. && g_ >= 0. && g_ <= 1. && b_ >= 0. && b_ <= 1. && alpha_ >= 0. && alpha_ <= 1.);
+  assert(x1 >= 0. && x1 <= 1. && x2 >= 0. && x2 <= 1. && x3 >= 0. && x3 <= 1. && alpha >= 0. && alpha <= 1.);
+  if(interpol_mode == InterpolMode::RGB)
+    data = DataRGB{x1, x2, x3, alpha};
+  else
+    data = DataHSV{x1, x2, x3, alpha};
 }
 
-Color::Color(int r_, int g_, int b_, int alpha_)
-  : Color((float)(r_/255.), (float)(g_/255.), (float)(b_/255.), (float)(alpha_/255.))
+Color::Color(int x1, int x2, int x3, int alpha,InterpolMode interpol_mode)
+  : Color((float)(x1/255.), (float)(x2/255.), (float)(x3/255.), (float)(alpha/255.),interpol_mode)
 {
-  assert(r_ >= 0 && r_ <= 255 && g_ >= 0 && g_ <= 255 && b_ >= 0 && b_ <= 255 && alpha_ >= 0 && alpha_ <= 255);
+  assert(x1 >= 0 && x1 <= 255 && x2 >= 0 && x2 <= 255 && x3 >= 0 && x3 <= 255 && alpha >= 0 && alpha <= 255);
 }
 
-Color::Color(const std::string& hex_str_)
-  : hex_str(hex_str_)
+Color::Color(const std::string& hex_str)
+  : data(hex_str)
 {
-  assert(hex_str_.size() == 7 || hex_str_.size() == 9);
-  assert(hex_str_[0] == '#');
+  assert(hex_str.size() == 7 || hex_str.size() == 9);
+  assert(hex_str[0] == '#');
+}
 
-  int red,green,blue,a;
-  std::istringstream(hex_str_.substr(1,2)) >> std::hex >> red;
-  std::istringstream(hex_str_.substr(3,2)) >> std::hex >> green;
-  std::istringstream(hex_str_.substr(5,2)) >> std::hex >> blue;
-  r = (float)red/255.;
-  g = (float)green/255.;
-  b = (float)blue/255.;
-
-  // Alpha (transparency) component may be appended to the #hexa notation.
-  // Value is '1' (max opacity) by default.
-  if(hex_str_.size() == 9)
+std::string Color::hex_str() const
+{
+  switch(data.index())
   {
-    std::istringstream(hex_str_.substr(7,2)) >> std::hex >> a;
-    alpha = (float)a/255.;
+    case 0: return std::get<0>(data);
+    case 1: return std::get<1>(data).to_hex_str();
+    case 2: return std::get<2>(data).to_hex_str();
   }
+  return "";
+}
+
+float Color::r() const
+{
+  switch(data.index())
+  {
+    case 0:
+      float r;
+      std::istringstream(std::get<0>(data).substr(1,2)) >> std::hex >> r;
+      return r/255.;
+    case 1: return std::get<1>(data).r;
+    case 2: return std::get<2>(data).to_rgb().r;
+  }
+  return 0.;
+}
+
+float Color::g() const
+{
+  switch(data.index())
+  {
+    case 0:
+      float g;
+      std::istringstream(std::get<0>(data).substr(3,2)) >> std::hex >> g;
+      return g/255.;
+    case 1: return std::get<1>(data).g;
+    case 2: return std::get<2>(data).to_rgb().g;
+  }
+  return 0.;
+}
+
+float Color::b() const
+{
+  switch(data.index())
+  {
+    case 0:
+      float b;
+      std::istringstream(std::get<0>(data).substr(5,2)) >> std::hex >> b;
+      return b/255.;
+    case 1: return std::get<1>(data).b;
+    case 2: return std::get<2>(data).to_rgb().b;
+  }
+  return 0.;
+}
+
+float Color::alpha() const
+{
+  switch(data.index())
+  {
+    case 0: 
+      float alpha;
+      std::istringstream(std::get<0>(data).substr(7,2)) >> std::hex >> alpha;
+      return alpha/255.;
+    case 1: return std::get<1>(data).a;
+    case 2: return std::get<2>(data).a;
+  }
+  return 0.;
 }

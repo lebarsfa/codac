@@ -51,12 +51,12 @@ fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
 fig3.set_axes(axis(0,[-1,21]), axis(1,[-0.5,3.5]))
 fig3.set_window_properties([250,250],[500,500])
 
-cmap_haxby=ColorMap.HAXBY
-cmap_blue_tube=ColorMap.BLUE_TUBE
-cmap_red_tube=ColorMap.RED_TUBE
+# cmap_haxby=ColorMap.HAXBY
+# cmap_blue_tube=ColorMap.BLUE_TUBE
+# cmap_red_tube=ColorMap.RED_TUBE
 
-for i in range (20):
-    ratio=i/20
-    fig3.draw_box([[i,i+1],[0,1]],[Color.black(),cmap_haxby.color(ratio)])
-    fig3.draw_box([[i,i+1],[1,2]],[Color.black(),cmap_blue_tube.color(ratio)])
-    fig3.draw_box([[i,i+1],[2,3]],[Color.black(),cmap_red_tube.color(ratio)])
+# for i in range (20):
+#     ratio=i/20
+#     fig3.draw_box([[i,i+1],[0,1]],[Color.black(),cmap_haxby.color(ratio)])
+#     fig3.draw_box([[i,i+1],[1,2]],[Color.black(),cmap_blue_tube.color(ratio)])
+#     fig3.draw_box([[i,i+1],[2,3]],[Color.black(),cmap_red_tube.color(ratio)])

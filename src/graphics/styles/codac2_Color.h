@@ -11,25 +11,47 @@
 
 #include <string>
 #include <iomanip>
+#include <variant>
 #include"codac2_assert.h"
 
 namespace codac2
 {
+  enum class InterpolMode { RGB, HSV };
+  /**
+   * \struct DataRGB
+   * \brief Represents an RGB value
+   */
+  struct DataRGB { 
+    float r, g, b, a;
+    std::string to_hex_str() const;
+    };
+  /**
+   * \struct DataHSV
+   * \brief Represents an HSV value
+   */
+  struct DataHSV {
+    float h, s, v, a;
+    DataRGB to_rgb() const;
+    std::string to_hex_str() const;
+    };
   /**
    * \struct Color
-   * \brief Represents an RGB value
+   * \brief Represents an html color
    */
   struct Color
   {
-    float r;              ///< red, value between 0. and 1.
-    float g;              ///< green, value between 0. and 1.
-    float b;              ///< blue, value between 0. and 1.
-    float alpha = 1.;     ///< opacity, value between 0. (transparent) and 1. (opaque)
-    std::string hex_str;  ///< represents an RGB value in a HTML standard
+    std::variant< std::string, DataRGB, DataHSV > data;
 
-    explicit Color(float r, float g, float b, float alpha = 1.);
-    explicit Color(int r, int g, int b, int alpha = 255);
+    explicit Color();
+    explicit Color(float x1, float x2, float x3, float alpha = 1.,InterpolMode interpol_mode = InterpolMode::RGB);
+    explicit Color(int x1, int x2, int x3, int alpha = 255,InterpolMode interpol_mode = InterpolMode::RGB);
     explicit Color(const std::string& hex_str);
+
+    std::string hex_str() const;
+    float r() const;
+    float g() const;
+    float b() const;
+    float alpha() const;
 
     static Color none()                      { return Color(255, 255, 255, 0               ); };
     static Color black(float alpha = 1)      { return Color(0,   0,   0,   (int)(alpha*255)); };

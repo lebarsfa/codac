@@ -16,7 +16,11 @@
 
 namespace codac2
 {
-  enum class InterpolMode { RGB, HSV };
+  enum class InterpolMode
+  {
+    RGB = 0x01,
+    HSV = 0x02
+  };
   /**
    * \struct DataRGB
    * \brief Represents an RGB value

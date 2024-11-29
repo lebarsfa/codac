@@ -90,9 +90,9 @@ float Color::r() const
   switch(data.index())
   {
     case 0:
-      float r;
+      int r;
       std::istringstream(std::get<0>(data).substr(1,2)) >> std::hex >> r;
-      return r/255.;
+      return (float) r/255.;
     case 1: return std::get<1>(data).r;
     case 2: return std::get<2>(data).to_rgb().r;
   }
@@ -104,9 +104,9 @@ float Color::g() const
   switch(data.index())
   {
     case 0:
-      float g;
+      int g;
       std::istringstream(std::get<0>(data).substr(3,2)) >> std::hex >> g;
-      return g/255.;
+      return (float) g/255.;
     case 1: return std::get<1>(data).g;
     case 2: return std::get<2>(data).to_rgb().g;
   }
@@ -118,9 +118,9 @@ float Color::b() const
   switch(data.index())
   {
     case 0:
-      float b;
+      int b;
       std::istringstream(std::get<0>(data).substr(5,2)) >> std::hex >> b;
-      return b/255.;
+      return (float) b/255.;
     case 1: return std::get<1>(data).b;
     case 2: return std::get<2>(data).to_rgb().b;
   }
@@ -133,8 +133,13 @@ float Color::alpha() const
   {
     case 0: 
       float alpha;
-      std::istringstream(std::get<0>(data).substr(7,2)) >> std::hex >> alpha;
-      return alpha/255.;
+      if (std::get<0>(data).size() == 7)
+        return 1.;
+      else
+      {
+        std::istringstream(std::get<0>(data).substr(7,2)) >> std::hex >> alpha;
+        return alpha/255.;
+      }
     case 1: return std::get<1>(data).a;
     case 2: return std::get<2>(data).a;
   }

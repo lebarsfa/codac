@@ -12,7 +12,7 @@
     paver/codac2_py_drawwhilepaving.cpp
 
     styles/codac2_py_Color.cpp
-    styles/codac2_py_ColorMap.cpp
+    # styles/codac2_py_ColorMap.cpp
     styles/codac2_py_StyleProperties.cpp
   )
 

@@ -46,10 +46,11 @@ fig2.draw_polyline([[-0.8,0],[0,1.5]], 0.2, [Color.red(),Color.black(0.3)])
 fig2.draw_ellipse([1,1],[0.5,2], 0.2, [Color.blue(),Color.blue(0.3)])
 fig2.draw_point([2,2], [Color.red(),Color.yellow(0.5)])
 fig2.draw_box([[2.4,2.9],[2.4,2.9]],[Color("#da3907"),Color("#da390755")])
+fig2.draw_box([[2.6,3.1],[2.6,3.1]],[Color(0.305555556,0.9,0.78,interpol_mode=InterpolMode.HSV),Color(0.305555556,0.9,0.78,0.2,InterpolMode.HSV)])
 
-fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
-fig3.set_axes(axis(0,[-1,21]), axis(1,[-0.5,3.5]))
-fig3.set_window_properties([250,250],[500,500])
+# fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
+# fig3.set_axes(axis(0,[-1,21]), axis(1,[-0.5,3.5]))
+# fig3.set_window_properties([250,250],[500,500])
 
 # cmap_haxby=ColorMap.HAXBY
 # cmap_blue_tube=ColorMap.BLUE_TUBE

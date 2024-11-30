@@ -62,9 +62,12 @@ Color::Color(float x1, float x2, float x3, float alpha,InterpolMode interpol_mod
 }
 
 Color::Color(int x1, int x2, int x3, int alpha,InterpolMode interpol_mode)
-  : Color((float)(x1/255.), (float)(x2/255.), (float)(x3/255.), (float)(alpha/255.),interpol_mode)
 {
   assert(x1 >= 0 && x1 <= 255 && x2 >= 0 && x2 <= 255 && x3 >= 0 && x3 <= 255 && alpha >= 0 && alpha <= 255);
+  if (interpol_mode == InterpolMode::RGB)
+    data = DataRGB{(float)x1/255., (float)x2/255., (float)x3/255., (float)alpha/255.};
+  else
+    data = DataHSV{(float)x1/360., (float)x2/100., (float)x3/100., (float)alpha/100.};
 }
 
 Color::Color(const std::string& hex_str)

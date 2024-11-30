@@ -41,12 +41,17 @@ void export_ColorMap(py::module& m)
     .def_readonly_static("HAXBY", &ColorMap::HAXBY,
       CONST_COLORMAP_COLORMAP_HAXBY)
 
+    .def_readonly_static("DEFAULT", &ColorMap::DEFAULT,
+      CONST_COLORMAP_COLORMAP_DEFAULT)
+
     .def_readonly_static("BLUE_TUBE", &ColorMap::BLUE_TUBE,
       CONST_COLORMAP_COLORMAP_BLUE_TUBE)
 
     .def_readonly_static("RED_TUBE", &ColorMap::RED_TUBE,
       CONST_COLORMAP_COLORMAP_RED_TUBE)
 
+    .def_readonly_static("RAINBOW", &ColorMap::RAINBOW,
+      CONST_COLORMAP_COLORMAP_RAINBOW)
 
   ;
 }

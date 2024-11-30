@@ -32,8 +32,10 @@ namespace codac2
 
     Color color (float r) const;
 
-    static const ColorMap HAXBY;
-    static const ColorMap BLUE_TUBE;
-    static const ColorMap RED_TUBE;
+    static const ColorMap HAXBY; //!< predefined HAXBY color map (mainly used for DEM)
+    static const ColorMap DEFAULT; //!< a predefined default color map
+    static const ColorMap BLUE_TUBE; //!< a predefined color map for tubes
+    static const ColorMap RED_TUBE; //!< a predefined color map for tubes
+    static const ColorMap RAINBOW; //!< a predefined color map
   };
 }

@@ -48,16 +48,20 @@ fig2.draw_point([2,2], [Color.red(),Color.yellow(0.5)])
 fig2.draw_box([[2.4,2.9],[2.4,2.9]],[Color("#da3907"),Color("#da390755")])
 fig2.draw_box([[2.6,3.1],[2.6,3.1]],[Color(0.305555556,0.9,0.78,interpol_mode=InterpolMode.HSV),Color(0.305555556,0.9,0.78,0.2,InterpolMode.HSV)])
 
-# fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
-# fig3.set_axes(axis(0,[-1,21]), axis(1,[-0.5,3.5]))
-# fig3.set_window_properties([250,250],[500,500])
+fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
+fig3.set_axes(axis(0,[-1,21]), axis(1,[-5.5,0.5]))
+fig3.set_window_properties([800,250],[500,500])
 
-# cmap_haxby=ColorMap.HAXBY
-# cmap_blue_tube=ColorMap.BLUE_TUBE
-# cmap_red_tube=ColorMap.RED_TUBE
+cmap_haxby=ColorMap.HAXBY
+cmap_default=ColorMap.DEFAULT
+cmap_blue_tube=ColorMap.BLUE_TUBE
+cmap_red_tube=ColorMap.RED_TUBE
+cmap_rainbow=ColorMap.RAINBOW
 
-# for i in range (20):
-#     ratio=i/20
-#     fig3.draw_box([[i,i+1],[0,1]],[Color.black(),cmap_haxby.color(ratio)])
-#     fig3.draw_box([[i,i+1],[1,2]],[Color.black(),cmap_blue_tube.color(ratio)])
-#     fig3.draw_box([[i,i+1],[2,3]],[Color.black(),cmap_red_tube.color(ratio)])
+for i in range (20):
+    ratio=i/20
+    fig3.draw_box([[i,i+1],[-1,0]],[Color.black(),cmap_haxby.color(ratio)])
+    fig3.draw_box([[i,i+1],[-2,-1]],[Color.black(),cmap_default.color(ratio)])
+    fig3.draw_box([[i,i+1],[-3,-2]],[Color.black(),cmap_blue_tube.color(ratio)])
+    fig3.draw_box([[i,i+1],[-4,-3]],[Color.black(),cmap_red_tube.color(ratio)])
+    fig3.draw_box([[i,i+1],[-5,-4]],[Color.black(),cmap_rainbow.color(ratio)])

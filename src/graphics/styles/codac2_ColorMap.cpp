@@ -41,10 +41,10 @@ Color ColorMap::color(float r) const
 
       float local_ratio = (real_index - prev(it_ub)->first) / (it_ub->first - prev(it_ub)->first);
  
-    return Color((float)(color_lb.r + (color_ub.r - color_lb.r) * local_ratio),
-                    (float)(color_lb.g + (color_ub.g - color_lb.g) * local_ratio),
-                    (float)(color_lb.b + (color_ub.b - color_lb.b) * local_ratio),
-                    (float)(color_lb.alpha + (color_ub.alpha - color_lb.alpha) * local_ratio));
+    return Color((float)(color_lb.r() + (color_ub.r() - color_lb.r()) * local_ratio),
+                    (float)(color_lb.g() + (color_ub.g() - color_lb.g()) * local_ratio),
+                    (float)(color_lb.b() + (color_ub.b() - color_lb.b()) * local_ratio),
+                    (float)(color_lb.alpha() + (color_ub.alpha() - color_lb.alpha()) * local_ratio));
 
     }
 
@@ -76,6 +76,46 @@ ColorMap make_haxby()
 
 const ColorMap ColorMap::HAXBY = make_haxby();
 
+ColorMap make_default()
+  {
+    ColorMap map;
+    map.add_color_point(Color(10,0,121), 0);
+    map.add_color_point(Color(40,0,150), 1);
+    map.add_color_point(Color(20,5,175), 2);
+    map.add_color_point(Color(0,10,200), 3);
+    map.add_color_point(Color(0,25,212), 4);
+    map.add_color_point(Color(0,40,224), 5);
+    map.add_color_point(Color(26,102,240), 6);
+    map.add_color_point(Color(13,129,248), 7);
+    map.add_color_point(Color(25,175,255), 8);
+    map.add_color_point(Color(50,190,255), 9);
+    map.add_color_point(Color(68,202,255), 10);
+    map.add_color_point(Color(97,225,240), 11);
+    map.add_color_point(Color(106,235,225), 12);
+    map.add_color_point(Color(124,235,200), 13);
+    map.add_color_point(Color(138,236,174), 14);
+    map.add_color_point(Color(172,245,168), 15);
+    map.add_color_point(Color(205,255,162), 16);
+    map.add_color_point(Color(223,245,141), 17);
+    map.add_color_point(Color(240,236,121), 18);
+    map.add_color_point(Color(247,215,104), 19);
+    map.add_color_point(Color(255,189,87), 20);
+    map.add_color_point(Color(255,160,69), 21);
+    map.add_color_point(Color(244,117,75), 22);
+    map.add_color_point(Color(238,80,78), 23);
+    map.add_color_point(Color(255,90,90), 24);
+    map.add_color_point(Color(255,124,124), 25);
+    map.add_color_point(Color(255,158,158), 26);
+    map.add_color_point(Color(245,179,174), 27);
+    map.add_color_point(Color(255,196,196), 28);
+    map.add_color_point(Color(255,215,215), 29);
+    map.add_color_point(Color(255,235,235), 31);
+    map.add_color_point(Color(255,254,253), 32);
+    return map;
+  }
+
+  const ColorMap ColorMap::DEFAULT = make_default();
+
 ColorMap make_blue_tube()
 {
   ColorMap map;
@@ -95,3 +135,13 @@ ColorMap make_red_tube()
 }
 
 const ColorMap ColorMap::RED_TUBE = make_red_tube();
+
+ColorMap make_rainbow()
+  {
+    ColorMap map;
+    for(int h = 300 ; h > 0 ; h-=10)
+      map.add_color_point(Color(h,100,100,100,InterpolMode::HSV), (300.-h)/300.);
+    return map;
+  }
+
+  const ColorMap ColorMap::RAINBOW = make_rainbow();

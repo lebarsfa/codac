@@ -16,11 +16,6 @@ using namespace std;
 
 namespace codac2
 {
-  /** \brief Compute an upper bound of A+A^2+A^3 with A a matrix of intervals
-   *  \param A matrix of intervals (supposed around 0)
-   *  \param mrad the maximum radius of the result added (output argument, not available in Python)
-   *  \return the enclosure. May include (-oo,oo) 
-   */
   IntervalMatrix infinite_sum_enclosure(const IntervalMatrix& A, double &mrad) {
       assert_release(A.is_squared());
       Index N = A.rows();
@@ -70,12 +65,6 @@ namespace codac2
       return res;
   }
 
- 
-  /** \brief Enclosure of the inverse of a matrix of intervals
-   *  \param A matrix of intervals
-   *  \return the enclosure. Can have (-oo,oo) coefficients if the 
-   *  inversion "failed"
-   */
   IntervalMatrix inverse_enclosure(const IntervalMatrix &A) {
      assert_release(A.is_squared());
      Index N=A.rows();

@@ -299,7 +299,7 @@ For instance, one can contract three tubes :math:`[a](\cdot)`, :math:`[b](\cdot)
     \mathbf{y}(t)=\mathbf{g}\big(\mathbf{x}(t)\big) &  & \textrm{(observation equation)}
     \end{array}\right.
 
-  **E.10.** We first focus on the observation equation :math:`\mathbf{y}(t)=\mathbf{g}\big(\mathbf{x}(t)\big)`. Build a contractor network and contract the tube :math:`[\mathbf{x}](\cdot)` with the distance contractor, that expresses :math:`\mathbf{g}`. Note that this contractor is already defined in the library. You developed your own version as an exercise in :ref:`sec-tuto-01`, but you can also use:
+  **E.10.** We first focus on the observation equation :math:`\mathbf{y}(t)=\mathbf{g}\big(\mathbf{x}(t)\big)`. Build a contractor network and contract the tube :math:`[\mathbf{x}](\cdot)` with the distance contractor, that expresses :math:`\mathbf{g}`. Note that this contractor is already defined in the library. You developed your own version as an exercise in :ref:`Lesson A <sec-tuto-01>`, but you can also use:
 
   .. tabs::
 

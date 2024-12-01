@@ -1,12 +1,12 @@
 .. _sec-tuto-01:
 
+Lesson A: Getting started with intervals and contractors
+========================================================
+
 .. # define a hard line break for HTML
 .. |br| raw:: html
 
    <br />
-
-Lesson A: Getting started with intervals and contractors
-========================================================
 
 Now that Codac has been installed on your computer or usable online, we will get used to intervals, constraints and networks of contractors.
 This will allow you to perform the state estimation of a static robot between some landmarks by the end of :ref:`Lesson B <sec-tuto-02>`.

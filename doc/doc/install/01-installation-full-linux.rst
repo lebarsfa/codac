@@ -2,15 +2,15 @@
 
 .. _sec-installation-full-linux:
 
-#####################################
-Installing Codac on Linux for C++ use
-#####################################
+########################################
+Installing Codac v1 on Linux for C++ use
+########################################
 
 
 Install from package (latest release, for Ubuntu (amd64, arm64), Debian (arm64, armhf) and possibly others)
 -----------------------------------------------------------------------------------------------------------
 
-A Debian package is available for the last release |version| of the library:
+A Debian package is available for the last release 1.5.6 of the library:
 
 .. code-block:: bash
 
@@ -18,7 +18,7 @@ A Debian package is available for the last release |version| of the library:
   sudo apt update
   sudo apt install libcodac-dev
 
-Then, check your installation `with the instructions of this page <03-start-cpp-project.html>`_.
+Then, check your installation :ref:`with the instructions of this page <sec-start-cpp-project>`.
 
 .. warning::
 
@@ -47,8 +47,8 @@ Then, check your installation `with the instructions of this page <03-start-cpp-
   and check that "My first tube:Tube [0, 10]" appears.
 
 
-Install from sources (latest development)
------------------------------------------
+Install from sources (latest development of v1)
+-----------------------------------------------
 
 In case you prefer the latest development version, Codac can be installed by compiling the sources.
 
@@ -100,6 +100,7 @@ The last sources are available on `the official Codac development repository <ht
   # The codac directory can be placed in your home, same level as IBEX
   git clone https://github.com/codac-team/codac   # download the sources from GitHub
   cd codac                                        # move to the Codac directory
+  git checkout codac1                             # will use latest version of Codac1
   git submodule init ; git submodule update       # get pybind11 submodule
   mkdir build ; cd build ; cmake .. ; make        # build the sources
   sudo make install                               # install the library
@@ -118,7 +119,7 @@ For instance:
   mkdir build -p ; cd build ; cmake .. ; make     # cmake compilation
   ./codac_basics_01                               # running example
 
-Do not forget to launch the `VIBes viewer <01-installation.html#graphical-tools>`_ before running your program.
+Do not forget to launch the :ref:`VIBes viewer <sec-installation-graphics>` before running your program.
 
 
 (for experts) Additional installation options
@@ -179,4 +180,4 @@ Do not forget to launch the `VIBes viewer <01-installation.html#graphical-tools>
     export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:$HOME/ibex-lib/build_install
     export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:$HOME/codac/build_install
 
-See also `Information for developers </dev/info_dev.html>`_.
+See also :ref:`Information for developers <sec-manual-dev>`.

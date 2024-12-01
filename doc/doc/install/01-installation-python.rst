@@ -2,9 +2,9 @@
 
 .. _sec-installation-py:
 
-###############################
-Installing Codac for Python use
-###############################
+##################################
+Installing Codac v1 for Python use
+##################################
 
 .. note::
 
@@ -19,7 +19,8 @@ In case you want to use Codac only with Python, then the installation procedure 
   
   # You may have to upgrade pip (19.0.0 required at least)
   pip3 install --upgrade pip 
-  pip3 install codac
+  pip3 install codac==1.5.6
+  # latest release of Codac v1 is 1.5.6
 
 
 .. role:: gbg
@@ -78,7 +79,7 @@ If a configuration in this table does not work, please `contact us <https://gith
 
 .. note::
 
-  Unsupported computers can still probably follow `Installing local Python binding <../dev/info_dev.html>`_ .
+  Unsupported computers can still probably follow :ref:`Installing local Python binding <sec-manual-dev>`.
 
 
 Update your Codac Python package

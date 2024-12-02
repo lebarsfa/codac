@@ -17,35 +17,46 @@ namespace codac2
 {
   enum LeftOrRightInv { LEFT_INV, RIGHT_INV };
 
-  /** \brief Compute an upper bound of A+A^2+A^3 with A a matrix of intervals
+  /** \brief Compute an upper bound of A+A^2+A^3+..., with A a matrix of intervals
    *  as an "error term" (use only bounds on coefficients)
-   *  \param A matrix of intervals (supposed around 0)
+   *  
+   *  The function also returns mrad, which gives an idea of the “magnification” of
+   *  the matrix during calculation (in particular, if mrad = oo, then the inversion
+   *  calculation (e.g., performed by Eigen) has somehow failed and some coefficients
+   *  of the output interval matrix are [-oo,+oo]).
+   *
+   *  \pre A is a square matrix
+   *
+   *  \param A a matrix of intervals (supposed around 0)
    *  \param mrad the maximum radius of the result added (output argument)
    *  \return the enclosure. May include (-oo,oo) 
    */
   IntervalMatrix infinite_sum_enclosure(const IntervalMatrix& A, double &mrad);
 
   /** \brief Correct the approximate inverse of a matrix
+   *
+   *  \pre A and B are square matrices
+   * 
    *  \tparam O if LEFT_INV, use the inverse of BA (otherwise use the inverse of AB,
    *   left inverse is normally better)
-   *  \param A_ a matrix expression
-   *  \param B_ a (almost punctual) approximation of its inverse,
+   *  \param A a matrix expression
+   *  \param B a (almost punctual) approximation of its inverse,
    *  \return the enclosure
    */
   template<LeftOrRightInv O=LEFT_INV,typename OtherDerived,typename OtherDerived_>
-  inline IntervalMatrix inverse_correction(const Eigen::MatrixBase<OtherDerived>& A_, const Eigen::MatrixBase<OtherDerived_>& B_)
+  inline IntervalMatrix inverse_correction(const Eigen::MatrixBase<OtherDerived>& A, const Eigen::MatrixBase<OtherDerived_>& B)
   {
-    assert_release(A_.is_squared());
-    assert_release(B_.is_squared());
+    assert_release(A.is_squared());
+    assert_release(B.is_squared());
 
-    auto A = A_.template cast<Interval>();
-    auto B = B_.template cast<Interval>();
+    auto A_ = A.template cast<Interval>();
+    auto B_ = B.template cast<Interval>();
 
-    Index N = A.rows();
-    assert_release(N==B.rows());
+    Index N = A_.rows();
+    assert_release(N==B_.rows());
 
     auto Id = IntervalMatrix::Identity(N,N);
-    auto erMat = [&]() { if constexpr(O == LEFT_INV) return -B*A+Id; else return -A*B+Id; }();
+    auto erMat = [&]() { if constexpr(O == LEFT_INV) return -B_*A_+Id; else return -A_*B_+Id; }();
     
     double mrad=0.0;
     IntervalMatrix E = infinite_sum_enclosure(erMat,mrad);
@@ -53,10 +64,10 @@ namespace codac2
         /* one could use several iterations here, either
            using mrad, or directly */
 
-    auto res = (O == LEFT_INV) ? IntervalMatrix(Ep*B) : IntervalMatrix(B*Ep);
+    auto res = (O == LEFT_INV) ? IntervalMatrix(Ep*B_) : IntervalMatrix(B_*Ep);
 
-    /* small problem with the matrix product : 0*oo = 0. We correct that
-       "by hand" (?) */
+    // We want the presence of non-invertible matrices to
+    // result in coefficients of the form [-oo,+oo].
     if (mrad==oo) {
        for (Index c=0;c<N;c++) {
          for (Index r=0;r<N;r++) {
@@ -75,7 +86,10 @@ namespace codac2
   }
 
   /** \brief Enclosure of the inverse of a (non-singular) matrix expression
-   *  \param A matrix expression
+   *
+   *  \pre A is a square matrix
+   *
+   *  \param A a matrix expression
    *  \return the enclosure. Can have (-oo,oo) coefficients if A is singular
    *  or almost singular
    */
@@ -90,7 +104,10 @@ namespace codac2
 
 
   /** \brief Enclosure of the inverse of a matrix of intervals
-   *  \param A matrix of intervals
+   *
+   *  \pre A is a square matrix
+   *
+   *  \param A a matrix of intervals
    *  \return the enclosure. Can have (-oo,oo) coefficients if the 
    *  inversion "failed"
    */

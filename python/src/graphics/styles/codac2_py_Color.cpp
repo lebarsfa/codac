@@ -27,62 +27,77 @@ void export_Color(py::module& m)
     .value("HSV", InterpolMode::HSV)
   ;
 
-  py::class_<DataRGB> exported_data_rgb(m, "DataRGB", DATARGB_MAIN);
-  exported_data_rgb
-    .def_readwrite("r", &DataRGB::r)
-    .def_readwrite("g", &DataRGB::g)
-    .def_readwrite("b", &DataRGB::b)
-    .def_readwrite("a", &DataRGB::a)
-    .def("to_hex_str", &DataRGB::to_hex_str, STRING_DATARGB_TO_HEX_STR_CONST)
-  ;
-
-  py::class_<DataHSV> exported_data_hsv(m, "DataHSV", DATAHSV_MAIN);
-  exported_data_hsv
-    .def_readwrite("h", &DataHSV::h)
-    .def_readwrite("s", &DataHSV::s)
-    .def_readwrite("v", &DataHSV::v)
-    .def_readwrite("a", &DataHSV::a)
-    .def("to_rgb", &DataHSV::to_rgb, DATARGB_DATAHSV_TO_RGB_CONST)
-    .def("to_hex_str", &DataHSV::to_hex_str, STRING_DATAHSV_TO_HEX_STR_CONST)
-  ;
-
-
   py::class_<Color> exported_color(m, "Color", COLOR_MAIN);
   exported_color
 
     .def_readwrite("data", &Color::data,
-      VARIANT_STRINGDATARGBDATAHSV_COLOR_DATA)
+      ARRAY_FLOAT4_COLOR_DATA)
+
+    .def_readwrite("interpol_mode", &Color::interpol_mode,
+      INTERPOLMODE_COLOR_INTERPOL_MODE)
 
     .def(py::init<>(),COLOR_COLOR)
 
     .def(py::init<float,float,float,float,InterpolMode>(),
       COLOR_COLOR_FLOAT_FLOAT_FLOAT_FLOAT_INTERPOLMODE,
-      "x1"_a, "x2"_a, "x3"_a, "alpha"_a=1., "interpol_mode"_a=InterpolMode::RGB)
+      "x1"_a, "x2"_a, "x3"_a, "alpha"_a, "interpol_mode"_a=InterpolMode::RGB)
+
+    .def(py::init<float,float,float,InterpolMode>(),
+      COLOR_COLOR_FLOAT_FLOAT_FLOAT_INTERPOLMODE,
+      "x1"_a, "x2"_a, "x3"_a, "interpol_mode"_a=InterpolMode::RGB)
+
+    .def(py::init<const std::array<float,3>&,InterpolMode>(),
+      COLOR_COLOR_CONST_ARRAY_FLOAT3_REF_INTERPOLMODE,
+      "xyz"_a, "interpol_mode"_a=InterpolMode::RGB)
+
+    .def(py::init<const std::array<float,4>&,InterpolMode>(),
+      COLOR_COLOR_CONST_ARRAY_FLOAT4_REF_INTERPOLMODE,
+      "xyza"_a, "interpol_mode"_a=InterpolMode::RGB)
 
     .def(py::init<int,int,int,int,InterpolMode>(),
       COLOR_COLOR_INT_INT_INT_INT_INTERPOLMODE,
-      "x1"_a, "x2"_a, "x3"_a, "alpha"_a=255, "interpol_mode"_a=InterpolMode::RGB)
+      "x1"_a, "x2"_a, "x3"_a, "alpha"_a, "interpol_mode"_a=InterpolMode::RGB)
+
+    .def(py::init<int,int,int,InterpolMode>(),
+      COLOR_COLOR_INT_INT_INT_INTERPOLMODE,
+      "x1"_a, "x2"_a, "x3"_a, "interpol_mode"_a=InterpolMode::RGB)
+
+    .def(py::init<const std::array<int,3>&,InterpolMode>(),
+      COLOR_COLOR_CONST_ARRAY_INT3_REF_INTERPOLMODE,
+      "xyz"_a, "interpol_mode"_a=InterpolMode::RGB)
+
+    .def(py::init<const std::array<int,4>&,InterpolMode>(),
+      COLOR_COLOR_CONST_ARRAY_INT4_REF_INTERPOLMODE,
+      "xyza"_a, "interpol_mode"_a=InterpolMode::RGB)
 
     .def(py::init<const std::string&>(),
       COLOR_COLOR_CONST_STRING_REF,
       "hex_str"_a)
+
+    // Conversions
+
+    .def("toRGB", &Color::toRGB,
+      COLOR_COLOR_TORGB_CONST)
+
+    .def("toHSV", &Color::toHSV,
+      COLOR_COLOR_TOHSV_CONST)
 
     // Properties
 
     .def("hex_str", &Color::hex_str,
       STRING_COLOR_HEX_STR_CONST)
 
-    .def("r", &Color::r,
-      FLOAT_COLOR_R_CONST)
+    .def("rgb", &Color::rgb,
+      ARRAY_INT3_COLOR_RGB_CONST)
 
-    .def("g", &Color::g,
-      FLOAT_COLOR_G_CONST)
+    .def("rgba", &Color::rgba,
+      ARRAY_INT3_COLOR_RGB_CONST)
 
-    .def("b", &Color::b,
-      FLOAT_COLOR_B_CONST)
+    .def("hsv", &Color::hsv,
+      ARRAY_INT3_COLOR_RGB_CONST)
 
-    .def("alpha", &Color::alpha,
-      FLOAT_COLOR_ALPHA_CONST)
+    .def("hsva", &Color::hsva,
+      ARRAY_INT3_COLOR_RGB_CONST)
 
     // Predefined colors
 

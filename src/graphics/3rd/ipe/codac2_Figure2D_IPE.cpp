@@ -85,8 +85,8 @@ void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)
     <path layer=\"alpha\" \n \
     stroke=\"codac_color_" << s.stroke_color.hex_str().substr(1) << "\" \n \
     fill=\"codac_color_" << s.fill_color.hex_str().substr(1) << "\" \n \
-    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha())) << "%\" \n \
-    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha())) << "%\" \n \
+    opacity=\"" << (int)(10*round(10.*s.fill_color.data[3])) << "%\" \n \
+    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.data[3])) << "%\" \n \
     pen=\"heavier\"";
   if (tip)
     _f_temp_content << "\n \
@@ -104,8 +104,8 @@ void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const S
     <path layer=\"alpha\" \n \
     stroke=\"codac_color_" << s.stroke_color.hex_str().substr(1) << "\" \n \
     fill=\"codac_color_" << s.fill_color.hex_str().substr(1) << "\" \n \
-    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha())) << "%\" \n \
-    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha())) << "%\" \n \
+    opacity=\"" << (int)(10*round(10.*s.fill_color.data[3])) << "%\" \n \
+    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.data[3])) << "%\" \n \
     pen=\"heavier\" \n \
     matrix=";
 
@@ -127,8 +127,8 @@ void Figure2D_IPE::draw_point(const Vector& c, const StyleProperties& s)
     pos=\"" << scale_x(c[i()]) << " " << scale_y(c[j()]) << "\" \n \
     stroke=\"codac_color_" << s.stroke_color.hex_str().substr(1) << "\" \n \
     fill=\"codac_color_" << s.fill_color.hex_str().substr(1) << "\" \n \
-    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha())) << "%\" \n \
-    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha())) << "%\" \n \
+    opacity=\"" << (int)(10*round(10.*s.fill_color.data[3])) << "%\" \n \
+    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.data[3])) << "%\" \n \
     size=\"normal\"\n/>";
 }
 
@@ -543,9 +543,13 @@ void Figure2D_IPE::print_header_page()
     <arrowsize name=\"small\" value=\"5\"/> \n \
     <arrowsize name=\"tiny\" value=\"3\"/> \n";
 
-  for(const auto& [k,c] : _colors)
-    _f << "<color name=\"codac_color_" << k << "\" "
-      << "value=\"" << c.r() << " " << c.g() << " " << c.b() << "\" /> \n";
+  for(auto& [k,c] : _colors)
+    {
+      if (c.interpol_mode == InterpolMode::HSV)
+        c = c.toRGB();
+      _f << "<color name=\"codac_color_" << k << "\" "
+        << "value=\"" << c.data[0] << " " << c.data[1] << " " << c.data[2] << "\" /> \n";
+    }
 
   _f << "<dashstyle name=\"dash dot dotted\" value=\"[4 2 1 2 1 2] 0\"/> \n \
     <dashstyle name=\"dash dotted\" value=\"[4 2 1 2] 0\"/> \n \

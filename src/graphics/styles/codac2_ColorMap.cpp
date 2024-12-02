@@ -26,7 +26,7 @@ Color ColorMap::color(float r) const
 {
     assert (colormap.size() >= 2);
     if(std::isnan(r)) // undefined ratio
-      return Color((float)0.5, 0.5, 0.5);
+      return Color(0.5, 0.5, 0.5);
     assert(Interval(0.,1.).contains(r));
 
     Interval map_domain = Interval(colormap.begin()->first,prev(colormap.end())->first);
@@ -36,15 +36,15 @@ Color ColorMap::color(float r) const
     {
       typename map<float,Color>::const_iterator it_ub;
       it_ub = colormap.lower_bound(real_index);
-      Color color_lb = prev(it_ub)->second;
-      Color color_ub = it_ub->second;
+      Color color_lb = prev(it_ub)->second.toRGB();
+      Color color_ub = it_ub->second.toRGB();
 
       float local_ratio = (real_index - prev(it_ub)->first) / (it_ub->first - prev(it_ub)->first);
  
-    return Color((float)(color_lb.r() + (color_ub.r() - color_lb.r()) * local_ratio),
-                    (float)(color_lb.g() + (color_ub.g() - color_lb.g()) * local_ratio),
-                    (float)(color_lb.b() + (color_ub.b() - color_lb.b()) * local_ratio),
-                    (float)(color_lb.alpha() + (color_ub.alpha() - color_lb.alpha()) * local_ratio));
+    return Color((float)(color_lb.data[0] + (color_ub.data[0] - color_lb.data[0]) * local_ratio),
+                    (float)(color_lb.data[1] + (color_ub.data[1] - color_lb.data[1]) * local_ratio),
+                    (float)(color_lb.data[2] + (color_ub.data[2] - color_lb.data[2]) * local_ratio),
+                    (float)(color_lb.data[3] + (color_ub.data[3] - color_lb.data[3]) * local_ratio));
 
     }
 

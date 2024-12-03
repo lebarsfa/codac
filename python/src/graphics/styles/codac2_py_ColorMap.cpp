@@ -24,11 +24,11 @@ void export_ColorMap(py::module& m)
   exported_colormap
 
     .def_readwrite("m", &ColorMap::m,
-        COLOR_MODEL_COLORMAP_M)
+        MODEL_COLORMAP_M)
 
-    .def(py::init<Color::Model>(),
-        COLORMAP_COLORMAP_COLOR_MODEL,
-        "m"_a=Color::Model::RGB)
+    .def(py::init<Model>(),
+        COLORMAP_COLORMAP_MODEL,
+        "m"_a=Model::RGB)
 
     .def("color", &ColorMap::color,
         COLOR_COLORMAP_COLOR_FLOAT_CONST,

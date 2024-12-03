@@ -82,7 +82,7 @@ std::string ipe_str(const Color& c)
 
 int ipe_opacity(const Color& c)
 {
-  return (int)(10.*round(10.*(c.m==Color::RGB ? (c[3]/255.):(c[3]/100.))));
+  return (int)(10.*round(10.*(c.m==Model::RGB ? (c[3]/255.):(c[3]/100.))));
 }
 
 void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)

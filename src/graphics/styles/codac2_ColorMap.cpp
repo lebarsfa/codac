@@ -12,7 +12,7 @@
 using namespace std;
 using namespace codac2;
 
-ColorMap::ColorMap(Color::Model m_) : 
+ColorMap::ColorMap(Model m_) : 
   m(m_)
 { }
 
@@ -35,13 +35,13 @@ Color ColorMap::color(float r) const
 
       // Interpolation according to the ColorMap model
 
-      if (m == Color::RGB)
+      if (m == Model::RGB)
       {
         color_lb = color_lb.rgb();
         color_ub = color_ub.rgb();
       }
 
-      else if (m == Color::HSV)
+      else if (m == Model::HSV)
       {
         color_lb = color_lb.hsv();
         color_ub = color_ub.hsv();

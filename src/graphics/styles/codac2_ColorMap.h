@@ -23,15 +23,15 @@ namespace codac2
    */
   struct ColorMap : public std::map<float,Color>
   {
-    Color::Model m; //RGB or HSV
+    Model m; //RGB or HSV
 
-    explicit ColorMap(Color::Model m_ = Color::RGB);
+    explicit ColorMap(Model m_ = Model::RGB);
 
     Color color (float r) const;
 
     static ColorMap haxby()
     {
-      ColorMap cmap( Color::RGB );
+      ColorMap cmap( Model::RGB );
       cmap[0]=Color({39.,90.,211.});
       cmap[1]=Color({40.,123.,245.});
       cmap[2]=Color({45.,155.,253.});
@@ -53,7 +53,7 @@ namespace codac2
 
     static ColorMap basic() // Can't use default as name
     {
-      ColorMap cmap( Color::RGB );
+      ColorMap cmap( Model::RGB );
       cmap[0]=Color({10.,0.,121.});
       cmap[1]=Color({40.,0.,150.});
       cmap[2]=Color({20.,5.,175.});
@@ -91,7 +91,7 @@ namespace codac2
 
     static ColorMap blue_tube()
     {
-      ColorMap cmap( Color::RGB );
+      ColorMap cmap( Model::RGB );
       cmap[0]=Color({76.,110.,127.});
       cmap[1]=Color({136.,197.,228.});
       return cmap;
@@ -99,7 +99,7 @@ namespace codac2
 
     static ColorMap red_tube()
     {
-      ColorMap cmap( Color::RGB );
+      ColorMap cmap( Model::RGB );
       cmap[0]=Color({169.,55.,0.});
       cmap[1]=Color({241.,140.,54.});
       return cmap;
@@ -107,11 +107,11 @@ namespace codac2
 
     static ColorMap rainbow()
     {
-      ColorMap cmap( Color::HSV );
+      ColorMap cmap( Model::HSV );
       int i = 0;
       for(int h = 300 ; h > 0 ; h-=10)
       {
-        cmap[i]=Color({(float)h,100.,100.},Color::HSV);
+        cmap[i]=Color({(float)h,100.,100.},Model::HSV);
         i++;
       }
       return cmap;

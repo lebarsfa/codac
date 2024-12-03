@@ -23,9 +23,9 @@ using namespace pybind11::literals;
 void export_Color(py::module& m)
 {
 
-  py::enum_<Color::Model>(m, "Model")
-    .value("RGB", Color::Model::RGB)
-    .value("HSV", Color::Model::HSV)
+  py::enum_<Model>(m, "Model")
+    .value("RGB", Model::RGB)
+    .value("HSV", Model::HSV)
   ;
 
   py::class_<Color> exported_color(m, "Color", COLOR_MAIN);
@@ -36,17 +36,17 @@ void export_Color(py::module& m)
 
     .def(py::init<>(),COLOR_COLOR)
 
-    .def(py::init<const std::array<float,3>&,Color::Model>(),
+    .def(py::init<const std::array<float,3>&,Model>(),
       COLOR_COLOR_CONST_ARRAY_FLOAT3_REF_MODEL,
-      "xyz"_a, "m_"_a=Color::Model::RGB)
+      "xyz"_a, "m_"_a=Model::RGB)
 
-    .def(py::init<const std::array<float,4>&,Color::Model>(),
+    .def(py::init<const std::array<float,4>&,Model>(),
       COLOR_COLOR_CONST_ARRAY_FLOAT4_REF_MODEL,
-      "xyza"_a, "m_"_a=Color::Model::RGB)
+      "xyza"_a, "m_"_a=Model::RGB)
 
-    .def(py::init<const std::initializer_list<float>&,Color::Model>(),
+    .def(py::init<const std::initializer_list<float>&,Model>(),
       COLOR_COLOR_CONST_INITIALIZER_LIST_FLOAT_MODEL,
-      "xyza"_a, "m_"_a=Color::Model::RGB)
+      "xyza"_a, "m_"_a=Model::RGB)
 
     .def(py::init<const std::string&>(),
       COLOR_COLOR_CONST_STRING_REF,

@@ -13,7 +13,7 @@ using namespace std;
 using namespace codac2;
 
 Color::Color()
-  : m(RGB)
+  : m(Model::RGB)
 { 
   (*this)[0] = 0.;
   (*this)[1] = 0.;
@@ -27,15 +27,15 @@ Color::Color(const std::array<float,3>& xyz, Model m_)
   (*this)[0] = xyz[0];
   (*this)[1] = xyz[1];
   (*this)[2] = xyz[2];
-  (*this)[3] = (m == RGB ? 255. : 100.);
+  (*this)[3] = (m == Model::RGB ? 255. : 100.);
 }
 
 Color::Color(const std::array<float,4>& xyza, Model m_)
   : m(m_)
 {
-  if (m_==RGB)
+  if (m_==Model::RGB)
     assert(xyza[0] >= 0. && xyza[0] <= 255. && xyza[1]>=0. && xyza[1] <= 255. && xyza[2]>=0. && xyza[2] <= 255. && xyza[3]>=0. && xyza[3] <= 255.);
-  else if (m_==HSV)
+  else if (m_==Model::HSV)
     assert(xyza[0] >= 0. && xyza[0] <= 360. && xyza[1]>=0. && xyza[1] <= 100. && xyza[2]>=0. && xyza[2] <= 100. && xyza[3]>=0. && xyza[3] <= 100.);
   (*this)[0] = xyza[0];
   (*this)[1] = xyza[1];
@@ -52,7 +52,7 @@ Color::Color(const std::string& hex_str)
   assert(hex_str.size() == 7 || hex_str.size() == 9);
   assert(hex_str[0] == '#');
 
-  m = RGB;
+  m = Model::RGB;
 
   int red,green,blue,a;
   std::istringstream(hex_str.substr(1,2)) >> std::hex >> red;
@@ -75,7 +75,7 @@ Color::Color(const std::string& hex_str)
 
 Color Color::rgb() const
 {
-  if (m==RGB)
+  if (m==Model::RGB)
     return *this;
   else
   {
@@ -108,13 +108,13 @@ Color Color::rgb() const
     g *= 255.;
     b *= 255.;
 
-    return Color({r, g, b,(float) ((*this)[3]*2.55)},RGB);
+    return Color({r, g, b,(float) ((*this)[3]*2.55)},Model::RGB);
   }
 }
 
 Color Color::hsv() const
 {
-  if (m==HSV)
+  if (m==Model::HSV)
     return *this;
   else
   {
@@ -148,13 +148,13 @@ Color Color::hsv() const
     s*=100.;
     v*=100.;
 
-    return Color({h, s, v,(float) ((*this)[3]/2.55)},HSV);
+    return Color({h, s, v,(float) ((*this)[3]/2.55)},Model::HSV);
   }
 }
 
 std::string Color::hex_str() const
 {
-  if (m == RGB)
+  if (m == Model::RGB)
     {
       std::stringstream s;
       s << std::hex << std::setfill('0');

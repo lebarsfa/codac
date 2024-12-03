@@ -25,18 +25,18 @@ TEST_CASE("Color")
         std::array<float, 4> d_hsva{0., 100., 100., 100.};
 
         vector<Color> v{
-            Color(d_rgb, Color::RGB),
-            Color(d_rgba, Color::RGB),
-            Color(d_hsv, Color::HSV),
-            Color(d_hsva, Color::HSV),
+            Color(d_rgb, Model::RGB),
+            Color(d_rgba, Model::RGB),
+            Color(d_hsv, Model::HSV),
+            Color(d_hsva, Model::HSV),
             Color("#FF0000")};
 
         for (const auto &c : v)
         {
             CHECK(Approx(c.rgb().vec(),1.) == Color({255., 0., 0.}).vec());
             CHECK(Approx(c.rgb().vec(),1.) == Color({255., 0., 0., 255.}).vec());
-            CHECK(Approx(c.hsv().vec(),1.) == Color({0., 100., 100.}, Color::HSV).vec());
-            CHECK(Approx(c.hsv().vec(),1.) == Color({0., 100., 100., 100.}, Color::HSV).vec());
+            CHECK(Approx(c.hsv().vec(),1.) == Color({0., 100., 100.}, Model::HSV).vec());
+            CHECK(Approx(c.hsv().vec(),1.) == Color({0., 100., 100., 100.}, Model::HSV).vec());
         }
     }
 
@@ -50,18 +50,18 @@ TEST_CASE("Color")
         std::array<float, 4> d_hsva{288., 50., 100., 100.};
 
         vector<Color> v{
-            Color(d_rgb, Color::RGB),
-            Color(d_rgba, Color::RGB),
-            Color(d_hsv, Color::HSV),
-            Color(d_hsva, Color::HSV),
+            Color(d_rgb, Model::RGB),
+            Color(d_rgba, Model::RGB),
+            Color(d_hsv, Model::HSV),
+            Color(d_hsva, Model::HSV),
             Color("#e580ff")};
 
         for (const auto &c : v)
         {
             CHECK(Approx(c.rgb().vec(),1.) == Color({229., 128., 255.}).vec());
             CHECK(Approx(c.rgb().vec(),1.) == Color({229., 128., 255., a}).vec());
-            CHECK(Approx(c.hsv().vec(),1.) == Color({288., 50., 100.}, Color::HSV).vec());
-            CHECK(Approx(c.hsv().vec(),1.) == Color({288., 50., 100., 100.}, Color::HSV).vec());
+            CHECK(Approx(c.hsv().vec(),1.) == Color({288., 50., 100.}, Model::HSV).vec());
+            CHECK(Approx(c.hsv().vec(),1.) == Color({288., 50., 100., 100.}, Model::HSV).vec());
         }
     }
 
@@ -73,15 +73,15 @@ TEST_CASE("Color")
         std::array<float,4> d_hsva { 288.,50.,100.,40. };
         
         vector<Color> v {
-          Color(d_rgba, Color::RGB),
-          Color(d_hsva, Color::HSV),
+          Color(d_rgba, Model::RGB),
+          Color(d_hsva, Model::HSV),
           Color("#e580ff66")
         };
 
         for(const auto& c : v)
         {
           CHECK(Approx(c.rgb().vec(),1.) == Color({229.,128.,255.,a}).vec());
-          CHECK(Approx(c.hsv().vec(),1.) == Color({288.,50.,100.,40.},Color::HSV).vec());
+          CHECK(Approx(c.hsv().vec(),1.) == Color({288.,50.,100.,40.},Model::HSV).vec());
         }
       }
 }

@@ -17,57 +17,67 @@
 
 namespace codac2
 {
-  enum class InterpolMode
-  {
-    RGB = 0x01,
-    HSV = 0x02
-  };
 
-  struct Color
+
+  struct Color : public std::array<float,4>
   {
-    std::array<float,4> data = {0.,0.,0.,1.0}; // RGB or HSV values + alpha, between 0 and 1
-    InterpolMode interpol_mode = InterpolMode::RGB;//RGB or HSV
+    enum Model
+    {
+      RGB = 0x01,
+      HSV = 0x02
+    };
+
+    Model m = RGB; //RGB or HSV
 
     // Constructors
 
     explicit Color();
-    explicit Color(float x1, float x2, float x3, float alpha, InterpolMode interpol_mode = InterpolMode::RGB); // RGBA constructor
-    explicit Color(double x1, double x2, double x3, double alpha, InterpolMode interpol_mode = InterpolMode::RGB);
-    explicit Color(float x1, float x2, float x3, InterpolMode interpol_mode = InterpolMode::RGB); // RGB constructor
-    explicit Color(double x1, double x2, double x3, InterpolMode interpol_mode = InterpolMode::RGB);
-    explicit Color(const std::array<float,3>& xyz, InterpolMode interpol_mode = InterpolMode::RGB);
-    explicit Color(const std::array<float,4>& xyza, InterpolMode interpol_mode = InterpolMode::RGB);
-    explicit Color(int x1, int x2, int x3, int alpha,InterpolMode interpol_mode = InterpolMode::RGB); 
-    explicit Color(int x1, int x2, int x3, InterpolMode interpol_mode = InterpolMode::RGB);
-    explicit Color(const std::array<int,3>& xyz, InterpolMode interpol_mode = InterpolMode::RGB);
-    explicit Color(const std::array<int,4>& xyza, InterpolMode interpol_mode = InterpolMode::RGB);
+    explicit Color(const std::array<float,3>& xyz, Model m_ = RGB);
+    explicit Color(const std::array<float,4>& xyza, Model m_ = RGB);
+    explicit Color(const std::initializer_list<float> xyza, Model m_ = RGB);
     explicit Color(const std::string& hex_str);
 
-    //Conversions
-
-    Color toRGB() const;
-    Color toHSV() const;
-
-    // Properties
+    // Html color
 
     std::string hex_str() const;
-    std::array<int,3> rgb() const;
-    std::array<int,4> rgba() const;
-    std::array<int,3> hsv() const;
-    std::array<int,4> hsva() const;
+
+    // Conversions
+
+    Color rgb() const;
+    Color hsv() const;
+
+    // Overload flux operator
+
+    friend std::ostream& operator<<(std::ostream& os, const Color& c)
+    {
+      if (c.m == RGB)
+        os << "RGB Color (" << c[0] << "," << c[1] << "," << c[2] << "," << c[3] << ")";
+      else if (c.m == HSV)
+        os << "HSV Color (" << c[0] << "," << c[1] << "," << c[2] << "," << c[3] << ")";
+      return os;
+    }
+
 
     // Predefined colors
 
-    static Color none()                      { return Color(255, 255, 255, 0               ); };
-    static Color black(float alpha = 1)      { return Color(0,   0,   0,   (int)(alpha*255)); };
-    static Color white(float alpha = 1)      { return Color(255, 255, 255, (int)(alpha*255)); };
-    static Color green(float alpha = 1)      { return Color(144, 242, 0,   (int)(alpha*255)); };
-    static Color blue(float alpha = 1)       { return Color(0,   98,  198, (int)(alpha*255)); };
-    static Color cyan(float alpha = 1)       { return Color(75,  207, 250, (int)(alpha*255)); };
-    static Color yellow(float alpha = 1)     { return Color(255, 211, 42,  (int)(alpha*255)); };
-    static Color red(float alpha = 1)        { return Color(209, 59,  0,   (int)(alpha*255)); };
-    static Color dark_gray(float alpha = 1)  { return Color(112, 112, 112, (int)(alpha*255)); };
-    static Color purple(float alpha = 1)     { return Color(154, 0,   170, (int)(alpha*255)); };
-    static Color dark_green(float alpha = 1) { return Color(94,  158, 0,   (int)(alpha*255)); };
+    static Color none()                      { return Color({255., 255., 255., 0.}); };
+    static Color black(float alpha = 1.)      { return Color({0.,   0.,   0.,   (float) (alpha*255.)}); };
+    static Color white(float alpha = 1.)      { return Color({255., 255., 255., (float) (alpha*255.)}); };
+    static Color green(float alpha = 1.)      { return Color({144., 242., 0.,   (float) (alpha*255.)}); };
+    static Color blue(float alpha = 1.)       { return Color({0.,   98.,  198., (float) (alpha*255.)}); };
+    static Color cyan(float alpha = 1.)       { return Color({75.,  207., 250., (float) (alpha*255.)}); };
+    static Color yellow(float alpha = 1.)     { return Color({255., 211., 42.,  (float) (alpha*255.)}); };
+    static Color red(float alpha = 1.)        { return Color({209., 59.,  0.,   (float) (alpha*255.)}); };
+    static Color dark_gray(float alpha = 1.)  { return Color({112., 112., 112., (float) (alpha*255.)}); };
+    static Color purple(float alpha = 1.)     { return Color({154., 0.,   170., (float) (alpha*255.)}); };
+    static Color dark_green(float alpha = 1.) { return Color({94.,  158., 0.,   (float) (alpha*255.)}); };
   };
+
+  template <std::size_t N>
+  static std::array<float, N> to_array(const std::initializer_list<float>& list) {
+      assert(list.size() == N);
+      std::array<float, N> arr;
+      std::copy(list.begin(), list.end(), arr.begin());
+      return arr;
+  }
 }

@@ -13,62 +13,38 @@ using namespace std;
 using namespace codac2;
 
 Color::Color()
-{ }
-
-Color::Color(float x1, float x2, float x3, float alpha,InterpolMode interpol_mode)
-  :data({x1,x2,x3,alpha}), interpol_mode(interpol_mode)
+  : m(RGB)
 { 
-  assert(x1 >= 0. && x1 <= 1. && x2 >= 0. && x2 <= 1. && x3 >= 0. && x3 <= 1. && alpha >= 0. && alpha <= 1.);
+  (*this)[0] = 0.;
+  (*this)[1] = 0.;
+  (*this)[2] = 0.;
+  (*this)[3] = 0.;
 }
 
-Color::Color(double x1, double x2, double x3, double alpha, InterpolMode interpol_mode)
-  : Color((float)x1, (float)x2, (float)x3, (float)alpha, interpol_mode)
-{ }
-
-Color::Color(float x1, float x2, float x3, InterpolMode interpol_mode)
-  : Color(x1, x2, x3, (float) 1., interpol_mode)
-{ }
-
-Color::Color(double x1, double x2, double x3, InterpolMode interpol_mode)
-  : Color((float)x1, (float)x2, (float) x3, (float) 1., interpol_mode)
-{ }
-
-Color::Color(const std::array<float,3>& xyz, InterpolMode interpol_mode)
-  : Color(xyz[0], xyz[1], xyz[2],(float) 1., interpol_mode)
-{ }
-
-Color::Color(const std::array<float,4>& xyza, InterpolMode interpol_mode)
-  : Color(xyza[0], xyza[1], xyza[2], xyza[3], interpol_mode)
-{ }
-
-Color::Color(int x1, int x2, int x3, int alpha,InterpolMode interpol_mode)
-: Color(interpol_mode == InterpolMode::RGB ? (float) (x1/255.) : (float) (x1/360.),
-        interpol_mode == InterpolMode::RGB ? (float) (x2/255.) : (float) (x2/100.),
-        interpol_mode == InterpolMode::RGB ? (float) (x3/255.) : (float) (x3/100.),
-        interpol_mode == InterpolMode::RGB ? (float) (alpha/255.) : (float) (alpha/100.),
-        interpol_mode)
+Color::Color(const std::array<float,3>& xyz, Model m_)
+  : m(m_)
 {
-  if (interpol_mode == InterpolMode::RGB)
-  {
-    assert(x1 >= 0 && x1 <= 255 && x2 >= 0 && x2 <= 255 && x3 >= 0 && x3 <= 255 && alpha >= 0 && alpha <= 255);
-  }
-  else
-  {
-    assert(x1 >= 0 && x1 <= 360 && x2 >= 0 && x2 <= 100 && x3 >= 0 && x3 <= 100 && alpha >= 0 && alpha <= 100);
-  }
-    
+  (*this)[0] = xyz[0];
+  (*this)[1] = xyz[1];
+  (*this)[2] = xyz[2];
+  (*this)[3] = (m == RGB ? 255. : 100.);
 }
 
-Color::Color(int x1, int x2, int x3, InterpolMode interpol_mode)
-  : Color(x1, x2, x3,interpol_mode == InterpolMode::RGB ? 255 : 100, interpol_mode)
-{ }
+Color::Color(const std::array<float,4>& xyza, Model m_)
+  : m(m_)
+{
+  if (m_==RGB)
+    assert(xyza[0] >= 0. && xyza[0] <= 255. && xyza[1]>=0. && xyza[1] <= 255. && xyza[2]>=0. && xyza[2] <= 255. && xyza[3]>=0. && xyza[3] <= 255.);
+  else if (m_==HSV)
+    assert(xyza[0] >= 0. && xyza[0] <= 360. && xyza[1]>=0. && xyza[1] <= 100. && xyza[2]>=0. && xyza[2] <= 100. && xyza[3]>=0. && xyza[3] <= 100.);
+  (*this)[0] = xyza[0];
+  (*this)[1] = xyza[1];
+  (*this)[2] = xyza[2];
+  (*this)[3] = xyza[3];
+}
 
-Color::Color(const std::array<int,3>& xyz, InterpolMode interpol_mode)
-  : Color(xyz[0], xyz[1], xyz[2], interpol_mode == InterpolMode::RGB ? 255 : 100, interpol_mode)
-{ }
-
-Color::Color(const std::array<int,4>& xyza, InterpolMode interpol_mode)
-  : Color(xyza[0], xyza[1], xyza[2], xyza[3], interpol_mode)
+Color::Color(const std::initializer_list<float> xyza, Model m_)
+  : Color(xyza.size() == 3 ? Color(to_array<3>(xyza), m_) : Color(to_array<4>(xyza), m_)) 
 { }
 
 Color::Color(const std::string& hex_str)
@@ -76,72 +52,84 @@ Color::Color(const std::string& hex_str)
   assert(hex_str.size() == 7 || hex_str.size() == 9);
   assert(hex_str[0] == '#');
 
-  interpol_mode = InterpolMode::RGB;
+  m = RGB;
 
   int red,green,blue,a;
   std::istringstream(hex_str.substr(1,2)) >> std::hex >> red;
   std::istringstream(hex_str.substr(3,2)) >> std::hex >> green;
   std::istringstream(hex_str.substr(5,2)) >> std::hex >> blue;
-  data[0] = (float) (red/255.);
-  data[1] = (float) (green/255.);
-  data[2] = (float) (blue/255.);
+  (*this)[0] = (float) (red);
+  (*this)[1] = (float) (green);
+  (*this)[2] = (float) (blue);
 
   // Alpha (transparency) component may be appended to the #hexa notation.
-  // Value is '1' (max opacity) by default.
+  // Value is '255.' (max opacity) by default.
   if(hex_str.size() == 9)
   {
     std::istringstream(hex_str.substr(7,2)) >> std::hex >> a;
-    data[3] = (float) (a/255.);
+    (*this)[3] = (float) (a);
   }
+  else
+    (*this)[3] = 255.;
 }
 
-Color Color::toRGB() const
+Color Color::rgb() const
 {
-  if (interpol_mode==InterpolMode::RGB)
+  if (m==RGB)
     return *this;
   else
   {
-    float r = 1., g = 1., b = 1.;
+    float r = 0., g = 0., b = 0.;
 
-    int i = static_cast<int>(data[0] * 6);
-    float f = (data[0] * 6) - i;
+    // Normalisation des valeurs
+    float h = (*this)[0] / 360.; // Hue normalisée (0 à 1)
+    float s = (*this)[1] / 100.; // Saturation normalisée (0 à 1)
+    float v = (*this)[2] / 100.; // Value normalisée (0 à 1)
+
+    int i = static_cast<int>(h * 6);
+    float f = (h * 6) - i;
     i = i % 6;
 
-    float p = data[2] * (1 - data[1]);
-    float q = data[2] * (1 - f * data[1]);
-    float t = data[2] * (1 - (1 - f) * data[1]);
+    float p = v * (1 - s);
+    float q = v * (1 - f * s);
+    float t = v * (1 - (1 - f) * s);
 
     switch (i) {
-        case 0: r = data[2]; g = t; b = p; break;
-        case 1: r = q; g = data[2]; b = p; break;
-        case 2: r = p; g = data[2]; b = t; break;
-        case 3: r = p; g = q; b = data[2]; break;
-        case 4: r = t; g = p; b = data[2]; break;
-        case 5: r = data[2]; g = p; b = q; break;
+        case 0: r = v; g = t; b = p; break;
+        case 1: r = q; g = v; b = p; break;
+        case 2: r = p; g = v; b = t; break;
+        case 3: r = p; g = q; b = v; break;
+        case 4: r = t; g = p; b = v; break;
+        case 5: r = v; g = p; b = q; break;
     }
 
-    return Color(r, g, b, data[3],InterpolMode::RGB);
+    // Conversion vers l'échelle [0, 255]
+    r *= 255.;
+    g *= 255.;
+    b *= 255.;
+
+    return Color({r, g, b,(float) ((*this)[3]*2.55)},RGB);
   }
 }
 
-Color Color::toHSV() const
+Color Color::hsv() const
 {
-  if (interpol_mode==InterpolMode::HSV)
+  if (m==HSV)
     return *this;
   else
   {
-    float c_max = std::max({data[0], data[1], data[2]});
-    float c_min = std::min({data[0], data[1], data[2]});
+    float c_max = std::max({(*this)[0], (*this)[1], (*this)[2]});
+    float c_min = std::min({(*this)[0], (*this)[1], (*this)[2]});
     float delta = c_max - c_min;
 
     float h = 0.0;
     if (delta != 0) {
-        if (c_max == data[0]) {
-            h = fmod((data[1] - data[2]) / delta, 6.0);
-        } else if (c_max == data[1]) {
-            h = (data[2] - data[0]) / delta + 2.0;
-        } else if (c_max == data[2]) {
-            h = (data[0] - data[1]) / delta + 4.0;
+        if (c_max == (*this)[0]) {
+            h = fmod(((*this)[1] - (*this)[2]) / delta, 6.0);
+        } else if (c_max == (*this)[1]) {
+            h = ((*this)[2] - (*this)[0]) / delta + 2.0;
+        } else if (c_max == (*this)[2]) {
+            h = ((*this)[0] - (*this)[1]) / delta + 4.0;
         }
         h /= 6.0;
         if (h < 0) {
@@ -153,53 +141,25 @@ Color Color::toHSV() const
 
     float v = c_max;
 
-    return Color(h, s, v, data[3],InterpolMode::HSV);
+    h*=360.;
+    s*=100.;
+    v*=100.;
+
+    return Color({h, s, v,(float) ((*this)[3]/2.55)},HSV);
   }
 }
 
 std::string Color::hex_str() const
 {
-  if (interpol_mode == InterpolMode::RGB)
+  if (m == RGB)
     {
       std::stringstream s;
       s << std::hex << std::setfill('0');
-      s << std::setw(2) << (int)(data[0]*255) << std::setw(2) << (int)(data[1]*255) << std::setw(2) << (int)(data[2]*255);
-      if(data[3] != 1.)
-        s << std::setw(2) << (int)(data[3]*255);
+      s << std::setw(2) << (int)((*this)[0]) << std::setw(2) << (int)((*this)[1]) << std::setw(2) << (int)((*this)[2]);
+      if((*this)[3] != 1.)
+        s << std::setw(2) << (int)((*this)[3]);
       return "#"+s.str();
     }
   else
-    return toRGB().hex_str();
-}
-
-std::array<int,3> Color::rgb() const
-{
-  if (interpol_mode == InterpolMode::RGB)
-    return { (int)(data[0]*255), (int)(data[1]*255), (int)(data[2]*255) };
-  else
-    return toRGB().rgb();
-}
-
-std::array<int,4> Color::rgba() const
-{
-  if (interpol_mode == InterpolMode::RGB)
-    return { (int)(data[0]*255), (int)(data[1]*255), (int)(data[2]*255), (int)(data[3]*255) };
-  else
-    return toRGB().rgba();
-}
-
-std::array<int,3> Color::hsv() const
-{
-  if (interpol_mode == InterpolMode::HSV)
-    return { (int)(data[0]*360), (int)(data[1]*100), (int)(data[2]*100) };
-  else
-    return toHSV().hsv();
-}
-
-std::array<int,4> Color::hsva() const
-{
-  if (interpol_mode == InterpolMode::HSV)
-    return { (int)(data[0]*360), (int)(data[1]*100), (int)(data[2]*100), (int)(data[3]*100) };
-  else
-    return toHSV().hsva();
+    return rgb().hex_str();
 }

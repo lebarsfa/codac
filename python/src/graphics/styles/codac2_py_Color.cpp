@@ -22,82 +22,57 @@ using namespace pybind11::literals;
 
 void export_Color(py::module& m)
 {
-  py::enum_<InterpolMode>(m, "InterpolMode")
-    .value("RGB", InterpolMode::RGB)
-    .value("HSV", InterpolMode::HSV)
+
+  py::enum_<Color::Model>(m, "Model")
+    .value("RGB", Color::Model::RGB)
+    .value("HSV", Color::Model::HSV)
   ;
 
   py::class_<Color> exported_color(m, "Color", COLOR_MAIN);
   exported_color
-
-    .def_readwrite("data", &Color::data,
-      ARRAY_FLOAT4_COLOR_DATA)
-
-    .def_readwrite("interpol_mode", &Color::interpol_mode,
-      INTERPOLMODE_COLOR_INTERPOL_MODE)
+    
+    .def_readwrite("m", &Color::m,
+      MODEL_COLOR_M)
 
     .def(py::init<>(),COLOR_COLOR)
 
-    .def(py::init<float,float,float,float,InterpolMode>(),
-      COLOR_COLOR_FLOAT_FLOAT_FLOAT_FLOAT_INTERPOLMODE,
-      "x1"_a, "x2"_a, "x3"_a, "alpha"_a, "interpol_mode"_a=InterpolMode::RGB)
+    .def(py::init<const std::array<float,3>&,Color::Model>(),
+      COLOR_COLOR_CONST_ARRAY_FLOAT3_REF_MODEL,
+      "xyz"_a, "m_"_a=Color::Model::RGB)
 
-    .def(py::init<float,float,float,InterpolMode>(),
-      COLOR_COLOR_FLOAT_FLOAT_FLOAT_INTERPOLMODE,
-      "x1"_a, "x2"_a, "x3"_a, "interpol_mode"_a=InterpolMode::RGB)
+    .def(py::init<const std::array<float,4>&,Color::Model>(),
+      COLOR_COLOR_CONST_ARRAY_FLOAT4_REF_MODEL,
+      "xyza"_a, "m_"_a=Color::Model::RGB)
 
-    .def(py::init<const std::array<float,3>&,InterpolMode>(),
-      COLOR_COLOR_CONST_ARRAY_FLOAT3_REF_INTERPOLMODE,
-      "xyz"_a, "interpol_mode"_a=InterpolMode::RGB)
-
-    .def(py::init<const std::array<float,4>&,InterpolMode>(),
-      COLOR_COLOR_CONST_ARRAY_FLOAT4_REF_INTERPOLMODE,
-      "xyza"_a, "interpol_mode"_a=InterpolMode::RGB)
-
-    .def(py::init<int,int,int,int,InterpolMode>(),
-      COLOR_COLOR_INT_INT_INT_INT_INTERPOLMODE,
-      "x1"_a, "x2"_a, "x3"_a, "alpha"_a, "interpol_mode"_a=InterpolMode::RGB)
-
-    .def(py::init<int,int,int,InterpolMode>(),
-      COLOR_COLOR_INT_INT_INT_INTERPOLMODE,
-      "x1"_a, "x2"_a, "x3"_a, "interpol_mode"_a=InterpolMode::RGB)
-
-    .def(py::init<const std::array<int,3>&,InterpolMode>(),
-      COLOR_COLOR_CONST_ARRAY_INT3_REF_INTERPOLMODE,
-      "xyz"_a, "interpol_mode"_a=InterpolMode::RGB)
-
-    .def(py::init<const std::array<int,4>&,InterpolMode>(),
-      COLOR_COLOR_CONST_ARRAY_INT4_REF_INTERPOLMODE,
-      "xyza"_a, "interpol_mode"_a=InterpolMode::RGB)
+    .def(py::init<const std::initializer_list<float>&,Color::Model>(),
+      COLOR_COLOR_CONST_INITIALIZER_LIST_FLOAT_MODEL,
+      "xyza"_a, "m_"_a=Color::Model::RGB)
 
     .def(py::init<const std::string&>(),
       COLOR_COLOR_CONST_STRING_REF,
       "hex_str"_a)
 
-    // Conversions
 
-    .def("toRGB", &Color::toRGB,
-      COLOR_COLOR_TORGB_CONST)
-
-    .def("toHSV", &Color::toHSV,
-      COLOR_COLOR_TOHSV_CONST)
-
-    // Properties
+    // Html color
 
     .def("hex_str", &Color::hex_str,
       STRING_COLOR_HEX_STR_CONST)
 
-    .def("rgb", &Color::rgb,
-      ARRAY_INT3_COLOR_RGB_CONST)
+    // Conversions
 
-    .def("rgba", &Color::rgba,
-      ARRAY_INT3_COLOR_RGB_CONST)
+    .def("rgb", &Color::rgb,
+      COLOR_COLOR_RGB_CONST)
 
     .def("hsv", &Color::hsv,
-      ARRAY_INT3_COLOR_RGB_CONST)
+      COLOR_COLOR_HSV_CONST)
 
-    .def("hsva", &Color::hsva,
-      ARRAY_INT3_COLOR_RGB_CONST)
+    // Overload flux operator
+
+    .def("__str__", [](const Color& c) {
+      std::ostringstream oss;
+      oss << c;
+      return oss.str();
+    })
 
     // Predefined colors
 

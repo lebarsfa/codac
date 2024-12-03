@@ -23,7 +23,7 @@ fig1 = Figure2D("My figure 1", GraphicOutput.VIBES | GraphicOutput.IPE)
 fig1.set_window_properties([50,50],[500,500]) # position, window size
 fig1.set_axes(axis(0,[-10,10]), axis(1,[-10,10])) # (axis_id,[range_of_values_on_this_axis])
 fig1.draw_box([[-1,1],[-1,1]],[Color.green(),Color.red(0.2)]) # drawing a green box with red opacity values inside
-fig1.draw_circle([1,1],0.5,Color(255,155,5)) # drawing a circle at (1,1) of radius 0.5 with a custom RGB color
+fig1.draw_circle([1,1],0.5,Color([255,155,5])) # drawing a circle at (1,1) of radius 0.5 with a custom RGB color
 fig1.draw_ring([1,1],[4,6],Color.red()) # drawing a ring at (1,1) of radius [4,6] with a predefined red color
 
 fig2 = Figure2D("My figure 2", GraphicOutput.VIBES | GraphicOutput.IPE)
@@ -46,17 +46,17 @@ fig2.draw_polyline([[-0.8,0],[0,1.5]], 0.2, [Color.red(),Color.black(0.3)])
 fig2.draw_ellipse([1,1],[0.5,2], 0.2, [Color.blue(),Color.blue(0.3)])
 fig2.draw_point([2,2], [Color.red(),Color.yellow(0.5)])
 fig2.draw_box([[2.4,2.9],[2.4,2.9]],[Color("#da3907"),Color("#da390755")])
-fig2.draw_box([[2.6,3.1],[2.6,3.1]],[Color(0.30,0.9,0.78,interpol_mode=InterpolMode.HSV),Color(0.30,0.9,0.78,0.2,InterpolMode.HSV)])
+fig2.draw_box([[2.6,3.1],[2.6,3.1]],[Color([108,90,78],Model.HSV),Color([108,90,78,20],Model.HSV)])
 
 fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)
 fig3.set_axes(axis(0,[-1,21]), axis(1,[-5.5,0.5]))
 fig3.set_window_properties([800,250],[500,500])
 
-cmap_haxby=ColorMap.HAXBY
-cmap_default=ColorMap.DEFAULT
-cmap_blue_tube=ColorMap.BLUE_TUBE
-cmap_red_tube=ColorMap.RED_TUBE
-cmap_rainbow=ColorMap.RAINBOW
+cmap_haxby=ColorMap.haxby()
+cmap_default=ColorMap.basic()
+cmap_blue_tube=ColorMap.blue_tube()
+cmap_red_tube=ColorMap.red_tube()
+cmap_rainbow=ColorMap.rainbow()
 
 for i in range (20):
     ratio=i/20

@@ -23,35 +23,26 @@ void export_ColorMap(py::module& m)
   py::class_<ColorMap> exported_colormap(m, "ColorMap", COLORMAP_MAIN);
   exported_colormap
 
-    .def_readwrite("colormap", &ColorMap::colormap)
-
-    .def(py::init<>(),
-      COLORMAP_COLORMAP)
-
-    .def("add_color_point", &ColorMap::add_color_point,
-        VOID_COLORMAP_ADD_COLOR_POINT_COLOR_FLOAT,
-        "color"_a, "index"_a)
-
     .def("color", &ColorMap::color,
         COLOR_COLORMAP_COLOR_FLOAT_CONST,
         "r"_a)
 
     // Predifined color maps
 
-    .def_readonly_static("HAXBY", &ColorMap::HAXBY,
-      CONST_COLORMAP_COLORMAP_HAXBY)
+    .def_static("haxby", &ColorMap::haxby,
+        STATIC_COLORMAP_COLORMAP_HAXBY)
+    
+    .def_static("basic", &ColorMap::basic,
+        STATIC_COLORMAP_COLORMAP_BASIC)
 
-    .def_readonly_static("DEFAULT", &ColorMap::DEFAULT,
-      CONST_COLORMAP_COLORMAP_DEFAULT)
+    .def_static("blue_tube", &ColorMap::blue_tube,
+        STATIC_COLORMAP_COLORMAP_BLUE_TUBE)
 
-    .def_readonly_static("BLUE_TUBE", &ColorMap::BLUE_TUBE,
-      CONST_COLORMAP_COLORMAP_BLUE_TUBE)
+    .def_static("red_tube", &ColorMap::red_tube,
+        STATIC_COLORMAP_COLORMAP_RED_TUBE)
 
-    .def_readonly_static("RED_TUBE", &ColorMap::RED_TUBE,
-      CONST_COLORMAP_COLORMAP_RED_TUBE)
-
-    .def_readonly_static("RAINBOW", &ColorMap::RAINBOW,
-      CONST_COLORMAP_COLORMAP_RAINBOW)
+    .def_static("rainbow", &ColorMap::rainbow,
+        STATIC_COLORMAP_COLORMAP_RAINBOW)
 
   ;
 }

@@ -12,8 +12,9 @@
 #include <string>
 #include <iomanip>
 #include <math.h> 
-#include"codac2_assert.h"
 
+#include"codac2_assert.h"
+#include"codac2_Vector.h"
 
 namespace codac2
 {
@@ -37,9 +38,11 @@ namespace codac2
     explicit Color(const std::initializer_list<float> xyza, Model m_ = RGB);
     explicit Color(const std::string& hex_str);
 
-    // Html color
+    // other formats
 
     std::string hex_str() const;
+
+    codac2::Vector vec() const;
 
     // Conversions
 

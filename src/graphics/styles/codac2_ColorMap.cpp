@@ -12,6 +12,9 @@
 using namespace std;
 using namespace codac2;
 
+ColorMap::ColorMap(Color::Model m_) : 
+  m(m_)
+{ }
 
 Color ColorMap::color(float r) const
 {
@@ -29,6 +32,21 @@ Color ColorMap::color(float r) const
       it_ub = this->lower_bound(real_index);
       Color color_lb = prev(it_ub)->second;
       Color color_ub = it_ub->second;
+
+      // Interpolation according to the ColorMap model
+
+      if (m == Color::RGB)
+      {
+        color_lb = color_lb.rgb();
+        color_ub = color_ub.rgb();
+      }
+
+      else if (m == Color::HSV)
+      {
+        color_lb = color_lb.hsv();
+        color_ub = color_ub.hsv();
+      }
+      
 
       float local_ratio = (real_index - prev(it_ub)->first) / (it_ub->first - prev(it_ub)->first);
  

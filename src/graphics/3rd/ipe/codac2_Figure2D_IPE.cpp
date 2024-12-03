@@ -555,10 +555,9 @@ void Figure2D_IPE::print_header_page()
 
   for(auto& [k,c] : _colors)
     {
-      if (c.m == Color::HSV)
-        c = c.rgb();
+      Color c_rgb = c.rgb();
       _f << "<color name=\"codac_color_" << k << "\" "
-        << "value=\"" << (float) (c[0]/255.) << " " <<(float) (c[1]/255.) << " " <<(float) (c[2]/255.) << "\" /> \n";
+        << "value=\"" << (float) (c_rgb[0]/255.) << " " <<(float) (c_rgb[1]/255.) << " " <<(float) (c_rgb[2]/255.) << "\" /> \n";
     }
 
   _f << "<dashstyle name=\"dash dot dotted\" value=\"[4 2 1 2 1 2] 0\"/> \n \

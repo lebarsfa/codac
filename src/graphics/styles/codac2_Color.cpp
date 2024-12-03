@@ -118,18 +118,21 @@ Color Color::hsv() const
     return *this;
   else
   {
-    float c_max = std::max({(*this)[0], (*this)[1], (*this)[2]});
-    float c_min = std::min({(*this)[0], (*this)[1], (*this)[2]});
+    float r = (*this)[0]/255.;
+    float g = (*this)[1]/255.;
+    float b = (*this)[2]/255.;
+    float c_max = std::max({r, g, b});
+    float c_min = std::min({r, g, b});
     float delta = c_max - c_min;
 
     float h = 0.0;
     if (delta != 0) {
-        if (c_max == (*this)[0]) {
-            h = fmod(((*this)[1] - (*this)[2]) / delta, 6.0);
-        } else if (c_max == (*this)[1]) {
-            h = ((*this)[2] - (*this)[0]) / delta + 2.0;
-        } else if (c_max == (*this)[2]) {
-            h = ((*this)[0] - (*this)[1]) / delta + 4.0;
+        if (c_max == r) {
+            h = fmod((g - b) / delta, 6.0);
+        } else if (c_max == g) {
+            h = (b - r) / delta + 2.0;
+        } else if (c_max == b) {
+            h = (r - g) / delta + 4.0;
         }
         h /= 6.0;
         if (h < 0) {
@@ -162,4 +165,9 @@ std::string Color::hex_str() const
     }
   else
     return rgb().hex_str();
+}
+
+codac2::Vector Color::vec() const
+{
+  return codac2::Vector({(*this)[0], (*this)[1], (*this)[2], (*this)[3]});
 }

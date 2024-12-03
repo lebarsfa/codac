@@ -53,10 +53,13 @@ void export_Color(py::module& m)
       "hex_str"_a)
 
 
-    // Html color
+    // Other formats
 
     .def("hex_str", &Color::hex_str,
       STRING_COLOR_HEX_STR_CONST)
+
+    .def("vec", &Color::vec,
+      VECTOR_COLOR_VEC_CONST)
 
     // Conversions
 

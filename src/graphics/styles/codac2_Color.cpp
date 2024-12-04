@@ -92,7 +92,7 @@ Color Color::rgb() const
     g *= 255.;
     b *= 255.;
 
-    return Color({r, g, b,(float) ((*this)[3]*2.55)},Model::RGB);
+    return Color({r, g, b,std::min<float>(255.,((*this)[3]*2.55))},Model::RGB);
   }
 }
 

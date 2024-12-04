@@ -52,7 +52,7 @@ fig2.draw_point([2,2], [Color.red(),Color.yellow(0.5)])
 fig2.draw_box([[2.4,2.9],[2.4,2.9]],[Color("#da3907"),Color("#da390755")])
 # HSV color without and with opacity
 fig2.draw_box([[2.6,3.1],[2.6,3.1]],[Color([108,90,78],Model.HSV),Color([108,90,78,20],Model.HSV)])
-# RGB auto cast from list
+# RGB color auto cast from list without and with opacity
 fig2.draw_box([[2.,2.3],[2.6,2.9]],[[255,0,255],[255,0,255,100]])
 
 fig3 = Figure2D("ColorMap figure", GraphicOutput.VIBES | GraphicOutput.IPE)

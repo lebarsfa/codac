@@ -53,7 +53,7 @@ Color ColorMap::color(float r) const
     return Color({(color_lb[0] + (color_ub[0] - color_lb[0]) * local_ratio),
                     (color_lb[1] + (color_ub[1] - color_lb[1]) * local_ratio),
                     (color_lb[2] + (color_ub[2] - color_lb[2]) * local_ratio),
-                    (color_lb[3] + (color_ub[3] - color_lb[3]) * local_ratio)},color_lb.m);
+                    (color_lb[3] + (color_ub[3] - color_lb[3]) * local_ratio)},color_lb.model());
 
     }
 

@@ -13,46 +13,30 @@ using namespace std;
 using namespace codac2;
 
 Color::Color()
-  : m(Model::RGB)
-{ 
-  (*this)[0] = 0.;
-  (*this)[1] = 0.;
-  (*this)[2] = 0.;
-  (*this)[3] = 0.;
-}
+  : Color({0.,0.,0.,0.})
+{ }
 
 Color::Color(const std::array<float,3>& xyz, Model m_)
-  : m(m_)
-{
-  (*this)[0] = xyz[0];
-  (*this)[1] = xyz[1];
-  (*this)[2] = xyz[2];
-  (*this)[3] = (m == Model::RGB ? 255. : 100.);
-}
+  : Color({xyz[0],xyz[1],xyz[2],(m_ == Model::RGB ? (float) 255. : (float) 100.)}, m_)
+{ }
 
 Color::Color(const std::array<float,4>& xyza, Model m_)
-  : m(m_)
+  : std::array<float,4>(xyza), m(m_)
 {
   if (m_==Model::RGB)
     assert(xyza[0] >= 0. && xyza[0] <= 255. && xyza[1]>=0. && xyza[1] <= 255. && xyza[2]>=0. && xyza[2] <= 255. && xyza[3]>=0. && xyza[3] <= 255.);
   else if (m_==Model::HSV)
     assert(xyza[0] >= 0. && xyza[0] <= 360. && xyza[1]>=0. && xyza[1] <= 100. && xyza[2]>=0. && xyza[2] <= 100. && xyza[3]>=0. && xyza[3] <= 100.);
-  (*this)[0] = xyza[0];
-  (*this)[1] = xyza[1];
-  (*this)[2] = xyza[2];
-  (*this)[3] = xyza[3];
 }
 
 Color::Color(const std::initializer_list<float> xyza, Model m_)
   : Color(xyza.size() == 3 ? Color(to_array<3>(xyza), m_) : Color(to_array<4>(xyza), m_)) 
 { }
 
-Color::Color(const std::string& hex_str)
+Color::Color(const std::string& hex_str) : m(Model::RGB)
 {
   assert(hex_str.size() == 7 || hex_str.size() == 9);
   assert(hex_str[0] == '#');
-
-  m = Model::RGB;
 
   int red,green,blue,a;
   std::istringstream(hex_str.substr(1,2)) >> std::hex >> red;
@@ -148,7 +132,7 @@ Color Color::hsv() const
     s*=100.;
     v*=100.;
 
-    return Color({h, s, v,(float) ((*this)[3]/2.55)},Model::HSV);
+    return Color({h, s, v,std::min<float>(100.,((*this)[3]/2.55))},Model::HSV);
   }
 }
 

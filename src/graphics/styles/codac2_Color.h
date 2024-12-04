@@ -19,16 +19,14 @@
 namespace codac2
 {
 
-  enum class Model
-  {
-    RGB = 0x01,
-    HSV = 0x02
-  };
+  enum Model { RGB, HSV };
 
   struct Color : public std::array<float,4>
   {
+    protected:
+      Model m;
 
-    Model m = Model::RGB; //RGB or HSV
+    public:
 
     // Constructors
 
@@ -37,6 +35,9 @@ namespace codac2
     explicit Color(const std::array<float,4>& xyza, Model m_ = Model::RGB);
     explicit Color(const std::initializer_list<float> xyza, Model m_ = Model::RGB);
     explicit Color(const std::string& hex_str);
+
+    const Model& model() const { return m; }
+
 
     // other formats
 
@@ -59,7 +60,6 @@ namespace codac2
         os << "HSV Color (" << c[0] << "," << c[1] << "," << c[2] << "," << c[3] << ")";
       return os;
     }
-
 
     // Predefined colors
 

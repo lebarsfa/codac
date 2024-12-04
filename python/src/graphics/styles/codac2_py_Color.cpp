@@ -31,9 +31,6 @@ void export_Color(py::module& m)
   py::class_<Color> exported_color(m, "Color", COLOR_MAIN);
   exported_color
     
-    .def_readwrite("m", &Color::m,
-      MODEL_COLOR_M)
-
     .def(py::init<>(),COLOR_COLOR)
 
     .def(py::init<const std::array<float,3>&,Model>(),
@@ -44,13 +41,12 @@ void export_Color(py::module& m)
       COLOR_COLOR_CONST_ARRAY_FLOAT4_REF_MODEL,
       "xyza"_a, "m_"_a=Model::RGB)
 
-    .def(py::init<const std::initializer_list<float>&,Model>(),
-      COLOR_COLOR_CONST_INITIALIZER_LIST_FLOAT_MODEL,
-      "xyza"_a, "m_"_a=Model::RGB)
-
     .def(py::init<const std::string&>(),
       COLOR_COLOR_CONST_STRING_REF,
       "hex_str"_a)
+
+    .def("model", &Color::model,
+      CONST_MODEL_REF_COLOR_MODEL_CONST)
 
 
     // Other formats
@@ -114,4 +110,6 @@ void export_Color(py::module& m)
       STATIC_COLOR_COLOR_DARK_GRAY_FLOAT,
       "alpha"_a=1.)
   ;
+
+  py::implicitly_convertible<py::list, Color>();
 }

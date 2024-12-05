@@ -35,7 +35,7 @@ Figure2D_IPE::Figure2D_IPE(const Figure2D& fig)
 
   for(const auto& ci : codac_colors)
     // substr is needed to remove the "#" at the beginning of hex_str (deprecated by IPE)
-    _colors.emplace(ci.hex_str.substr(1), ci);
+    _colors.emplace(ci.hex_str().substr(1), ci);
 }
 
 Figure2D_IPE::~Figure2D_IPE()
@@ -75,18 +75,28 @@ void Figure2D_IPE::center_viewbox([[maybe_unused]] const Vector& c, [[maybe_unus
   assert(r.min_coeff() > 0.);
 }
 
+std::string ipe_str(const Color& c)
+{
+  return " codac_color_" + c.hex_str().substr(1);
+}
+
+int ipe_opacity(const Color& c)
+{
+  return (int)(10.*round(10.*(c.model()==Model::RGB ? (c[3]/255.):(c[3]/100.))));
+}
+
 void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)
 {
   // substr is needed to remove the "#" at the beginning of hex_str (deprecated by IPE)
-  _colors.emplace(s.stroke_color.hex_str.substr(1), s.stroke_color);
-  _colors.emplace(s.fill_color.hex_str.substr(1), s.fill_color);
+  _colors.emplace(ipe_str(s.stroke_color), s.stroke_color);
+  _colors.emplace(ipe_str(s.fill_color), s.fill_color);
 
   _f_temp_content << "\n \
     <path layer=\"alpha\" \n \
-    stroke=\"codac_color_" << s.stroke_color.hex_str.substr(1) << "\" \n \
-    fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
-    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
-    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
+    stroke=\"codac_color_" << ipe_str(s.stroke_color) << "\" \n \
+    fill=\"codac_color_" << ipe_str(s.fill_color) << "\" \n \
+    opacity=\"" << ipe_opacity(s.fill_color) << "%\" \n \
+    stroke-opacity=\"" << ipe_opacity(s.stroke_color) << "%\" \n \
     pen=\"heavier\"";
   if (tip)
     _f_temp_content << "\n \
@@ -97,15 +107,15 @@ void Figure2D_IPE::begin_path(const StyleProperties& s, bool tip=false)
 void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const StyleProperties& s)
 {
   // substr is needed to remove the "#" at the beginning of hex_str (deprecated by IPE)
-  _colors.emplace(s.stroke_color.hex_str.substr(1), s.stroke_color);
-  _colors.emplace(s.fill_color.hex_str.substr(1), s.fill_color);
+  _colors.emplace(ipe_str(s.stroke_color), s.stroke_color);
+  _colors.emplace(ipe_str(s.fill_color), s.fill_color);
 
   _f_temp_content << "\n \
     <path layer=\"alpha\" \n \
-    stroke=\"codac_color_" << s.stroke_color.hex_str.substr(1) << "\" \n \
-    fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
-    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
-    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
+    stroke=\"codac_color_" << ipe_str(s.stroke_color) << "\" \n \
+    fill=\"codac_color_" << ipe_str(s.fill_color) << "\" \n \
+    opacity=\"" << ipe_opacity(s.fill_color) << "%\" \n \
+    stroke-opacity=\"" << ipe_opacity(s.stroke_color) << "%\" \n \
     pen=\"heavier\" \n \
     matrix=";
 
@@ -118,17 +128,17 @@ void Figure2D_IPE::begin_path_with_matrix(const Vector& x, float length, const S
 void Figure2D_IPE::draw_point(const Vector& c, const StyleProperties& s)
 {
   assert(_fig.size() <= c.size());
-  _colors.emplace(s.stroke_color.hex_str.substr(1), s.stroke_color);
-  _colors.emplace(s.fill_color.hex_str.substr(1), s.fill_color);
+  _colors.emplace(ipe_str(s.stroke_color), s.stroke_color);
+  _colors.emplace(ipe_str(s.fill_color), s.fill_color);
 
   _f_temp_content << "\n \
     <use layer=\"alpha\" \n \
     name=\"mark/fdisk(sfx)\"  \n \
     pos=\"" << scale_x(c[i()]) << " " << scale_y(c[j()]) << "\" \n \
-    stroke=\"codac_color_" << s.stroke_color.hex_str.substr(1) << "\" \n \
-    fill=\"codac_color_" << s.fill_color.hex_str.substr(1) << "\" \n \
-    opacity=\"" << (int)(10*round(10.*s.fill_color.alpha)) << "%\" \n \
-    stroke-opacity=\"" << (int)(10*round(10.*s.stroke_color.alpha)) << "%\" \n \
+    stroke=\"codac_color_" << ipe_str(s.stroke_color) << "\" \n \
+    fill=\"codac_color_" << ipe_str(s.fill_color) << "\" \n \
+    opacity=\"" << ipe_opacity(s.fill_color) << "%\" \n \
+    stroke-opacity=\"" << ipe_opacity(s.stroke_color) << "%\" \n \
     size=\"normal\"\n/>";
 }
 
@@ -543,9 +553,12 @@ void Figure2D_IPE::print_header_page()
     <arrowsize name=\"small\" value=\"5\"/> \n \
     <arrowsize name=\"tiny\" value=\"3\"/> \n";
 
-  for(const auto& [k,c] : _colors)
-    _f << "<color name=\"codac_color_" << k << "\" "
-      << "value=\"" << c.r << " " << c.g << " " << c.b << "\" /> \n";
+  for(auto& [k,c] : _colors)
+    {
+      Color c_rgb = c.rgb();
+      _f << "<color name=\"codac_color_" << k << "\" "
+        << "value=\"" << (float) (c_rgb[0]/255.) << " " <<(float) (c_rgb[1]/255.) << " " <<(float) (c_rgb[2]/255.) << "\" /> \n";
+    }
 
   _f << "<dashstyle name=\"dash dot dotted\" value=\"[4 2 1 2 1 2] 0\"/> \n \
     <dashstyle name=\"dash dotted\" value=\"[4 2 1 2] 0\"/> \n \

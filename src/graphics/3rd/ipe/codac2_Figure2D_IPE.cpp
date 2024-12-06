@@ -77,7 +77,7 @@ void Figure2D_IPE::center_viewbox([[maybe_unused]] const Vector& c, [[maybe_unus
 
 std::string ipe_str(const Color& c)
 {
-  return " codac_color_" + c.hex_str().substr(1);
+  return c.hex_str().substr(1);
 }
 
 int ipe_opacity(const Color& c)

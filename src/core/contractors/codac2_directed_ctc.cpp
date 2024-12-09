@@ -397,8 +397,8 @@ using namespace codac2;
     else*/
     {
       IntervalMatrix Q = gauss_jordan(x1.mid());
-      auto b_tilde = Q*y;
-      auto A_tilde = Q*x1; // should be a tree matrix
+      IntervalVector b_tilde = Q*y;
+      IntervalMatrix A_tilde = Q*x1; // should be a tree matrix
 
       for(int a = 0 ; a < 1 ; a++)
       {
@@ -412,10 +412,7 @@ using namespace codac2;
               if(i != j)
                 u -= x2[j]*A_tilde(k,j);
 
-            if(A_tilde(k,i).contains(0.))
-              continue;
-
-            x2[i] &= u / A_tilde(k,i);
+            MulOp::bwd(u, x2[i], A_tilde(k,i));
           }
         }
       }

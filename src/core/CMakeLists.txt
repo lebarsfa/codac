@@ -54,7 +54,6 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_utils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_utils.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval_operations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/codac2_Interval_operations.h
@@ -113,6 +112,8 @@
     
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Inversion.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Inversion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_matrices.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Row.h

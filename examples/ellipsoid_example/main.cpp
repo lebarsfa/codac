@@ -31,7 +31,7 @@ int main() {
     Ellipsoid e2 = Ellipsoid(e1);
     for (int i = 0; i < N; i++) {
         Matrix A = h.diff(e2.mu).mid();
-        Vector b(h.eval(e2.mu).mid()._e - A._e * e2.mu._e);
+        Vector b(h.eval(e2.mu).mid() - A * e2.mu);
         e2 = unreliable_linear_mapping(e2, A, b);
         fig1.draw_ellipsoid(e2, {Color::green(), Color::green(0.3)});
     }
@@ -138,8 +138,8 @@ int main() {
     cout << e8 << endl;
 
     cout << "\nDifference between e7 and e8:" << endl;
-    cout << "mu diff norm is " << (e7.mu._e - e8.mu._e).norm() << endl;
-    cout << "G diff norm is " << (e7.G._e - e8.G._e).norm() << endl;
+    cout << "mu diff norm is " << (e7.mu - e8.mu).norm() << endl;
+    cout << "G diff norm is " << (e7.G - e8.G).norm() << endl;
 
     // ----------------------------------------------------------
     // singular case for nonlinear mapping

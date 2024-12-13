@@ -63,8 +63,8 @@ int main() {
     // ----------------------------------------------------------
 
     // step 1 identify the direction of non inclusion
-    Eigen::MatrixXd X = e4.G._e;
-    Eigen::MatrixXd Y = e6.G._e;
+    Eigen::MatrixXd X = e4.G;
+    Eigen::MatrixXd Y = e6.G;
     Eigen::MatrixXd Y_inv = Y.inverse();
     Eigen::MatrixXd D = Eigen::MatrixXd::Identity(3,3)- X.transpose()*Y_inv.transpose()*Y_inv*X;
     cout << "D = " << D << endl;
@@ -84,7 +84,7 @@ int main() {
     cout << " the vector associated to the min eigenvalue is " << v << endl;
 
     // select the less included point and draw it on the figures
-    Eigen::VectorXd x = e4.mu._e+e4.G._e*v;
+    Eigen::VectorXd x = e4.mu+e4.G*v;
     cout << "the point " << x << " is the less included point" << endl;
     fig2.draw_point(x, {Color::black()});
     fig3.draw_point(x, {Color::black()});

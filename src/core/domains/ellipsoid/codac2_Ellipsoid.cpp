@@ -9,6 +9,7 @@
 
 #include "codac2_Ellipsoid.h"
 #include "codac2_template_tools.h"
+#include "codac2_Inversion.h"
 #include <unsupported/Eigen/MatrixFunctions>
 
 using namespace std;
@@ -94,7 +95,7 @@ namespace codac2 {
         assert( d.size() == v.size());
         assert( d.size() == u.size());
         assert( d.size() == this->size());
-        assert( (v._e.transpose()*u._e).norm() == 0); // u & v orthogonal
+        assert( (v.transpose()*u).norm() == 0); // u & v orthogonal
 
         // Normalized Projection matrix
         // the plane (d,u,v) is also the affine plan {x|x=d+Tt} with T = [u,v]
@@ -102,12 +103,12 @@ namespace codac2 {
         T.col(0) = v/v.norm();
         T.col(1) = u/u.norm();
 
-        auto TTG = T._e.transpose() * this->G._e;
+        auto TTG = T.transpose() * this->G;
         Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
         Matrix U(bdcsvd.matrixU());
         Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
-        this->G = U._e * E._e;
-        this->mu = T._e.transpose() * (d._e + T._e * T._e.transpose() * (this->mu._e - d._e));
+        this->G = U * E;
+        this->mu = T.transpose() * (d + T * T.transpose() * (this->mu - d));
     }
 
     Ellipsoid operator+(const Ellipsoid &e1, const Ellipsoid &e2) {
@@ -182,7 +183,7 @@ namespace codac2 {
 
         // normal case
         IntervalMatrix I_ = IntervalMatrix(Eigen::MatrixXd::Identity(G.rows(),G.cols()));
-        IntervalMatrix JG_inv_(JG.inverse()); // non rigourous inversion
+        IntervalMatrix JG_inv_(inverse_enclosure(JG)); // non rigourous inversion
         Matrix M(JG);
         auto W = JG_inv_;
         auto Z = I_;

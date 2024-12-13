@@ -76,15 +76,7 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
       DOC_TO_BE_DEFINED,
       "x"_a)
 
-    .def(py::init<const IntervalRow&>(),
-      DOC_TO_BE_DEFINED,
-      "x"_a)
-
     .def(py::init<const Vector&>(),
-      DOC_TO_BE_DEFINED,
-      "x"_a)
-
-    .def(py::init<const IntervalVector&>(),
       DOC_TO_BE_DEFINED,
       "x"_a)
 
@@ -110,6 +102,14 @@ py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m)
         }),
       DOC_TO_BE_DEFINED,
       "v"_a)
+
+    .def(py::init<const IntervalRow&>(),
+      DOC_TO_BE_DEFINED,
+      "x"_a)
+
+    .def(py::init<const IntervalVector&>(),
+      DOC_TO_BE_DEFINED,
+      "x"_a)
     
     .def_static("empty", [](Index_type r, Index_type c)
         {

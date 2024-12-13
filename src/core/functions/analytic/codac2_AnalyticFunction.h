@@ -112,6 +112,26 @@ namespace codac2
         return eval_(x...).da;
       }
 
+      Index output_size() const
+      {
+        if constexpr(std::is_same_v<typename T::Domain,Interval>)
+          return 1;
+
+        else if constexpr(std::is_same_v<typename T::Domain,IntervalVector>)
+        {
+          // A dump evaluation is performed to estimate the dimension
+          // of the image of this function. A natural evaluation is assumed
+          // to be faster.
+          return natural_eval(IntervalVector(this->input_size())).size();
+        }
+
+        else
+        {
+          assert_release(false && "unable to estimate output size");
+          return 0;
+        }
+      }
+
       friend std::ostream& operator<<(std::ostream& os, [[maybe_unused]] const AnalyticFunction<T>& f)
       {
         if constexpr(std::is_same_v<typename T::Domain,Interval>) 

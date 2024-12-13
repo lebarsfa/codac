@@ -67,6 +67,20 @@ inline bool operator==(const MatrixBase<OtherDerived>& x) const
 
 template<typename U=Scalar>
   requires IsIntervalDomain<U>
+inline double min_rad() const
+{
+  return (this->data()+extr_diam_index(true))->rad();
+}
+
+template<typename U=Scalar>
+  requires IsIntervalDomain<U>
+inline double max_rad() const
+{
+  return (this->data()+extr_diam_index(false))->rad();
+}
+
+template<typename U=Scalar>
+  requires IsIntervalDomain<U>
 inline double min_diam() const
 {
   return (this->data()+extr_diam_index(true))->diam();

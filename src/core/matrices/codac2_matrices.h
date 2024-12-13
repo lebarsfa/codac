@@ -41,7 +41,7 @@ namespace Eigen
  * (this is a standard C++ macro which disables all asserts).
  * https://eigen.tuxfamily.org/dox/TopicPreprocessorDirectives.html
  */
-#define EIGEN_NO_DEBUG
+//#define EIGEN_NO_DEBUG // uncomment to disable Eigen's assertions
 #endif
 
 #include <Eigen/Core>
@@ -121,5 +121,20 @@ namespace codac2
     for(const auto& li : l)
       h |= li;
     return h;
+  }
+
+  inline Eigen::IOFormat codac_row_fmt()
+  {
+    return Eigen::IOFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, " ", "", "", "", "[ ", " ]");
+  }
+
+  inline Eigen::IOFormat codac_vector_fmt()
+  {
+    return Eigen::IOFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, "", " ; ", "", "", "[ ", " ]");
+  }
+
+  inline Eigen::IOFormat codac_matrix_fmt()
+  {
+    return Eigen::IOFormat(Eigen::StreamPrecision, 0, " , ", "\n", "[ ", " ]", "[", "]");
   }
 }

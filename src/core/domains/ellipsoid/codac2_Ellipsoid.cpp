@@ -88,6 +88,28 @@ namespace codac2 {
         return BoolInterval::TRUE;
     }
 
+    void Ellipsoid::projection2D(const Vector& d, const Vector& v, const Vector& u)
+    {
+        // from [Pope S. B. - Algorithms for Ellipsoids - 2008]
+        assert( d.size() == v.size());
+        assert( d.size() == u.size());
+        assert( d.size() == this->size());
+        assert( (v._e.transpose()*u._e).norm() == 0); // u & v orthogonal
+
+        // Normalized Projection matrix
+        // the plane (d,u,v) is also the affine plan {x|x=d+Tt} with T = [u,v]
+        Matrix T = Matrix(this->size(),2);
+        T.col(0) = v/v.norm();
+        T.col(1) = u/u.norm();
+
+        auto TTG = T._e.transpose() * this->G._e;
+        Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
+        Matrix U(bdcsvd.matrixU());
+        Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
+        this->G = U._e * E._e;
+        this->mu = T._e.transpose() * (d._e + T._e * T._e.transpose() * (this->mu._e - d._e));
+    }
+
     Ellipsoid operator+(const Ellipsoid &e1, const Ellipsoid &e2) {
         assert_release(e1.size() == e2.size());
 

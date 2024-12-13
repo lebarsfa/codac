@@ -91,6 +91,14 @@ namespace codac2
        */
       BoolInterval is_concentric_subset(const Ellipsoid& e) const;
 
+      /**
+       * \brief Project the ellipsoid on the 2d plane (d,v,u)
+       * \param d a point on the plane
+       * \param v a vector of the plane
+       * \param u a other vector of the plane, orthogonal to v
+       */
+      void projection2D(const Vector& d, const Vector& v, const Vector& u);
+
     public:
 
       Vector mu; ///< midpoint vector

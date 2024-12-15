@@ -17,7 +17,7 @@ using codac2::Vector;
 
 namespace codac2 {
     Ellipsoid::Ellipsoid(Index n)
-            : mu(Vector(n)), G(Matrix(n, n)) {
+            : mu(Vector::zero(n)), G(Matrix::zero(n, n)) {
         assert_release(n > 0);
     }
 
@@ -27,6 +27,7 @@ namespace codac2 {
     }
 
     Index Ellipsoid::size() const {
+        assert(mu.size() == G.cols() && G.is_squared());
         return mu.size();
     }
 
@@ -89,13 +90,13 @@ namespace codac2 {
         return BoolInterval::TRUE;
     }
 
-    void Ellipsoid::projection2D(const Vector& d, const Vector& v, const Vector& u)
+    Ellipsoid Ellipsoid::proj_2d(const Vector& d, const Vector& v, const Vector& u) const
     {
         // from [Pope S. B. - Algorithms for Ellipsoids - 2008]
-        assert( d.size() == v.size());
-        assert( d.size() == u.size());
-        assert( d.size() == this->size());
-        assert( (v.transpose()*u).norm() == 0); // u & v orthogonal
+        assert_release( d.size() == v.size());
+        assert_release( d.size() == u.size());
+        assert_release( d.size() == this->size());
+        assert_release( (v.transpose()*u).norm() == 0); // u & v orthogonal
 
         // Normalized Projection matrix
         // the plane (d,u,v) is also the affine plan {x|x=d+Tt} with T = [u,v]
@@ -104,21 +105,18 @@ namespace codac2 {
         T.col(1) = u/u.norm();
 
         auto TTG = T.transpose() * this->G;
-        Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
-        Matrix U(bdcsvd.matrixU());
-        Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
-        this->G = U * E;
-        this->mu = T.transpose() * (d + T * T.transpose() * (this->mu - d));
+        Eigen::BDCSVD<Matrix,Eigen::ComputeFullU> bdcsvd(TTG);
+        auto U = bdcsvd.matrixU();
+        auto E = bdcsvd.singularValues().asDiagonal();
+
+        return {
+            T.transpose() * (d + T * T.transpose() * (this->mu - d)),
+            U * E
+        };
     }
 
     Ellipsoid operator+(const Ellipsoid &e1, const Ellipsoid &e2) {
         assert_release(e1.size() == e2.size());
-
-        //if(e1.is_unbounded() || e2.is_unbounded())
-        //  return Ellipsoid(e1.size());
-
-        //if(e1.is_empty() || e2.is_empty())
-        //  return Ellipsoid::empty(e1.size());
 
         auto Q1 = e1.G * e1.G.transpose();
         auto Q2 = e2.G * e2.G.transpose();
@@ -176,14 +174,13 @@ namespace codac2 {
         assert(G.is_squared() && J.is_squared() && J_box.is_squared());
         assert(n == J.cols() && n == J_box.cols() && n == q.size());
 
-        Matrix JG = J * G; // note: reliability may be lost here!
-        IntervalMatrix G_(G);
-        IntervalMatrix JG_ = IntervalMatrix(JG);
-        IntervalVector unit_box(G.rows()); unit_box.init(Interval(-1,1));
+        auto JG = J * G; // note: reliability may be lost here!
+        auto G_ = G.template cast<Interval>();
+        IntervalVector unit_box = IntervalVector::constant(G.rows(), {-1,1});
 
         // normal case
-        IntervalMatrix I_ = IntervalMatrix(Eigen::MatrixXd::Identity(G.rows(),G.cols()));
-        IntervalMatrix JG_inv_(inverse_enclosure(JG)); // non rigourous inversion
+        IntervalMatrix I_ = IntervalMatrix::eye(G.rows(),G.cols());
+        IntervalMatrix JG_inv_ = inverse_enclosure(JG); // rigourous inversion
         Matrix M(JG);
         auto W = JG_inv_;
         auto Z = I_;
@@ -199,28 +196,26 @@ namespace codac2 {
             assert(q.size() == G.rows());
 
             // SVD decomposition of JG = U*E*V.T
-            Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(JG,Eigen::ComputeFullU);
-            IntervalMatrix U_(bdcsvd.matrixU()); // which is also the right part
-            Vector Sv(bdcsvd.singularValues()); // vectors of singular values
+            Eigen::BDCSVD<Matrix,Eigen::ComputeFullU> bdcsvd(JG);
+            auto U_ = bdcsvd.matrixU().template cast<Interval>(); // which is also the right part
+            auto Sv = bdcsvd.singularValues(); // vectors of singular values
 
             // select new singular values
-            int dim = G.rows();
-            IntervalVector s_box(U_.transpose()*J_box*G_*unit_box);
-            IntervalMatrix S_(Eigen::MatrixXd::Zero(dim,dim)); // diagonal matrix of the new singular value
-            IntervalMatrix S_pinv_(Eigen::MatrixXd::Zero(dim,dim)); // pseudo inverse of S
-            for(int i=0;i<dim;i++){
+            Index dim = G.rows();
+            auto s_box = U_.transpose()*J_box*G_*unit_box;
+            IntervalMatrix S_ = IntervalMatrix::zero(dim,dim); // diagonal matrix of the new singular value
+            IntervalMatrix S_pinv_ = IntervalMatrix::zero(dim,dim); // pseudo inverse of S
+            for(Index i=0;i<dim;i++){
                 if (Sv[i]>trig[1]){ // normal size singular values
                     S_(i,i) = Interval(Sv[i]);
-                    S_pinv_(i,i) = 1/S_(i,i);
                 }else{ // for very small singular values (0 included) use s_box
-                    double val = s_box[i].ub();
-                    S_(i,i) = Interval(q[i]*val);
-                    S_pinv_(i,i)=1/S_(i,i);
+                    S_(i,i) = Interval(q[i])*s_box[i].ub();
                     }
+                    S_pinv_(i,i) = 1./S_(i,i);
                 }
             M = (U_*S_).mid();
             W = S_pinv_*U_.transpose();
-            Z = W*JG_;
+            Z = W*JG.template cast<Interval>();
         }
 
         auto b_box = (W * J_box * G_ - Z) * unit_box;
@@ -253,7 +248,7 @@ namespace codac2 {
 
   ostream& operator<<(ostream& os, const Ellipsoid& e)
   {
-    os << "Ellipsoid:\n"
+    os << "Ellipsoid " << e.size() << "d:\n"
       << "  mu=" << e.mu << "\n"
       << "   G=\n" << e.G;
     return os;

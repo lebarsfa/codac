@@ -96,8 +96,9 @@ namespace codac2
        * \param d a point on the plane
        * \param v a vector of the plane
        * \param u a other vector of the plane, orthogonal to v
+       * \return the projected 2d ellipsoid
        */
-      void projection2D(const Vector& d, const Vector& v, const Vector& u);
+      Ellipsoid proj_2d(const Vector& d, const Vector& v, const Vector& u) const;
 
     public:
 

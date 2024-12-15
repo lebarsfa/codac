@@ -70,6 +70,9 @@ namespace codac2
       const std::vector<FigureAxis>& axes() const;
       void set_axes(const FigureAxis& axis1, const FigureAxis& axis2);
 
+      const Index& i() const;
+      const Index& j() const;
+
       const Vector& pos() const;
       const Vector& window_size() const;
       void set_window_properties(const Vector& pos, const Vector& size);

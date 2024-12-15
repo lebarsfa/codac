@@ -12,7 +12,6 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/3rd/vibes/vibes.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/figures/codac2_Figure2D.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/figures/codac2_Figure2D_ellipsoid.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/figures/codac2_Figure2D.h
     ${CMAKE_CURRENT_SOURCE_DIR}/figures/codac2_Figure2DInterface.h
     ${CMAKE_CURRENT_SOURCE_DIR}/figures/codac2_OutputFigure2D.cpp

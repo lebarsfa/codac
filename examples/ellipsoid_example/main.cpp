@@ -13,10 +13,11 @@ int main() {
     fig1.set_window_properties({0, 100}, {500, 500});
 
     // initial ellipsoid
-    Vector mu({1., 0.});
-    Matrix G({{0.05, 0.0},
-              {0.,   0.05}});
-    Ellipsoid e1(mu, G);
+    Ellipsoid e1(
+        {1., 0.}, // mu
+        {{0.05, 0.0}, // G
+         {0.,   0.05}}
+    );
     fig1.draw_ellipsoid(e1, {Color::red(), Color::red(0.3)});
     cout << "Initial ellipsoid e1 (red):" << endl;
     cout << e1 << endl;
@@ -51,10 +52,10 @@ int main() {
     int Np = 200;
     for (int i = 0; i < Np; i++) {
         Vector x0 = e1.rand();
-        fig1.draw_box(IntervalVector(x0).inflate(0.0001), {Color::black(), Color::black(0.3)});
+        fig1.draw_point(x0, {Color::black(), Color::black(0.3)});
         for (int j = 0; j < N; j++) {
             x0 = h.eval(x0).mid();
-            fig1.draw_box(IntervalVector(x0).inflate(0.0001), {Color::black(), Color::black(0.3)});
+            fig1.draw_point(x0, {Color::black(), Color::black(0.3)});
         }
     }
 
@@ -62,19 +63,24 @@ int main() {
     // ellipsoid projections
     // ----------------------------------------------------------
 
-    Vector mu4({1., 0., 0.});
-    Matrix G4({{1.,  0.5, 0.},
-               {0.5, 2.,  0.2},
-               {0.,  0.2, 3.}});
-    Ellipsoid e4(mu4, G4);
+    Ellipsoid e4 {
+        {1., 0., 0.}, // mu
+        {{1.,  0.5, 0.}, // G
+         {0.5, 2.,  0.2},
+         {0.,  0.2, 3.}}
+    };
 
-    Matrix G5 = 0.7 * G4;
-    Ellipsoid e5(mu4, G5);
+    Ellipsoid e5 {
+        e4.mu, // mu
+        0.7 * e4.G // G
+    };
 
-    Matrix G6({{2., 0.,  0.5},
-               {0., 1.,  0.2},
-               {0., 0.2, 3.}});
-    Ellipsoid e6(mu4, G6);
+    Ellipsoid e6 {
+        e4.mu, // mu
+        {{2., 0.,  0.5}, // G
+         {0., 1.,  0.2},
+         {0., 0.2, 3.}}
+    };
 
     Figure2D fig2("Projected ellipsoid xy", GraphicOutput::VIBES);
     Figure2D fig3("Projected ellipsoid yz", GraphicOutput::VIBES);
@@ -102,11 +108,10 @@ int main() {
 
     // particle cloud (draw the evolution of 200 points in the ellipsoid e5)
     for (int i = 0; i < Np; i++) {
-        IntervalVector x5(e5.rand());
-        x5.inflate(0.001);
-        fig2.draw_box(x5, {Color::black(), Color::black(0.3)});
-        fig3.draw_box(x5, {Color::black(), Color::black(0.3)});
-        fig4.draw_box(x5, {Color::black(), Color::black(0.3)});
+        Vector x5 = e5.rand();
+        fig2.draw_point(x5, {Color::black(), Color::black(0.3)});
+        fig3.draw_point(x5, {Color::black(), Color::black(0.3)});
+        fig4.draw_point(x5, {Color::black(), Color::black(0.3)});
     }
 
     // ----------------------------------------------------------
@@ -149,10 +154,16 @@ int main() {
     fig5.set_axes(axis(0, {-0.5, 2}), axis(1, {-1.5, 1.}));
     fig5.set_window_properties({700, 600}, {500, 500});
 
-    Ellipsoid e9(Vector({0., 0.5}), Matrix({{0.25, 0.},
-                                            {0.,   0.}}));
-    Ellipsoid e10(Vector({0., -0.5}), Matrix({{0.25, 0.},
-                                              {0.,   0.25}}));
+    Ellipsoid e9 {
+        {0., 0.5}, // mu
+        {{0.25, 0.}, // G
+         {0.,   0.}}
+    };
+    Ellipsoid e10 {
+        {0., -0.5}, // mu
+        {{0.25, 0.}, // G
+         {0.,   0.25}}
+    };
 
     fig5.draw_ellipsoid(e9, {Color::blue(), Color::red(0.3)});
     fig5.draw_ellipsoid(e10, {Color::red(), Color::red(0.3)});
@@ -176,14 +187,12 @@ int main() {
     // particle cloud (draw the evolution of 200 points in the ellipsoid)
     for (int i = 0; i < Np; i++) {
         Vector x0 = e9.rand();
-        fig5.draw_box(IntervalVector(x0).inflate(0.0001), {Color::black(), Color::black(0.3)});
-        x0 = h2.eval(x0).mid();
-        fig5.draw_box(IntervalVector(x0).inflate(0.0001), {Color::black(), Color::black(0.3)});
+        fig5.draw_point(x0, {Color::black(), Color::black(0.3)});
+        fig5.draw_point(h2.eval(x0).mid(), {Color::black(), Color::black(0.3)});
 
         x0 = e10.rand();
-        fig5.draw_box(IntervalVector(x0).inflate(0.0001), {Color::black(), Color::black(0.3)});
-        x0 = h3.eval(x0).mid();
-        fig5.draw_box(IntervalVector(x0).inflate(0.0001), {Color::black(), Color::black(0.3)});
+        fig5.draw_point(x0, {Color::black(), Color::black(0.3)});
+        fig5.draw_point(h3.eval(x0).mid(), {Color::black(), Color::black(0.3)});
     }
 
     // ----------------------------------------------------------
@@ -193,8 +202,14 @@ int main() {
     // pendulum example
     AnalyticFunction h4{
             {x}, vec(x[0] + 0.5 * x[1] , x[1] + 0.5 * (-x[1]-sin(x[0])))};
-    Ellipsoid e13(Vector(2), Matrix(2,2));
-    Ellipsoid e13_out(Vector(2), Matrix(2,2));
+    Ellipsoid e13 {
+        Vector::zero(2), // mu
+        Matrix::zero(2,2) // G
+    };
+    Ellipsoid e13_out {
+        Vector::zero(2), // mu
+        Matrix::zero(2,2) // G
+    };
     int alpha_max = 1;
     
     if(stability_analysis(h4,alpha_max, e13, e13_out) == BoolInterval::TRUE)

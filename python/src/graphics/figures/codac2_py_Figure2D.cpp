@@ -65,6 +65,12 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF,
       "axis1"_a, "axis2"_a)
   
+    .def("i", &Figure2D::i,
+      CONST_INDEX_REF_FIGURE2D_I_CONST)
+  
+    .def("j", &Figure2D::j,
+      CONST_INDEX_REF_FIGURE2D_J_CONST)
+  
     .def("pos", &Figure2D::pos,
       CONST_VECTOR_REF_FIGURE2D_POS_CONST)
   

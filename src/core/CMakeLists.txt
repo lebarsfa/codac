@@ -108,8 +108,8 @@
     
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Inversion.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Inversion.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_inversion.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_inversion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_matrices.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Row.h

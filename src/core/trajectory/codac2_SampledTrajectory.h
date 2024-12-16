@@ -27,6 +27,7 @@ namespace codac2
         : TrajectoryBase<T>(), std::map<double,T>(m)
       { }
 
+      // size is not the std::map<double,T>::size() !
       virtual Index size() const
       {
         if constexpr(std::is_same_v<typename Wrapper<T>::Domain,Interval>) // if type is scalar: int,double,etc.
@@ -39,6 +40,11 @@ namespace codac2
           else
             return this->begin()->second.size();
         }
+      }
+
+      size_t nb_samples() const
+      {
+        return std::map<double,T>::size();
       }
 
       virtual bool is_empty() const

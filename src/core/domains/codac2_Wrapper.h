@@ -1,5 +1,5 @@
 /** 
- *  \file codac2_wrappers.h
+ *  \file codac2_Wrapper.h
  * ----------------------------------------------------------------------------
  *  \date       2024
  *  \author     Simon Rohou

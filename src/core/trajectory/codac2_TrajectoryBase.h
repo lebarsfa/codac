@@ -22,6 +22,8 @@ namespace codac2
   {
     public:
 
+      using ScalarType = T;
+
       TrajectoryBase()
       { }
 

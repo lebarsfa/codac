@@ -114,6 +114,10 @@ void export_SepWrapper(py::module& m, py::class_<SepBase,pySep>& sep);
 // tools
 void export_Approx(py::module& m);
 
+// trajectory
+void export_AnalyticTrajectory(py::module& m);
+void export_SampledTrajectory(py::module& m);
+
 
 PYBIND11_MODULE(_core, m)
 {
@@ -216,5 +220,9 @@ PYBIND11_MODULE(_core, m)
 
   // tools
   export_Approx(m);
+
+  // trajectory
+  export_AnalyticTrajectory(m);
+  export_SampledTrajectory(m);
 
 }

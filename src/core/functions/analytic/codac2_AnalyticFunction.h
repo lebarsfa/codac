@@ -161,7 +161,7 @@ namespace codac2
         for(Index k = p ; k < p+size_of(x) ; k++)
           d(k-p,k) = 1.;
 
-        using D_DOMAIN = typename Wrapper<D>::Domain;
+        using D_DOMAIN = typename ArgWrapper<D>::Domain;
 
         v[this->args()[i]->unique_id()] = 
           std::make_shared<D_DOMAIN>(typename D_DOMAIN::Domain(x).mid(), x, d, true);
@@ -178,7 +178,7 @@ namespace codac2
       void intersect_value_from_arg_map(const ValuesMap& v, D& x, Index i) const
       {
         assert(v.find(this->args()[i]->unique_id()) != v.end() && "argument cannot be found");
-        x &= std::dynamic_pointer_cast<typename Wrapper<D>::Domain>(v.at(this->args()[i]->unique_id()))->a;
+        x &= std::dynamic_pointer_cast<typename ArgWrapper<D>::Domain>(v.at(this->args()[i]->unique_id()))->a;
       }
 
       template<typename... Args>

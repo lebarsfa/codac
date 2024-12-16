@@ -50,6 +50,7 @@
 
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_BoolInterval.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Domain.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Wrapper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_utils.cpp
@@ -112,8 +113,8 @@
     
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_GaussJordan.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Inversion.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Inversion.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_inversion.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_inversion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_matrices.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Matrix.h
     ${CMAKE_CURRENT_SOURCE_DIR}/matrices/codac2_Row.h
@@ -159,6 +160,10 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_object_file_format.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_object_file_format.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_template_tools.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_AnalyticTrajectory.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_SampledTrajectory.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_TrajectoryBase.h
   )
 
 ################################################################################
@@ -194,6 +199,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/proj
     ${CMAKE_CURRENT_SOURCE_DIR}/separators
     ${CMAKE_CURRENT_SOURCE_DIR}/tools
+    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory
   )
   target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-graphics Ibex::ibex Eigen3::Eigen)
   

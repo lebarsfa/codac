@@ -136,6 +136,31 @@ void export_Figure2D(py::module& m)
       VOID_FIGURE2D_DRAW_ELLIPSOID_CONST_ELLIPSOID_REF_CONST_STYLEPROPERTIES_REF,
       "e"_a, "s"_a=StyleProperties())
 
+    .def("draw_trajectory", [](Figure2D& fig, py::object x, const StyleProperties& s)
+        {
+          py::object x_traj = x.attr("traj");
+
+          if(x_traj)
+          {
+            if(py::isinstance<AnalyticTrajectory<VectorOpValue>>(x_traj))
+            {
+              fig.draw_trajectory(x_traj.cast<AnalyticTrajectory<VectorOpValue>>(),s);
+              return;
+            }
+
+            else if(py::isinstance<SampledTrajectory<Vector>>(x_traj))
+            {
+              fig.draw_trajectory(x_traj.cast<SampledTrajectory<Vector>>(),s);
+              return;
+            }
+          }
+
+          assert_release(false &&
+            "provided trajectory is not of type AnalyticTrajectory<VectorOpValue> or SampledTrajectory<Vector>");
+        },
+      VOID_FIGURE2D_DRAW_TRAJECTORY_CONST_ANALYTICTRAJECTORY_VECTOROPVALUE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
+
     // Robots
 
     .def("draw_tank", &Figure2D::draw_tank,
@@ -214,6 +239,31 @@ void export_Figure2D(py::module& m)
     .def_static("draw_ellipsoid", &DefaultView::draw_ellipsoid,
       STATIC_VOID_DEFAULTVIEW_DRAW_ELLIPSOID_CONST_ELLIPSOID_REF_CONST_STYLEPROPERTIES_REF,
       "e"_a, "s"_a=StyleProperties())
+    
+    .def_static("draw_trajectory", [](py::object x, const StyleProperties& s)
+        {
+          py::object x_traj = x.attr("traj");
+
+          if(x_traj)
+          {
+            if(py::isinstance<AnalyticTrajectory<VectorOpValue>>(x_traj))
+            {
+              DefaultView::draw_trajectory(x_traj.cast<AnalyticTrajectory<VectorOpValue>>(),s);
+              return;
+            }
+
+            else if(py::isinstance<SampledTrajectory<Vector>>(x_traj))
+            {
+              DefaultView::draw_trajectory(x_traj.cast<SampledTrajectory<Vector>>(),s);
+              return;
+            }
+          }
+
+          assert_release(false &&
+            "provided trajectory is not of type AnalyticTrajectory<VectorOpValue> or SampledTrajectory<Vector>");
+        },
+      VOID_FIGURE2D_DRAW_TRAJECTORY_CONST_ANALYTICTRAJECTORY_VECTOROPVALUE_REF_CONST_STYLEPROPERTIES_REF,
+      "x"_a, "s"_a=StyleProperties())
 
     // Robots
 

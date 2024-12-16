@@ -9,7 +9,7 @@
 
 #include "codac2_Ellipsoid.h"
 #include "codac2_template_tools.h"
-#include "codac2_Inversion.h"
+#include "codac2_inversion.h"
 #include <unsupported/Eigen/MatrixFunctions>
 
 using namespace std;

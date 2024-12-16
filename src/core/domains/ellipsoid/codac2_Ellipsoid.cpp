@@ -7,25 +7,27 @@
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
-#include <unsupported/Eigen/MatrixFunctions>
 #include "codac2_Ellipsoid.h"
 #include "codac2_template_tools.h"
+#include "codac2_Inversion.h"
+#include <unsupported/Eigen/MatrixFunctions>
 
 using namespace std;
-using namespace codac2;
+using codac2::Vector;
 
 namespace codac2 {
-    Ellipsoid::Ellipsoid(size_t n)
-            : mu(Vector(n)), G(Matrix(n, n)) {
+    Ellipsoid::Ellipsoid(Index n)
+            : mu(Vector::zero(n)), G(Matrix::zero(n, n)) {
         assert_release(n > 0);
     }
 
     Ellipsoid::Ellipsoid(const Vector &mu_, const Matrix &G_)
             : mu(mu_), G(G_) {
-        assert_release(mu_.size() == G_.nb_cols() && G_.is_squared());
+        assert_release(mu_.size() == G_.cols() && G_.is_squared());
     }
 
-    size_t Ellipsoid::size() const {
+    Index Ellipsoid::size() const {
+        assert(mu.size() == G.cols() && G.is_squared());
         return mu.size();
     }
 
@@ -33,14 +35,14 @@ namespace codac2 {
     {
         auto xi = Vector::random(this->size());
         double rand_norm =  ((double) std::rand() / (RAND_MAX));
-        return this->mu._e + this->G._e * xi._e / xi._e.norm() * rand_norm;
+        return this->mu + this->G * xi / xi.norm() * rand_norm;
     }
 
     IntervalVector Ellipsoid::hull_box() const
     {
         IntervalVector hull(size());
-        for(size_t i=0; i< size(); i++){
-            double m = G._e.col(i).norm();
+        for(Index i=0; i< size(); i++){
+            double m = G.col(i).norm();
             hull[i] = Interval(-m, m);
         }
         return hull;
@@ -48,25 +50,25 @@ namespace codac2 {
 
     BoolInterval Ellipsoid::is_concentric_subset(const Ellipsoid& e) const
     {
-        size_t n = size();
+        Index n = size();
         assert_release(n == e.size());
 
         
-        if((mu._e - e.mu._e).norm() > 1e-10) // check if the centers are the same
+        if((mu - e.mu).norm() > 1e-10) // check if the centers are the same
             return BoolInterval::FALSE; // not concentric
 
         auto I = Matrix::eye(n,n);
-        auto G2_inv = e.G._e.inverse();
-        IntervalMatrix D(I._e - G._e.transpose() * G2_inv.transpose() * G2_inv * G._e);
+        auto G2_inv = e.G.inverse();
+        IntervalMatrix D(I - G.transpose() * G2_inv.transpose() * G2_inv * G);
 
         // cholesky decomposition of D = L*L^T
         IntervalMatrix L(n,n); // matrix of the Cholesky decomposition
 
-        for (size_t j = 0; j < n; j++) // for every column
+        for (Index j = 0; j < n; j++) // for every column
         {
             // diagonal element
             Interval s = 0.;
-            for (size_t k = 0; k < j; k++)
+            for (Index k = 0; k < j; k++)
                 s += L(j, k) * L(j, k);
             Interval u = D(j, j) - s;
             if (u.lb() < 0) {
@@ -75,11 +77,11 @@ namespace codac2 {
             L(j,j) = sqrt(u);
 
             // then the rest of the column
-            for (size_t i = j + 1; i<n;
+            for (Index i = j + 1; i<n;
             i++)
             {
                 s = 0.;
-                for (size_t k = 0; k < j; k++)
+                for (Index k = 0; k < j; k++)
                     s += L(j,k) * L(i,k);
                 L(i,j) = (D(i,j) - s) / L(j,j);
                 L(j,i) = 0.;
@@ -88,13 +90,13 @@ namespace codac2 {
         return BoolInterval::TRUE;
     }
 
-    void Ellipsoid::projection2D(const Vector& d, const Vector& v, const Vector& u)
+    Ellipsoid Ellipsoid::proj_2d(const Vector& d, const Vector& v, const Vector& u) const
     {
         // from [Pope S. B. - Algorithms for Ellipsoids - 2008]
-        assert( d.size() == v.size());
-        assert( d.size() == u.size());
-        assert( d.size() == this->size());
-        assert( (v._e.transpose()*u._e).norm() == 0); // u & v orthogonal
+        assert_release( d.size() == v.size());
+        assert_release( d.size() == u.size());
+        assert_release( d.size() == this->size());
+        assert_release( (v.transpose()*u).norm() == 0); // u & v orthogonal
 
         // Normalized Projection matrix
         // the plane (d,u,v) is also the affine plan {x|x=d+Tt} with T = [u,v]
@@ -102,127 +104,121 @@ namespace codac2 {
         T.col(0) = v/v.norm();
         T.col(1) = u/u.norm();
 
-        auto TTG = T._e.transpose() * this->G._e;
-        Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
-        Matrix U(bdcsvd.matrixU());
-        Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
-        this->G = U._e * E._e;
-        this->mu = T._e.transpose() * (d._e + T._e * T._e.transpose() * (this->mu._e - d._e));
+        auto TTG = T.transpose() * this->G;
+        Eigen::BDCSVD<Matrix,Eigen::ComputeFullU> bdcsvd(TTG);
+        auto U = bdcsvd.matrixU();
+        auto E = bdcsvd.singularValues().asDiagonal();
+
+        return {
+            T.transpose() * (d + T * T.transpose() * (this->mu - d)),
+            U * E
+        };
     }
 
     Ellipsoid operator+(const Ellipsoid &e1, const Ellipsoid &e2) {
         assert_release(e1.size() == e2.size());
 
-        //if(e1.is_unbounded() || e2.is_unbounded())
-        //  return Ellipsoid(e1.size());
-
-        //if(e1.is_empty() || e2.is_empty())
-        //  return Ellipsoid::empty(e1.size());
-
-        auto Q1 = e1.G._e * e1.G._e.transpose();
-        auto Q2 = e2.G._e * e2.G._e.transpose();
+        auto Q1 = e1.G * e1.G.transpose();
+        auto Q2 = e2.G * e2.G.transpose();
 
         double beta = std::sqrt(Q1.trace() / Q2.trace());
         return {
-                e1.mu._e + e2.mu._e, // mu
+                e1.mu + e2.mu, // mu
                 ((1. + (1. / beta)) * Q1 + (1. + beta) * Q2).sqrt() // G
         };
     }
 
     Ellipsoid unreliable_linear_mapping(const Ellipsoid &e, const Matrix &A, const Vector &b) {
         assert_release(A.is_squared());
-        assert_release(e.size() == A.nb_cols());
-        assert_release(b.size() == A.nb_rows());
+        assert_release(e.size() == A.cols());
+        assert_release(b.size() == A.rows());
         return {
-            A._e * e.mu._e + b._e, // mu
-            A._e * e.G._e // G
+            A * e.mu + b, // mu
+            A * e.G // G
         };
     }
 
     Ellipsoid linear_mapping(const Ellipsoid &e, const Matrix &A, const Vector &b) {
-        size_t n = e.size();
+        Index n = e.size();
 
         assert_release(A.is_squared());
-        assert_release(n == A.nb_cols());
+        assert_release(n == A.cols());
         assert_release(n == b.size());
 
         Ellipsoid e_res = unreliable_linear_mapping(e, A, b);
 
-        auto e_mu_ = e.mu._e.template cast<Interval>();
-        auto e_res_mu_ = e_res.mu._e.template cast<Interval>();
-        auto e_res_G_ = e_res.G._e.template cast<Interval>();
-        auto e_G_ = e.G._e.template cast<Interval>();
-        auto A_ = A._e.template cast<Interval>();
-        auto b_ = b._e.template cast<Interval>();
-        IntervalVector unit_box_(n, {-1,1});
+        auto e_mu_ = e.mu.template cast<Interval>();
+        auto e_res_mu_ = e_res.mu.template cast<Interval>();
+        auto e_res_G_ = e_res.G.template cast<Interval>();
+        auto e_G_ = e.G.template cast<Interval>();
+        auto A_ = A.template cast<Interval>();
+        auto b_ = b.template cast<Interval>();
+        IntervalVector unit_box_ = IntervalVector::constant(n, {-1,1});
 
         // compute rounding error as a small box
         auto mu_res_guaranteed = A_ * e_mu_ + b_;
         auto G_res_guaranteed = A_ * e_G_;
         auto error_box_ = mu_res_guaranteed - e_res_mu_ +
-                (G_res_guaranteed - e_res_G_) * unit_box_._e;
+                (G_res_guaranteed - e_res_G_) * unit_box_;
 
         double rho = error_box_.norm().ub(); // max radius of error_box
-        Ellipsoid elli_error(Vector::zeros(n),
+        Ellipsoid elli_error(Vector::zero(n),
                              Matrix::eye(n,n) * rho); // = rho*unit_ball
         return e_res + elli_error;
     }
 
     Matrix nonlinear_mapping_base(const Matrix &G, const Matrix &J, const IntervalMatrix &J_box, const Vector& trig, const Vector& q) {
 
-        size_t n = G.nb_cols();
+        Index n = G.cols();
 
         assert(G.is_squared() && J.is_squared() && J_box.is_squared());
-        assert(n == J.nb_cols() && n == J_box.nb_cols() && n == q.size());
+        assert(n == J.cols() && n == J_box.cols() && n == q.size());
 
-        Matrix JG = J * G; // note: reliability may be lost here!
-        IntervalMatrix G_(G);
-        IntervalMatrix JG_ = IntervalMatrix(JG);
-        IntervalVector unit_box(G.nb_rows(), Interval(-1, 1));
+        auto JG = J * G; // note: reliability may be lost here!
+        auto G_ = G.template cast<Interval>();
+        IntervalVector unit_box = IntervalVector::constant(G.rows(), {-1,1});
 
         // normal case
-        IntervalMatrix I_ = IntervalMatrix(Eigen::MatrixXd::Identity(G.nb_rows(),G.nb_cols()));
-        IntervalMatrix JG_inv_(JG._e.inverse()); // non rigourous inversion
+        IntervalMatrix I_ = IntervalMatrix::eye(G.rows(),G.cols());
+        IntervalMatrix JG_inv_ = inverse_enclosure(JG); // rigourous inversion
         Matrix M(JG);
-        auto W = JG_inv_._e;
-        auto Z = I_._e;
+        auto W = JG_inv_;
+        auto Z = I_;
 
         // check for singularities
-        if(std::abs(JG._e.determinant()) < trig[0])
+        if(std::abs(JG.determinant()) < trig[0])
         {
             /* degenerated case from
              * Louedec, M., Jaulin, L., & Viel, C. (2024).
              * "Outer enclosures of nonlinear mapping with degenerate ellipsoids."
              * IFAC ACNDC June 2024*/
             assert(trig.size() == 2);
-            assert(q.size() == G.nb_rows());
+            assert(q.size() == G.rows());
 
             // SVD decomposition of JG = U*E*V.T
-            Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(JG._e,Eigen::ComputeFullU);
-            IntervalMatrix U_(bdcsvd.matrixU()); // which is also the right part
-            Vector Sv(bdcsvd.singularValues()); // vectors of singular values
+            Eigen::BDCSVD<Matrix,Eigen::ComputeFullU> bdcsvd(JG);
+            auto U_ = bdcsvd.matrixU().template cast<Interval>(); // which is also the right part
+            auto Sv = bdcsvd.singularValues(); // vectors of singular values
 
             // select new singular values
-            int dim = G.nb_rows();
-            IntervalVector s_box(U_._e.transpose()*J_box._e*G_._e*unit_box._e);
-            IntervalMatrix S_(Eigen::MatrixXd::Zero(dim,dim)); // diagonal matrix of the new singular value
-            IntervalMatrix S_pinv_(Eigen::MatrixXd::Zero(dim,dim)); // pseudo inverse of S
-            for(int i=0;i<dim;i++){
+            Index dim = G.rows();
+            auto s_box = U_.transpose()*J_box*G_*unit_box;
+            IntervalMatrix S_ = IntervalMatrix::zero(dim,dim); // diagonal matrix of the new singular value
+            IntervalMatrix S_pinv_ = IntervalMatrix::zero(dim,dim); // pseudo inverse of S
+            for(Index i=0;i<dim;i++){
                 if (Sv[i]>trig[1]){ // normal size singular values
                     S_(i,i) = Interval(Sv[i]);
-                    S_pinv_(i,i) = 1/S_(i,i);
                 }else{ // for very small singular values (0 included) use s_box
-                    double val = s_box[i].ub();
-                    S_(i,i) = Interval(q[i]*val);
-                    S_pinv_(i,i)=1/S_(i,i);
+                    S_(i,i) = Interval(q[i])*s_box[i].ub();
                     }
+                    S_pinv_(i,i) = 1./S_(i,i);
                 }
             M = (U_*S_).mid();
-            W = S_pinv_._e*U_._e.transpose();
-            Z = W*JG_._e;
+            W = S_pinv_*U_.transpose();
+            Z = W*JG.template cast<Interval>();
         }
 
-        auto b_box = (W * J_box._e * G_._e - Z) * unit_box._e;
+        auto b_box = (W * J_box * G_ - Z) * unit_box;
         double rho = b_box.norm().ub(); // max radius of b_box
         return (1 + rho) * M;
     }
@@ -252,7 +248,7 @@ namespace codac2 {
 
   ostream& operator<<(ostream& os, const Ellipsoid& e)
   {
-    os << "Ellipsoid:\n"
+    os << "Ellipsoid " << e.size() << "d:\n"
       << "  mu=" << e.mu << "\n"
       << "   G=\n" << e.G;
     return os;

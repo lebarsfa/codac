@@ -29,8 +29,8 @@ void export_Ellipsoid(py::module& m)
     .def_readwrite("G", &Ellipsoid::G,
       MATRIX_ELLIPSOID_G)
   
-    .def(py::init<size_t>(),
-      ELLIPSOID_ELLIPSOID_SIZET,
+    .def(py::init<Index>(),
+      ELLIPSOID_ELLIPSOID_INDEX,
       "n"_a)
 
     .def(py::init<const Vector&,const Matrix&>(),
@@ -40,15 +40,8 @@ void export_Ellipsoid(py::module& m)
     .def(py::init<const Ellipsoid&>(),
       "e"_a)
 
-    .def("__repr__", [](const Ellipsoid& e) {
-          std::ostringstream s;
-          s << e;
-          return string(s.str()); 
-        },
-      OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_ELLIPSOID_REF)
-
     .def("size", &Ellipsoid::size,
-      SIZET_ELLIPSOID_SIZE_CONST)
+      INDEX_ELLIPSOID_SIZE_CONST)
 
     .def("rand", &Ellipsoid::rand,
       VECTOR_ELLIPSOID_RAND_CONST)
@@ -60,8 +53,20 @@ void export_Ellipsoid(py::module& m)
       BOOLINTERVAL_ELLIPSOID_IS_CONCENTRIC_SUBSET_CONST_ELLIPSOID_REF_CONST,
       "e"_a)
 
+    .def("proj_2d", &Ellipsoid::proj_2d,
+      ELLIPSOID_ELLIPSOID_PROJ_2D_CONST_VECTOR_REF_CONST_VECTOR_REF_CONST_VECTOR_REF_CONST,
+      "d"_a, "v"_a, "u"_a)
+
+    .def("__repr__", [](const Ellipsoid& e) {
+          std::ostringstream s;
+          s << e;
+          return string(s.str()); 
+        },
+      OSTREAM_REF_OPERATOROUT_OSTREAM_REF_CONST_ELLIPSOID_REF)
+
     .def(py::self + py::self,
-      ELLIPSOID_OPERATORPLUS_CONST_ELLIPSOID_REF_CONST_ELLIPSOID_REF)
+      ELLIPSOID_OPERATORPLUS_CONST_ELLIPSOID_REF_CONST_ELLIPSOID_REF,
+      py::is_operator())
 
   ;
 

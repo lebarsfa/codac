@@ -36,12 +36,12 @@ void export_Figure2D(py::module& m)
     .def_readwrite("label", &FigureAxis::label)
   ;
 
-  m.def("axis", [](size_t_type n, const Interval& limits, const std::string& label)
+  m.def("axis", [](Index_type n, const Interval& limits, const std::string& label)
       {
         matlab::test_integer(n);
         return axis(matlab::input_index(n), limits, label);
       },
-    FIGUREAXIS_AXIS_SIZET_CONST_INTERVAL_REF_CONST_STRING_REF,
+    FIGUREAXIS_AXIS_INDEX_CONST_INTERVAL_REF_CONST_STRING_REF,
     "dim_id"_a, "limits"_a, "label"_a="");
 
   py::class_<Figure2D, std::shared_ptr<Figure2D> /* due to enable_shared_from_this */>
@@ -56,7 +56,7 @@ void export_Figure2D(py::module& m)
       CONST_STRING_REF_FIGURE2D_NAME_CONST)
   
     .def("size", &Figure2D::size,
-      SIZET_FIGURE2D_SIZE_CONST)
+      INDEX_FIGURE2D_SIZE_CONST)
   
     .def("axes", &Figure2D::axes,
       CONST_VECTOR_FIGUREAXIS_REF_FIGURE2D_AXES_CONST)
@@ -64,6 +64,12 @@ void export_Figure2D(py::module& m)
     .def("set_axes", &Figure2D::set_axes,
       VOID_FIGURE2D_SET_AXES_CONST_FIGUREAXIS_REF_CONST_FIGUREAXIS_REF,
       "axis1"_a, "axis2"_a)
+  
+    .def("i", &Figure2D::i,
+      CONST_INDEX_REF_FIGURE2D_I_CONST)
+  
+    .def("j", &Figure2D::j,
+      CONST_INDEX_REF_FIGURE2D_J_CONST)
   
     .def("pos", &Figure2D::pos,
       CONST_VECTOR_REF_FIGURE2D_POS_CONST)
@@ -139,6 +145,16 @@ void export_Figure2D(py::module& m)
     .def("draw_AUV", &Figure2D::draw_AUV,
       VOID_FIGURE2D_DRAW_AUV_CONST_VECTOR_REF_FLOAT_CONST_STYLEPROPERTIES_REF,
       "x"_a, "size"_a, "s"_a=StyleProperties())
+
+    // Pavings
+
+    .def("draw_paving", (void(Figure2D::*)(const PavingOut&,const StyleProperties&,const StyleProperties&))&Figure2D::draw_paving,
+      VOID_FIGURE2D_DRAW_PAVING_CONST_PAVINGOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "boundary_style"_a=StyleProperties::boundary(), "outside_style"_a=StyleProperties::outside())
+
+    .def("draw_paving", (void(Figure2D::*)(const PavingInOut&,const StyleProperties&,const StyleProperties&,const StyleProperties&))&Figure2D::draw_paving,
+      VOID_FIGURE2D_DRAW_PAVING_CONST_PAVINGINOUT_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF_CONST_STYLEPROPERTIES_REF,
+      "p"_a, "boundary_style"_a=StyleProperties::boundary(), "outside_style"_a=StyleProperties::outside(), "inside_style"_a=StyleProperties::inside())
 
   ;
 

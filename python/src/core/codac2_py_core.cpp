@@ -12,11 +12,13 @@
 #include <codac2_Interval.h>
 #include <codac2_AnalyticFunction.h>
 #include <codac2_analytic_values.h>
+#include <codac2_Row.h>
+#include <codac2_IntervalRow.h>
 #include "codac2_py_AnalyticFunction.h"
 #include "codac2_py_CtcInverse.h"
 #include "codac2_py_CtcInverseNotIn.h"
 #include "codac2_py_SepInverse.h"
-#include "codac2_py_MatrixBaseBlock.h"
+#include "codac2_py_MatrixBlock.h"
 
 using namespace codac2;
 namespace py = pybind11;
@@ -31,12 +33,17 @@ void export_OctaSym(py::module& m);
 py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector> export_CtcIntervalVector(py::module& m/*, py::class_<Ctc,pyCtc>& py_ctc*/);
 void export_CtcAction(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcCartProd(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
+void export_CtcCtcBoundary(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
+void export_CtcEmpty(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcFixpoint(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
+void export_CtcIdentity(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcInnerOuter(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcInter(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcLazy(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcNot(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcPolar(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
+void export_CtcPolygon(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
+void export_CtcProj(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcSegment(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcUnion(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
 void export_CtcWrapper(py::module& m, py::class_<CtcBase<IntervalVector>,pyCtcIntervalVector>& ctc);
@@ -46,8 +53,10 @@ void export_linear_ctc(py::module& m);
 // domains
 void export_BoolInterval(py::module& m);
 void export_Ellipsoid(py::module& m);
+void export_Ellipsoid_utils(py::module& m);
 py::class_<Interval> export_Interval(py::module& m);
 void export_Interval_operations(py::module& m, py::class_<Interval>& py_Interval);
+py::class_<IntervalRow> export_IntervalRow(py::module& m);
 py::class_<IntervalVector> export_IntervalVector(py::module& m);
 py::class_<IntervalMatrix> export_IntervalMatrix(py::module& m);
 void export_Paving(py::module& m);
@@ -66,24 +75,26 @@ void export_geometry(py::module& m);
 void export_Polygon(py::module& m);
 
 // matrices
-void export_arithmetic_add(py::module& m,
+void export_arithmetic_add(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
-void export_arithmetic_sub(py::module& m,
+  py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
+void export_arithmetic_sub(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
-void export_arithmetic_mul(py::module& m,
+  py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
+void export_arithmetic_mul(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
-void export_arithmetic_div(py::module& m,
+  py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
+void export_arithmetic_div(
   py::class_<Vector>& py_V, py::class_<IntervalVector>& py_IV,
   py::class_<Matrix>& py_M, py::class_<IntervalMatrix>& py_IM,
-  py::class_<MatrixBaseBlock<EigenMatrix<double>&,double>>& py_B, py::class_<MatrixBaseBlock<EigenMatrix<Interval>&,Interval>>& py_IB);
+  py::class_<Eigen::Block<Matrix>>& py_B, py::class_<Eigen::Block<IntervalMatrix>>& py_IB);
+py::class_<Row> export_Row(py::module& m);
 py::class_<Vector> export_Vector(py::module& m);
 py::class_<Matrix> export_Matrix(py::module& m);
+void export_Inversion(py::module& m);
 
 // paver
 void export_pave(py::module& m);
@@ -121,7 +132,10 @@ PYBIND11_MODULE(_core, m)
   auto py_ctc_iv = export_CtcIntervalVector(m/*,py_ctc*/);
   export_CtcAction(m, py_ctc_iv);
   export_CtcCartProd(m, py_ctc_iv);
+  export_CtcCtcBoundary(m, py_ctc_iv);
+  export_CtcEmpty(m, py_ctc_iv);
   export_CtcFixpoint(m, py_ctc_iv);
+  export_CtcIdentity(m, py_ctc_iv);
   export_CtcInnerOuter(m, py_ctc_iv);
   export_CtcInter(m, py_ctc_iv);
   export_CtcInverse<Interval>(m,"CtcInverse_Interval",py_ctc_iv);
@@ -131,6 +145,8 @@ PYBIND11_MODULE(_core, m)
   export_CtcLazy(m, py_ctc_iv);
   export_CtcNot(m, py_ctc_iv);
   export_CtcPolar(m, py_ctc_iv);
+  export_CtcPolygon(m, py_ctc_iv);
+  export_CtcProj(m, py_ctc_iv);
   export_CtcSegment(m, py_ctc_iv);
   export_CtcUnion(m, py_ctc_iv);
   export_CtcWrapper(m, py_ctc_iv);
@@ -138,23 +154,31 @@ PYBIND11_MODULE(_core, m)
   export_linear_ctc(m);
 
   // matrices
-  auto py_M = export_Matrix(m);
+  py::class_<Row> exported_row_class(m, "Row", DOC_TO_BE_DEFINED);
   auto py_V = export_Vector(m);
-  auto py_B = export_MatrixBaseBlock<Matrix,double>(m, "MatrixBaseBlock_Matrix_double");
+  auto py_M = export_Matrix(m);
+  auto py_B = export_EigenBlock<Matrix>(m, "MatrixBlock");
+  export_EigenBlock<Row>(m, "RowBlock");
+  export_EigenBlock<Vector>(m, "VectorBlock");
+  export_Inversion(m);
 
   // domains
   export_BoolInterval(m);
   export_Ellipsoid(m);
+  export_Ellipsoid_utils(m);
   auto py_Interval = export_Interval(m);
   export_Interval_operations(m, py_Interval);
+  auto py_IR = export_IntervalRow(m);
   auto py_IV = export_IntervalVector(m);
   auto py_IM = export_IntervalMatrix(m);
-  auto py_IB = export_MatrixBaseBlock<IntervalMatrix,Interval>(m, "MatrixBaseBlock_IntervalMatrix_Interval");
+  auto py_IB = export_EigenBlock<IntervalMatrix>(m, "IntervalMatrixBlock");
+  export_EigenBlock<IntervalRow>(m, "IntervalRowBlock");
+  export_EigenBlock<IntervalVector>(m, "IntervalVectorBlock");
 
-  export_arithmetic_add(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
-  export_arithmetic_sub(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
-  export_arithmetic_mul(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
-  export_arithmetic_div(m, py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_add(py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_sub(py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_mul(py_V, py_IV, py_M, py_IM, py_B, py_IB);
+  export_arithmetic_div(py_V, py_IV, py_M, py_IM, py_B, py_IB);
   
   export_Paving(m);
   export_PavingNode(m);

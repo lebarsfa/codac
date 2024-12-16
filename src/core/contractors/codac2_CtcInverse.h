@@ -29,7 +29,10 @@ namespace codac2
         requires IsCtcBaseOrPtr<C,Y>
       CtcInverse(const AnalyticFunction<typename Wrapper<Y>::Domain>& f, const C& ctc_y, bool with_centered_form = true, bool is_not_in = false)
         : _f(f), _ctc_y(ctc_y), _with_centered_form(with_centered_form), _is_not_in(is_not_in)
-      { }
+      {
+        assert_release([&]() { return f.output_size() == size_of(ctc_y); }()
+          && "CtcInverse: invalid dimension of image argument ('y' or 'ctc_y')");
+      }
 
       CtcInverse(const AnalyticFunction<typename Wrapper<Y>::Domain>& f, const Y& y, bool with_centered_form = true, bool is_not_in = false)
         : CtcInverse(f, CtcWrapper_<Y>(y), with_centered_form, is_not_in)
@@ -92,7 +95,7 @@ namespace codac2
               X0 x_mid = X0(x_.mid());
 
               assert(val_expr.a.size() == val_expr.m.size());
-              IntervalVector fm({val_expr.a - val_expr.m});
+              IntervalVector fm { val_expr.a - val_expr.m };
 
               if constexpr(std::is_same_v<Y,IntervalMatrix>)
               {

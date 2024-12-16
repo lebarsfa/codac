@@ -11,6 +11,7 @@
 
 #include "codac2_Matrix.h"
 #include "codac2_Vector.h"
+#include "codac2_IntervalVector.h"
 #include "codac2_AnalyticFunction.h"
 #include "codac2_BoolInterval.h"
 
@@ -47,7 +48,7 @@ namespace codac2
        * 
        * \param n number of dimensions
        */
-      Ellipsoid(size_t n);
+      Ellipsoid(Index n);
 
       /**
        * \brief Create an ellipsoid from a center and a shape matrix
@@ -62,7 +63,7 @@ namespace codac2
        *
        * \return number of dimensions
        */
-      size_t size() const;
+      Index size() const;
 
       /**
        * \brief Return a random vector inside this ellipsoid
@@ -95,8 +96,9 @@ namespace codac2
        * \param d a point on the plane
        * \param v a vector of the plane
        * \param u a other vector of the plane, orthogonal to v
+       * \return the projected 2d ellipsoid
        */
-      void projection2D(const Vector& d, const Vector& v, const Vector& u);
+      Ellipsoid proj_2d(const Vector& d, const Vector& v, const Vector& u) const;
 
     public:
 

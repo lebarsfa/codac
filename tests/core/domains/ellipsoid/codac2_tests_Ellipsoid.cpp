@@ -52,20 +52,20 @@ TEST_CASE("Ellipsoids")
             {x}, vec(x[0]+0.1*x[1],-0.2*sin(x[0])+0.9*x[1])};
 
     Matrix A = h.diff(e.mu).mid();
-    Vector b(h.eval(e.mu).mid()._e - A._e*e.mu._e);
+    Vector b(h.eval(e.mu).mid() - A*e.mu);
     Ellipsoid e2 = unreliable_linear_mapping(e, A, b);
     Vector mu2({1 , -0.168294});
     Matrix G2({{0.0500001 , 0.00500001},{-0.00540302 , 0.0450001}});
     CHECK(e2.size() == 2);
-    CHECK((e2.mu._e-mu2._e).norm() < 1e-6);
-    CHECK((e2.G._e-G2._e).norm() < 1e-6);
+    CHECK((e2.mu-mu2).norm() < 1e-6);
+    CHECK((e2.G-G2).norm() < 1e-6);
 
     Ellipsoid e3 = nonlinear_mapping(e, h);
     Vector mu3({1. , -0.168294});
     Matrix G3({{0.0550724 , 0.00550724},{-0.00595114 , 0.0495651}});
     CHECK(e3.size() == 2);
-    CHECK((e3.mu._e-mu3._e).norm() < 1e-6);
-    CHECK((e3.G._e-G3._e).norm() < 1e-6);
+    CHECK((e3.mu-mu3).norm() < 1e-6);
+    CHECK((e3.G-G3).norm() < 1e-6);
 
     Ellipsoid e4_ = e4();
     Ellipsoid e5_ = e5();
@@ -81,8 +81,8 @@ TEST_CASE("Ellipsoids")
 
     Ellipsoid e7 = unreliable_linear_mapping(e, A2, b2);
     Ellipsoid e8 = linear_mapping(e, A2, b2);
-    CHECK((e7.mu._e - e8.mu._e).norm()<1e-6);
-    CHECK((e7.G._e - e8.G._e).norm()<0.04);
+    CHECK((e7.mu - e8.mu).norm()<1e-6);
+    CHECK((e7.G - e8.G).norm()<0.04);
 
 
 }

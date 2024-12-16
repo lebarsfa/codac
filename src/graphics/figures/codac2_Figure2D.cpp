@@ -2,16 +2,19 @@
  *  codac2_Figure2D.cpp
  * ----------------------------------------------------------------------------
  *  \date       2024
- *  \author     Simon Rohou
+ *  \author     Simon Rohou, Morgan Louédec
  *  \copyright  Copyright 2024 Codac Team
  *  \license    GNU Lesser General Public License (LGPL)
  */
 
+#include "codac2_Index.h"
 #include "codac2_Figure2D.h"
 #include "codac2_Figure2D_VIBes.h"
 #include "codac2_Figure2D_IPE.h"
 #include "codac2_math.h"
 #include "codac2_pave.h"
+#include "codac2_matrices.h"
+#include "codac2_Matrix.h"
 
 using namespace std;
 using namespace codac2;
@@ -35,7 +38,7 @@ const std::string& Figure2D::name() const
   return _name;
 }
 
-size_t Figure2D::size() const
+Index Figure2D::size() const
 {
   return _axes.size();
 }
@@ -50,6 +53,16 @@ void Figure2D::set_axes(const FigureAxis& axis1, const FigureAxis& axis2)
   _axes = { axis1, axis2 };
   for(const auto& output_fig : _output_figures)
     output_fig->update_axes();
+}
+
+const Index& Figure2D::i() const
+{
+  return axes()[0].dim_id;
+}
+
+const Index& Figure2D::j() const
+{
+  return axes()[1].dim_id;
 }
 
 const Vector& Figure2D::pos() const
@@ -146,7 +159,7 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 {
   assert_release(x.size() > 1);
   assert_release(tip_length >= 0.); // 0 = disabled tip
-  for(const auto& xi : x)
+  for([[maybe_unused]] const auto& xi : x)
   {
     assert_release(this->size() <= xi.size());
   }
@@ -158,7 +171,7 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 void Figure2D::draw_polygone(const vector<Vector>& x, const StyleProperties& s)
 {
   assert_release(x.size() > 1);
-  for(const auto& xi : x)
+  for([[maybe_unused]] const auto& xi : x)
   {
     assert_release(this->size() <= xi.size());
   }
@@ -197,51 +210,32 @@ void Figure2D::draw_ellipse(const Vector& c, const Vector& ab, double theta, con
 }
 
 void Figure2D::draw_ellipsoid(const Ellipsoid &e, const StyleProperties &s) {
+  // Author: Morgan Louédec
     assert_release(this->size() <= e.size());
-    for (const auto &output_fig: _output_figures) {
-        Matrix G_draw(2, 2);
-        Vector mu_draw(2);
-        // 2d projection of the ellipsoid
-        if (e.size() > 2) {
-            Ellipsoid ep(e);
-            Vector v = Eigen::VectorXd::Zero(e.size());
-            v[output_fig->i()] = 1;
-            Vector u = Eigen::VectorXd::Zero(e.size());
-            u[output_fig->j()] = 1;
-            ep.projection2D(Eigen::VectorXd::Zero(e.size()),v,u);
-            G_draw = ep.G;
-            mu_draw = ep.mu;
 
-//            // affine space of the projection
-//            Vector d(Eigen::VectorXd::Zero(e.mu.nb_rows()));
-//            Matrix T(Eigen::MatrixXd::Zero(e.G.nb_rows(), 2));
-//            T(output_fig->i(), 0) = 1;
-//            T(output_fig->j(), 1) = 1;
-//
-//            // project ellipsoid E(mu,Q) = {x in R^n | (x-mu).T*G.{-T}*G^{-1}*(x-mu)<1}
-//            // on the affine plan A = {x|x=d+Tt} [Pope -2008]
-//            // reduce the dimensions of mu and Q
-//
-//            auto TTG = T._e.transpose() * e.G._e;
-//            Eigen::BDCSVD<Eigen::MatrixXd> bdcsvd(TTG, Eigen::ComputeFullU);
-//            Matrix U(bdcsvd.matrixU());
-//            Matrix E((Eigen::MatrixXd) bdcsvd.singularValues().asDiagonal());
-//            G_draw = U._e * E._e;
-//            mu_draw = T._e.transpose() * (d._e + T._e * T._e.transpose() * (e.mu._e - d._e));
+      Index n = e.size();
+      Ellipsoid proj_e(2);
+
+        // 2d projection of the ellipsoid
+        if (n > 2) {
+            Vector v = Vector::zero(n);
+            v[i()] = 1;
+            Vector u = Vector::zero(n);
+            u[j()] = 1;
+            proj_e = e.proj_2d(Vector::zero(n), v, u);
         } else {
-            G_draw = e.G;
-            mu_draw = e.mu;
+            proj_e = e;
         }
 
         // draw the 2d ellipsoid
-        Eigen::JacobiSVD<Eigen::MatrixXd> jsvd(G_draw._e, Eigen::ComputeThinU);
+        Eigen::JacobiSVD<Matrix> jsvd(proj_e.G, Eigen::ComputeThinU);
         Matrix U(jsvd.matrixU());
         Vector ab(jsvd.singularValues());
 
-        double theta = atan2(U(1, 0), U(0, 0)).mid();
+        double theta = std::atan2(U(1, 0), U(0, 0));
 
-        output_fig->draw_ellipse(mu_draw, ab, theta, s);
-    }
+    for(const auto& output_fig : _output_figures)
+        output_fig->draw_ellipse(proj_e.mu, ab, theta, s);
 }
 
 void Figure2D::draw_tank(const Vector& x, float size, const StyleProperties& s)

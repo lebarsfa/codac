@@ -45,8 +45,11 @@ namespace codac2
             .init(std::numeric_limits<double>::quiet_NaN());
       }
 
-      SampledTrajectory<T> sampled(double dt) const
+      virtual SampledTrajectory<T> sampled(double dt) const
       {
+        assert_release(dt > 0.);
+        assert_release(!is_empty());
+
         auto tdom = tdomain();
         SampledTrajectory<T> straj;
         for(double t = tdom.lb() ; t < tdom.ub() ; t+=dt)
@@ -67,7 +70,7 @@ namespace codac2
 
         while(t < tdomain().ub())
         {
-          y += ((*this)(t-dt)+(*this)(t))*dt/2.;
+          y += ((*this)(last_t)+(*this)(t))*dt/2.;
           p[t] = y;
           last_t = t;
           t += dt;

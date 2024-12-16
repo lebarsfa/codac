@@ -40,6 +40,13 @@ void _export_SampledTrajectory(py::module& m, const string& class_name)
     .def("nb_samples", &SampledTrajectory<T>::nb_samples,
       SIZET_SAMPLEDTRAJECTORY_T_NB_SAMPLES_CONST)
 
+    .def("sampled", [](const SampledTrajectory<T>& x, double dt, bool keep_original_values)
+        {
+          return x.sampled(dt,keep_original_values);
+        },
+      SAMPLEDTRAJECTORY_T_SAMPLEDTRAJECTORY_T_SAMPLED_DOUBLE_BOOL_CONST,
+      "dt"_a, "keep_original_values"_a)
+
   ;
 }
 

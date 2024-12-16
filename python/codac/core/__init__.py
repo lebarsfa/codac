@@ -312,11 +312,11 @@ class SampledTrajectory:
   def nan_value(self):
     return self.traj.nan_value()
     
-  def sampled(self, dt):
-    return self.traj.sampled(dt)
+  def sampled(self, *args):
+    return SampledTrajectory(self.traj.sampled(*args))
     
   def primitive(self, y0, t):
-    return self.traj.primitive(y0, t)
+    return SampledTrajectory(self.traj.primitive(y0, t))
     
   # Methods from SampledTrajectory:
   

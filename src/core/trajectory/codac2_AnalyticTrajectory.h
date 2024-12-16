@@ -11,6 +11,7 @@
 
 #include "codac2_AnalyticFunction.h"
 #include "codac2_TrajectoryBase.h"
+#include "codac2_SampledTrajectory.h"
 
 namespace codac2
 {
@@ -61,7 +62,8 @@ namespace codac2
       virtual typename Wrapper<S>::Domain operator()(const Interval& t) const
       {
         if(!this->tdomain().is_superset(t))
-          return this->nan_value();
+          return typename Wrapper<S>::Domain((*this)(tdomain().lb())) // we obtain the output dimension by an evalution...
+            .init(Interval(-oo,oo));
         return AnalyticFunction<O>::eval(t);
       }
 

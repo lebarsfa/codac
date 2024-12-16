@@ -109,16 +109,39 @@ namespace codac2
 
       virtual typename Wrapper<T>::Domain operator()(const Interval& t) const
       {
-        if(!this->tdomain().is_superset(t))
-          return this->nan_value();
-
+        // We obtain the output dimension by an evalution...
         typename Wrapper<T>::Domain hull(this->begin()->second);
-        hull |= std::prev(this->end())->second;
 
+        if(!this->tdomain().is_superset(t))
+          return hull.init(Interval(-oo,oo));
+
+        hull.set_empty();
         for(auto it = this->lower_bound(t.lb()) ; it != this->upper_bound(t.ub()) ; it++)
           hull |= it->second;
-
+        hull |= (*this)(t.ub());
         return hull;
+      }
+
+      virtual SampledTrajectory<T> sampled(double dt) const
+      {
+        return sampled(dt, true);
+      }
+
+      SampledTrajectory<T> sampled(double dt, bool keep_original_values) const
+      {
+        assert(dt > 0.);
+        assert(!is_empty());
+
+        auto straj = TrajectoryBase<T>::sampled(dt);
+
+        if(keep_original_values)
+        {
+          // Appending values from the initial map:
+          for(const auto& [ti,xi] : *this)
+            straj[ti] = xi;
+        }
+        
+        return straj;
       }
   };
 }

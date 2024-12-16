@@ -37,40 +37,48 @@ namespace codac2
 
       friend bool operator==(const T& x1, const Approx<T>& x2)
       {
-        if(x1.size() != x2._x.size())
-          return false;
-        if(x1 == x2._x)
-          return true;
-
-        if constexpr(std::is_same_v<T,Interval>)
+        if constexpr(std::is_same_v<T,double>)
         {
-          return ((std::fabs(_lb(x1)-_lb(x2._x)) < x2._eps) && _ub(x1) == _ub(x2._x))
-            || ((std::fabs(_ub(x1)-_ub(x2._x)) < x2._eps) && _lb(x1) == _lb(x2._x))
-            || ((std::fabs(_lb(x1)-_lb(x2._x)) < x2._eps) && std::fabs(_ub(x1)-_ub(x2._x)) < x2._eps);
+          return std::fabs(x1-x2._x) < x2._eps;
         }
 
         else
         {
-          if constexpr(std::is_same_v<T,IntervalVector> || std::is_same_v<T,Vector>)
+          if(x1.size() != x2._x.size())
+            return false;
+          if(x1 == x2._x)
+            return true;
+
+          if constexpr(std::is_same_v<T,Interval>)
           {
-            for(Index i = 0 ; i < x1.size() ; i++)
-              if(!(((std::fabs(_lb(x1[i])-_lb(x2._x[i])) < x2._eps) && _ub(x1[i]) == _ub(x2._x[i]))
-                || ((std::fabs(_ub(x1[i])-_ub(x2._x[i])) < x2._eps) && _lb(x1[i]) == _lb(x2._x[i]))
-                || ((std::fabs(_lb(x1[i])-_lb(x2._x[i])) < x2._eps) && std::fabs(_ub(x1[i])-_ub(x2._x[i])) < x2._eps)))
-                return false;
+            return ((std::fabs(_lb(x1)-_lb(x2._x)) < x2._eps) && _ub(x1) == _ub(x2._x))
+              || ((std::fabs(_ub(x1)-_ub(x2._x)) < x2._eps) && _lb(x1) == _lb(x2._x))
+              || ((std::fabs(_lb(x1)-_lb(x2._x)) < x2._eps) && std::fabs(_ub(x1)-_ub(x2._x)) < x2._eps);
           }
 
           else
           {
-            for(Index i = 0 ; i < x1.rows() ; i++)
-              for(Index j = 0 ; j < x1.cols() ; j++)
-                if(!(((std::fabs(_lb(x1(i,j))-_lb(x2._x(i,j))) < x2._eps) && _ub(x1(i,j)) == _ub(x2._x(i,j)))
-                  || ((std::fabs(_ub(x1(i,j))-_ub(x2._x(i,j))) < x2._eps) && _lb(x1(i,j)) == _lb(x2._x(i,j)))
-                  || ((std::fabs(_lb(x1(i,j))-_lb(x2._x(i,j))) < x2._eps) && std::fabs(_ub(x1(i,j))-_ub(x2._x(i,j))) < x2._eps)))
+            if constexpr(std::is_same_v<T,IntervalVector> || std::is_same_v<T,Vector>)
+            {
+              for(Index i = 0 ; i < x1.size() ; i++)
+                if(!(((std::fabs(_lb(x1[i])-_lb(x2._x[i])) < x2._eps) && _ub(x1[i]) == _ub(x2._x[i]))
+                  || ((std::fabs(_ub(x1[i])-_ub(x2._x[i])) < x2._eps) && _lb(x1[i]) == _lb(x2._x[i]))
+                  || ((std::fabs(_lb(x1[i])-_lb(x2._x[i])) < x2._eps) && std::fabs(_ub(x1[i])-_ub(x2._x[i])) < x2._eps)))
                   return false;
-          }
+            }
 
-          return true;
+            else
+            {
+              for(Index i = 0 ; i < x1.rows() ; i++)
+                for(Index j = 0 ; j < x1.cols() ; j++)
+                  if(!(((std::fabs(_lb(x1(i,j))-_lb(x2._x(i,j))) < x2._eps) && _ub(x1(i,j)) == _ub(x2._x(i,j)))
+                    || ((std::fabs(_ub(x1(i,j))-_ub(x2._x(i,j))) < x2._eps) && _lb(x1(i,j)) == _lb(x2._x(i,j)))
+                    || ((std::fabs(_lb(x1(i,j))-_lb(x2._x(i,j))) < x2._eps) && std::fabs(_ub(x1(i,j))-_ub(x2._x(i,j))) < x2._eps)))
+                    return false;
+            }
+
+            return true;
+          }
         }
       }
 

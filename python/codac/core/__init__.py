@@ -140,7 +140,9 @@ class SepInverse(Sep):
 class Approx:
 
   def __init__(self, x, eps = float_info.epsilon*10):
-    if isinstance(x, (float,Interval)):
+    if isinstance(x, (int,float)):
+      self.a = Approx_double(x,eps)
+    elif isinstance(x, (Interval)):
       self.a = Approx_Interval(x,eps)
     elif isinstance(x, (Vector)):
       self.a = Approx_Vector(x,eps)
@@ -151,7 +153,8 @@ class Approx:
     elif isinstance(x, (IntervalMatrix)):
       self.a = Approx_IntervalMatrix(x,eps)
     else:
-      codac_error("Approx: can only build Approx for: Interval, Vector, IntervalVector, Matrix, IntervalMatrix")
+      codac_error("Approx: can only build Approx for: \
+        double, Interval, Vector, IntervalVector, Matrix, IntervalMatrix")
 
   def __eq__(self, x):
     return self.a == x

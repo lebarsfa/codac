@@ -82,6 +82,10 @@
     separators/codac2_py_SepWrapper.cpp
 
     tools/codac2_py_Approx.cpp
+
+    trajectory/codac2_py_AnalyticTrajectory.cpp
+    trajectory/codac2_py_SampledTrajectory.cpp
+    trajectory/codac2_py_TrajectoryBase.h
   )
 
   target_include_directories(_core
@@ -101,6 +105,7 @@
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/paver/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/separators/
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tools/
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/
   )
 
   target_link_libraries(_core

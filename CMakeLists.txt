@@ -61,6 +61,13 @@
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
+  # Temporary fix in case of error: number of sections exceeded object file format limit.
+  if(MSVC)
+    add_compile_options(/bigobj)
+  elseif(MINGW)
+    add_compile_options(-Wa,-mbig-obj)
+  endif()
+
 #  # Check that the compiler supports c++20
 #  include(CheckCXXCompilerFlag)
 #  check_cxx_compiler_flag("-std=c++2a" COMPILER_SUPPORTS_CXX20)

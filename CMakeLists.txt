@@ -61,16 +61,19 @@
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
-  # Temporary attempts to fix errors: 
+  # Temporary attempts to fix errors similar to: 
   # _ number of sections exceeded object file format limit.
   # _ out of memory allocating XXX bytes.
+  # _ string table overflow.
+  # _ .obj: file too big.
   if(MSVC)
     add_compile_options(/bigobj)
   elseif(MINGW)
     add_compile_options(-Wa,-mbig-obj)
     if (CMAKE_SIZEOF_VOID_P EQUAL 4)
       #add_compile_options(-O0 -g0 -fno-inline -Os -ffunction-sections -fdata-sections -Wl,--gc-sections -fomit-frame-pointer -s)
-      add_compile_options(-O2 -g0)
+      #add_compile_options(-O2 -g0)
+      add_compile_options(-O2)
     endif()
   endif()
 

@@ -73,7 +73,7 @@
     if (CMAKE_SIZEOF_VOID_P EQUAL 4)
       #add_compile_options(-O0 -g0 -fno-inline -Os -ffunction-sections -fdata-sections -Wl,--gc-sections -fomit-frame-pointer -s)
       #add_compile_options(-O2 -g0)
-      add_compile_options(-O2)
+      add_compile_options(-g0)
     endif()
   endif()
 

@@ -69,7 +69,7 @@
   elseif(MINGW)
     add_compile_options(-Wa,-mbig-obj)
     if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-      add_compile_options(-O0 -g0 -fno-inline -Os -ffunction-sections -fdata-sections -Wl,--gc-sections -fomit-frame-pointer -Wl,--compress-debug-sections)
+      add_compile_options(-O0 -g0 -fno-inline -Os -ffunction-sections -fdata-sections -Wl,--gc-sections -fomit-frame-pointer -Wl,--compress-debug-sections -s)
     endif()
   endif()
 

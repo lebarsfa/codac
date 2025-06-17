@@ -129,7 +129,7 @@
   )
 
   target_link_libraries(_core
-    PRIVATE ${PROJECT_NAME}-core ${LIBS} Ibex::ibex
+    PRIVATE ${PROJECT_NAME}-core ${LIBS} gaol::gaol
   )
 
   # Copy the generated library in the package folder

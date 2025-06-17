@@ -1,7 +1,7 @@
 Package: libcodac-dev
 Version: 1
 Architecture: amd64
-Depends: libibex-dev
+Depends: libstdc++6, libgcc-s1, libc6
 Section: math
 Priority: optional
 Description: Codac is a library providing tools for constraint programming over reals, trajectories and sets

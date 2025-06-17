@@ -22,6 +22,10 @@ sed_param=s/Version:\ .*/Version:\ ${VER}/
 sed -i "$sed_param" libcodac-dev/DEBIAN/control
 sed_param=s/Architecture:\ .*/Architecture:\ ${ARCH}/
 sed -i "$sed_param" libcodac-dev/DEBIAN/control
+if [ "$DIST" = "xenial" ] || [ "$DIST" = "bionic" ] || [ "$DIST" = "buster" ]; then
+    sed_param=s/libgcc-s1/libgcc1/  
+    sed -i "$sed_param" libcodac-dev/DEBIAN/control
+fi
 chmod 775 libcodac-dev/DEBIAN
 dpkg-deb --build libcodac-dev
 mv libcodac-dev.deb ../../../libcodac-dev-$VER-$DREV$DIST$REV\_$ARCH.deb

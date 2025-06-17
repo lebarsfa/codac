@@ -47,7 +47,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/paver
     ${CMAKE_CURRENT_SOURCE_DIR}/styles
   )
-  target_link_libraries(${PROJECT_NAME}-graphics PUBLIC ${PROJECT_NAME}-core Ibex::ibex Eigen3::Eigen ${PROJECT_NAME}-core)
+  target_link_libraries(${PROJECT_NAME}-graphics PUBLIC ${PROJECT_NAME}-core gaol::gaol Eigen3::Eigen ${PROJECT_NAME}-core)
   
 
 ################################################################################

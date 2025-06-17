@@ -14,9 +14,9 @@
     add_subdirectory(extensions/capd)
   endif()
 
-  #if(WITH_IBEX) # included by default for now
+  if(WITH_IBEX) # included by default for now
     add_subdirectory(extensions/ibex)
-  #endif()
+  endif()
 
   #if(WITH_PYTHON)
   #  add_subdirectory(sympy)
@@ -71,10 +71,10 @@
     find_library(CODAC_UNSUPPORTED_LIBRARY NAMES ${PROJECT_NAME}-unsupported
                  PATH_SUFFIXES lib)
 
-    find_package(IBEX REQUIRED)
+    find_package(gaol REQUIRED)
 
     set(CODAC_VERSION ${PROJECT_VERSION})
-    set(CODAC_LIBRARIES \${CODAC_CORE_LIBRARY} \${CODAC_GRAPHICS_LIBRARY} \${CODAC_UNSUPPORTED_LIBRARY} Ibex::ibex)
+    set(CODAC_LIBRARIES \${CODAC_CORE_LIBRARY} \${CODAC_GRAPHICS_LIBRARY} \${CODAC_UNSUPPORTED_LIBRARY} gaol::gaol)
     set(CODAC_INCLUDE_DIRS \${CODAC_CORE_INCLUDE_DIR}/../ \${CODAC_CORE_INCLUDE_DIR}/../eigen3/ \${CODAC_CORE_INCLUDE_DIR} \${CODAC_GRAPHICS_INCLUDE_DIR} \${CODAC_UNSUPPORTED_INCLUDE_DIR})
 
     set(CODAC_C_FLAGS \"\")
@@ -119,7 +119,7 @@
 
   endif()
 
-  #if(WITH_IBEX) # included by default for now
+  if(WITH_IBEX) # included by default for now
 
     file(APPEND ${CODAC_CMAKE_CONFIG_FILE} "
 
@@ -137,7 +137,7 @@
     set(CODAC_LIBRARIES \${CODAC_LIBRARIES} \${CODAC_IBEX_LIBRARY} Ibex::ibex)
     ")
 
-  #endif()
+  endif()
 
   file(APPEND ${CODAC_CMAKE_CONFIG_FILE} "
     set(CODAC_LIBRARIES \${CODAC_LIBRARIES} \${CODAC_GRAPHICS_LIBRARY}  \${CODAC_CORE_LIBRARY})

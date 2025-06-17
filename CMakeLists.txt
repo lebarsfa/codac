@@ -118,12 +118,43 @@
 
 
 ################################################################################
+# Looking for gaol
+################################################################################
+
+include(FetchContent)
+find_package(gaol QUIET)
+if(gaol_FOUND)
+	message(STATUS "Found gaol version ${gaol_VERSION} in ${gaol_DIR}")
+else()
+	message(STATUS "Attempt to install gaol automatically...")
+	set(GAOL_ENABLE_PRESERVE_ROUNDING OFF CACHE BOOL "Transparently manipulates the FPU control flags")
+	set(GAOL_ENABLE_OPTIMIZE ON CACHE BOOL "Compile gaol with full optimization")
+	set(GAOL_ENABLE_VERBOSE_MODE OFF CACHE BOOL "Use verbose mode")
+	#FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/master.zip)
+	FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/prerelease.zip)
+	#FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/dev.zip)
+	#FetchContent_Declare(gaol SOURCE_DIR "P:/devel/GitHub/GAOL")
+	FetchContent_MakeAvailable(gaol)
+	# Adds gaol::gaol
+    if(TARGET gaol)
+    set_target_properties(gaol PROPERTIES
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD_EXTENSIONS OFF
+    )
+    endif()
+endif()
+  
+#add_library(Ibex::gaol ALIAS gaol)
+
+
+################################################################################
 # Looking for IBEX
 ################################################################################
 
-  find_package(IBEX REQUIRED)
-  ibex_init_common() # IBEX should have installed this function
-  message(STATUS "Found IBEX version ${IBEX_VERSION}")
+#  find_package(IBEX REQUIRED)
+#  ibex_init_common() # IBEX should have installed this function
+#  message(STATUS "Found IBEX version ${IBEX_VERSION}")
 
 
 ################################################################################

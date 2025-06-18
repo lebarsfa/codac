@@ -182,14 +182,17 @@
     # Disable tests due to FetchContent_MakeAvailable which needs CMake >= 3.14.
     set(BUILD_TESTS OFF CACHE BOOL "Build test" FORCE)
   endif()
-  if(BUILD_TESTS)
-    include(CTest)
-    add_custom_target(check
-                      COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure $(ARGS)
-                      DEPENDS ${PROJECT_NAME} COMMENT "Running the tests")
+ # Only do these if this is the main project, and not if it is included through add_subdirectory
+ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    if(BUILD_TESTS)
+       include(CTest)
+       add_custom_target(check_codac
+                         COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure $(ARGS)
+                         DEPENDS ${PROJECT_NAME} COMMENT "Running the tests")
 
-    add_subdirectory(tests)
-  endif()
+       add_subdirectory(tests)
+    endif()
+ endif()
 
   option(TEST_EXAMPLES "Testing examples" OFF)
   add_subdirectory(examples) # examples are tested as integration tests

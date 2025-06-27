@@ -1,16 +1,8 @@
-# ==================================================================
-#  Codac - cmake configuration file
-# ==================================================================
-
-  cmake_minimum_required(VERSION 3.14...3.25)
+cmake_minimum_required(VERSION 3.14...3.25)
 
   list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/scripts/CMakeModules/)
   include(version_from_git)
   version_from_git() # Obtains the version number from Git tags
-
-  # To use a specific compiler:
-  #set(CMAKE_C_COMPILER "gcc-7")
-  #set(CMAKE_CXX_COMPILER "/usr/bin/g++-7")
 
   project(codac VERSION ${VERSION} LANGUAGES CXX)
 
@@ -28,22 +20,20 @@
   set(PROJECT_HOMEPAGE_URL "http://codac.io")
   message(STATUS "Configuring build for ${PROJECT_NAME} ${PROJECT_VERSION}")
 
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
-################################################################################
-# Options for directories
-################################################################################
-  
-  # Install directories
-  set(CMAKE_INSTALL_INCLUDEDIR "include" CACHE PATH "C++ header files (include)")
-  set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "object code libraries (lib)")
-  set(CMAKE_INSTALL_BINDIR "bin" CACHE PATH "user executables (bin)")
-  set(CMAKE_INSTALL_PKGCONFIG "share/pkgconfig" CACHE PATH "pkg files (share/pkgconfig)")
-  set(CMAKE_INSTALL_CMAKE "share/codac/cmake" CACHE PATH "cmake files (share/codac/cmake)")
+  # Let's nicely support folders in IDEs
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+  option(BUILD_SHARED_LIBS "Build shared libs" OFF)
+  if(NOT BUILD_SHARED_LIBS)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+  endif()
 
-################################################################################
-# Compilation configuration
-################################################################################
+endif()
+
+####################################### TO IMPROVE (BEGINNING) #########################################
 
   if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
@@ -104,27 +94,10 @@
     endif()
   endif()
 
-#  # Check that the compiler supports c++20
-#  include(CheckCXXCompilerFlag)
-#  check_cxx_compiler_flag("-std=c++2a" COMPILER_SUPPORTS_CXX20)
-#  
-#  if(COMPILER_SUPPORTS_CXX20)
-#    add_compile_options(-std=c++2a)
-#  else()
-#    message(FATAL_ERROR "Codac needs a compiler with C++20 support")
-#  endif()
-
-  #if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  #endif()
-
-
-################################################################################
-# Looking for gaol
-################################################################################
+####################################### TO IMPROVE (END) #########################################
 
 include(FetchContent)
+
 find_package(gaol QUIET)
 if(gaol_FOUND)
 	message(STATUS "Found gaol version ${gaol_VERSION} in ${gaol_DIR}")
@@ -134,58 +107,28 @@ else()
 	set(GAOL_ENABLE_OPTIMIZE ON CACHE BOOL "Compile gaol with full optimization")
 	set(GAOL_ENABLE_VERBOSE_MODE OFF CACHE BOOL "Use verbose mode")
 	#FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/master.zip)
-	FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/prerelease.zip)
+	#FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/prerelease.zip)
 	#FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/dev.zip)
-	#FetchContent_Declare(gaol SOURCE_DIR "P:/devel/GitHub/GAOL")
+	FetchContent_Declare(gaol SOURCE_DIR "P:/devel/GitHub/GAOL")
 	FetchContent_MakeAvailable(gaol)
 	# Adds gaol::gaol
-    if(TARGET gaol)
-    set_target_properties(gaol PROPERTIES
-        CXX_STANDARD 11
-        CXX_STANDARD_REQUIRED ON
-        CXX_STANDARD_EXTENSIONS OFF
-    )
+    if(TARGET gaol::gaol)
+        set_target_properties(gaol PROPERTIES
+            CXX_STANDARD 11
+            CXX_STANDARD_REQUIRED ON
+            CXX_STANDARD_EXTENSIONS OFF
+        )
     endif()
 endif()
-  
-#add_library(Ibex::gaol ALIAS gaol)
 
-
-################################################################################
-# Looking for IBEX
-################################################################################
-
-#  find_package(IBEX REQUIRED)
-#  ibex_init_common() # IBEX should have installed this function
-#  message(STATUS "Found IBEX version ${IBEX_VERSION}")
-
-
-################################################################################
-# Looking for Eigen3
-################################################################################
-
-  add_subdirectory(3rd/eigen)
-  message(STATUS "Found Eigen3 version ${Eigen3_VERSION}")
-  add_definitions(${EIGEN3_DEFINITIONS})
-
-
-################################################################################
-# Looking for CAPD (if needed)
-################################################################################
-
-  option(WITH_CAPD "Using CAPD for accurate integration of ODEs" OFF)
-
-  if(WITH_CAPD)
-    find_package(CAPD REQUIRED)
-  endif()
-
-
-################################################################################
-# Compile sources
-################################################################################
+message(STATUS "Installing custom Eigen3...")
+FetchContent_Declare(Eigen3 URL ${CMAKE_SOURCE_DIR}/../codac/3rd/eigen)
+#FetchContent_Declare(Eigen3 SOURCE_DIR "P:/devel/GitHub/codac/3rd/eigen")
+FetchContent_MakeAvailable(Eigen3)
+# Adds Eigen3::Eigen
   
   add_subdirectory(src) # C++ sources
-  add_subdirectory(doc) # documentation (Doxygen + Sphinx manual)
+####################################  add_subdirectory(doc) # documentation (Doxygen + Sphinx manual)
 
   # Python binding:
   option(WITH_PYTHON "Build Python binding" OFF)
@@ -194,48 +137,45 @@ endif()
     add_subdirectory(python)
   endif()
 
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    # Only at top-level do we generate install() and install(EXPORT)
 
-################################################################################
-# Tests
-################################################################################
-  
-  # Note: place this tests block before the add_subdirectory(python),
-  # otherwise python tests will not be taken into account. 
-  option(BUILD_TESTS "Build test" OFF)
-  if(${CMAKE_VERSION} VERSION_LESS "3.14.0")
-    # Disable tests due to FetchContent_MakeAvailable which needs CMake >= 3.14.
-    set(BUILD_TESTS OFF CACHE BOOL "Build test" FORCE)
-  endif()
- # Only do these if this is the main project, and not if it is included through add_subdirectory
- if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    if(BUILD_TESTS)
-       include(CTest)
-       add_custom_target(check_codac
-                         COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure $(ARGS)
-                         DEPENDS ${PROJECT_NAME} COMMENT "Running the tests")
+    # From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/chapters/install/installing.md
+    # and https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+    install(TARGETS codac-core codac-graphics #####################################
+            EXPORT codacTargets
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+    #        RUNTIME DESTINATION bin
+    #        INCLUDES DESTINATION include
+            )
 
-       add_subdirectory(tests)
-    endif()
- endif()
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(
+        codacConfigVersion.cmake
+        #VERSION ${PACKAGE_VERSION}
+        COMPATIBILITY AnyNewerVersion
+        )
 
-  option(TEST_EXAMPLES "Testing examples" OFF)
-  add_subdirectory(examples) # examples are tested as integration tests
+    # Inspired from https://github.com/fmtlib/fmt/blob/7d4662f7ab39f70107b6e8899bcc4076fe947a39/CMakeLists.txt
+    export(TARGETS codac-core codac-graphics #####################################
+            NAMESPACE codac::
+            FILE codacTargets.cmake)
 
+    install(EXPORT codacTargets
+            #FILE codacTargets.cmake
+            NAMESPACE codac::
+            DESTINATION share/cmake/codac
+             )
 
-################################################################################
-# Archives and packages
-################################################################################
+    configure_file(codacConfig.cmake.in codacConfig.cmake @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/codacConfig.cmake"
+                  "${CMAKE_CURRENT_BINARY_DIR}/codacConfigVersion.cmake"
+            DESTINATION share/cmake/codac
+            )
+else()
+    # Sub-project: give users namespace aliases
 
-  set(CPACK_GENERATOR "TGZ" "ZIP" "DEB")
-  string(TOLOWER "${CMAKE_PROJECT_NAME}" CPACK_PACKAGE_NAME)
-  set(CPACK_PACKAGE_VENDOR "Codac Team")
-  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${CODAC_DESCRIPTION})
-  set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-  set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
-  set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-
-  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Maintainer <simon.rohou@ensta.fr>")
-  set(CPACK_DEBIAN_PACKAGE_HOMEPAGE ${CODAC_URL})
-  # todo: finish deb package
-
-  include(CPack)
+    add_library(codac::codac-core ALIAS codac-core)
+    add_library(codac::codac-graphics ALIAS codac-graphics)
+endif()

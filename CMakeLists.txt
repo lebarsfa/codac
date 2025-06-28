@@ -111,9 +111,19 @@ else()
 	FetchContent_Declare(gaol URL https://github.com/lebarsfa/gaol/archive/refs/heads/dev.zip)
 	#FetchContent_Declare(gaol SOURCE_DIR "P:/devel/GitHub/GAOL")
 	FetchContent_MakeAvailable(gaol)
-	# Adds gaol::gaol
+	# Adds gaol::gaol and mathlib::ultim
     if(TARGET gaol::gaol)
         set_target_properties(gaol PROPERTIES
+            CXX_STANDARD 11
+            CXX_STANDARD_REQUIRED ON
+            CXX_STANDARD_EXTENSIONS OFF
+        )
+    endif()
+    if(TARGET mathlib::ultim)
+        target_compile_options(ultim PRIVATE
+            $<$<CXX_COMPILER_ID:GNU>:-Wno-missing-braces>
+        )
+        set_target_properties(ultim PROPERTIES
             CXX_STANDARD 11
             CXX_STANDARD_REQUIRED ON
             CXX_STANDARD_EXTENSIONS OFF

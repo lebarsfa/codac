@@ -173,9 +173,9 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         )
 
     # Inspired from https://github.com/fmtlib/fmt/blob/7d4662f7ab39f70107b6e8899bcc4076fe947a39/CMakeLists.txt
-    export(TARGETS codac-core codac-graphics #####################################
-            NAMESPACE codac::
-            FILE codacTargets.cmake)
+    #export(TARGETS codac-core codac-graphics #####################################
+    #        NAMESPACE codac::
+    #        FILE codacTargets.cmake)
 
     install(EXPORT codacTargets
             #FILE codacTargets.cmake

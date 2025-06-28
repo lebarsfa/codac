@@ -38,7 +38,7 @@ endif()
   if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
     if(MSVC)
-      add_compile_options(/MD) # Temporary fix to avoid debug vs release inconsistencies...
+      ##########################add_compile_options(/MD) # Temporary fix to avoid debug vs release inconsistencies...
     else()
       add_compile_options(-O3)
     endif()

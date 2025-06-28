@@ -122,10 +122,11 @@ else()
 endif()
 
 message(STATUS "Installing custom Eigen3...")
-FetchContent_Declare(Eigen3 URL ${CMAKE_SOURCE_DIR}/../codac/3rd/eigen)
-#FetchContent_Declare(Eigen3 SOURCE_DIR "P:/devel/GitHub/codac/3rd/eigen")
-FetchContent_MakeAvailable(Eigen3)
-# Adds Eigen3::Eigen
+#FetchContent_Declare(Eigen3 URL ${CMAKE_SOURCE_DIR}/../codac/3rd/eigen)
+##FetchContent_Declare(Eigen3 SOURCE_DIR "P:/devel/GitHub/codac/3rd/eigen")
+#FetchContent_MakeAvailable(Eigen3)
+## Adds Eigen3::Eigen
+add_subdirectory(3rd/eigen)
   
   add_subdirectory(src) # C++ sources
 ####################################  add_subdirectory(doc) # documentation (Doxygen + Sphinx manual)

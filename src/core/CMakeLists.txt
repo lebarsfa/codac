@@ -17,17 +17,17 @@
 
 list(APPEND CODAC_CORE_SRC
 
-    actions/codac2_OctaSym.cpp
-    actions/codac2_OctaSym.h
-
     contractors/codac2_Ctc.h
     contractors/codac2_CtcAction.cpp
     contractors/codac2_CtcAction.h
     contractors/codac2_CtcCartProd.h
+    contractors/codac2_CtcConstell.cpp
+    contractors/codac2_CtcConstell.h
     contractors/codac2_CtcCross.cpp
     contractors/codac2_CtcCross.h
     contractors/codac2_CtcCtcBoundary.cpp
     contractors/codac2_CtcCtcBoundary.h
+    contractors/codac2_CtcDeriv.h
     contractors/codac2_CtcDist.cpp
     contractors/codac2_CtcDist.h
     contractors/codac2_CtcEllipse.cpp
@@ -89,6 +89,7 @@ list(APPEND CODAC_CORE_SRC
     domains/tube/codac2_TSlice.cpp
     domains/tube/codac2_TSlice.h
     domains/tube/codac2_TubeBase.h
+    domains/tube/codac2_tube_cart_prod.h
 
     functions/codac2_ExprBase.cpp
     functions/codac2_ExprBase.h
@@ -230,6 +231,7 @@ list(APPEND CODAC_CORE_SRC
     tools/codac2_Approx.h
     tools/codac2_assert.h
     tools/codac2_Collection.h
+    tools/codac2_fixpoint.h
     tools/codac2_Index.h
     tools/codac2_math.h
     tools/codac2_object_file_format.cpp
@@ -248,7 +250,7 @@ list(APPEND CODAC_CORE_SRC
     trajectory/codac2_SampledTraj_operations.h
     trajectory/codac2_Traj_operator.h
     trajectory/codac2_TrajBase.h
-)
+  )
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(codac-core ${CODAC_CORE_SRC})

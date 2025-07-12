@@ -1,6 +1,24 @@
-# ==================================================================
-#  Codac - cmake configuration file
-# ==================================================================
+# From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/examples/extended-project/src/CMakeLists.txt
+
+# Note that headers are optional, and do not affect add_library, but they will not
+# show up in IDEs unless they are listed in add_library.
+
+# Optionally glob, but only for CMake 3.12 or later:
+# file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/include/modern/*.hpp")
+#set(HEADER_LIST "${codac_SOURCE_DIR}/include/modern/lib.hpp")
+#set(SOURCE_LIST 
+#codac.cpp
+#)
+#file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/codac/*.h" "${codac_SOURCE_DIR}/codac/*.hpp")
+#file(GLOB OTHER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/codac/*.ypp")
+
+# Make an automatic library - will be static or dynamic based on user setting
+#add_library(codac ${SOURCE_LIST} ${HEADER_LIST} ${OTHER_LIST})
+
+#file(GLOB_RECURSE CODAC_GRAPHICS_SRC CONFIGURE_DEPENDS 
+#    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+#)
 
   list(APPEND CODAC_GRAPHICS_SRC
     
@@ -30,61 +48,87 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/styles/codac2_StyleProperties.h
   )
 
-################################################################################
-# Create the target for libcodac-graphics
-################################################################################
+# Make an automatic library - will be static or dynamic based on user setting
+add_library(codac-graphics ${CODAC_GRAPHICS_SRC})
 
-  #if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  #endif()
+# Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+#add_library(codac::graphics ALIAS graphics)
 
-  add_library(${PROJECT_NAME}-graphics ${CODAC_GRAPHICS_SRC})
-  target_include_directories(${PROJECT_NAME}-graphics PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rd/ipe
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rd/vibes
-    ${CMAKE_CURRENT_SOURCE_DIR}/figures
-    ${CMAKE_CURRENT_SOURCE_DIR}/paver
-    ${CMAKE_CURRENT_SOURCE_DIR}/styles
-  )
-  target_link_libraries(${PROJECT_NAME}-graphics PUBLIC ${PROJECT_NAME}-core gaol::gaol Eigen3::Eigen ${PROJECT_NAME}-core)
-  
+# We need this directory, and users of our library will need it too
+#target_include_directories(codac PUBLIC ../include)
+# Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+target_include_directories(codac-graphics 
+	PUBLIC
+		"$<INSTALL_INTERFACE:include>"
+		"$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rd/ipe>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3rd/vibes>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/figures>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/paver>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/styles>"
+)
 
-################################################################################
-# For the generation of the PKG file
-################################################################################
-  
-  set(CODAC_PKG_CONFIG_CFLAGS "${CODAC_PKG_CONFIG_CFLAGS} -I\${includedir}/${PROJECT_NAME}-graphics" PARENT_SCOPE)
-  set(CODAC_PKG_CONFIG_LIBS "${CODAC_PKG_CONFIG_LIBS} -l${PROJECT_NAME}-graphics" PARENT_SCOPE)
+# See https://github.com/friendlyanon/cxx-static-shared-example
+include(GenerateExportHeader)
+generate_export_header(
+    codac-graphics
+    BASE_NAME codac-graphics
+    EXPORT_FILE_NAME codac-graphics_export.h
+)
 
-  
-################################################################################
-# Installation of libcodac-graphics files
-################################################################################
-  
+target_link_libraries(codac-graphics PUBLIC codac-core gaol::gaol Eigen3::Eigen)
+
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(codac-graphics PUBLIC codac_STATIC_DEFINE)
+else()
+  target_compile_definitions(codac-graphics PUBLIC codac_SHARED_DEFINE) # For compatibility...
+endif()
+
+# TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
+
+
+
+target_compile_features(codac-graphics PUBLIC cxx_std_20)
+
+
+
 # Getting header files from sources
 
   foreach(srcfile ${CODAC_GRAPHICS_SRC})
     if(srcfile MATCHES "\\.h$" OR srcfile MATCHES "\\.hpp$")
       list(APPEND CODAC_GRAPHICS_HDR ${srcfile})
-      file(COPY ${srcfile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
+      file(COPY ${srcfile} DESTINATION ${PROJECT_BINARY_DIR}/../../include)
     endif()
   endforeach()
 
 # Generating the file codac-graphics.h
 
-  set(CODAC_GRAPHICS_MAIN_HEADER ${CMAKE_CURRENT_BINARY_DIR}/codac-graphics.h)
+  set(CODAC_GRAPHICS_MAIN_HEADER ${PROJECT_BINARY_DIR}/codac-graphics.h)
   set(CODAC_MAIN_SUBHEADERS ${CODAC_MAIN_SUBHEADERS} "codac-graphics.h" PARENT_SCOPE)
   file(WRITE ${CODAC_GRAPHICS_MAIN_HEADER} "/* This file is generated by CMake */\n\n")
   file(APPEND ${CODAC_GRAPHICS_MAIN_HEADER} "#pragma once\n\n")
   foreach(header_path ${CODAC_GRAPHICS_HDR})
     get_filename_component(header_name ${header_path} NAME)
-    file(APPEND ${CODAC_GRAPHICS_MAIN_HEADER} "#include <${header_name}>\n")
+    if((NOT header_name MATCHES "^.*_addons.*$") AND (NOT header_name MATCHES "^.*_impl.*$"))
+      file(APPEND ${CODAC_GRAPHICS_MAIN_HEADER} "#include <${header_name}>\n")
+    endif()
   endforeach()
-  file(COPY ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
+  file(COPY ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${PROJECT_BINARY_DIR}/../../include)
+
 
 # Install files in system directories
 
-  install(TARGETS ${PROJECT_NAME}-graphics DESTINATION ${CMAKE_INSTALL_LIBDIR})
-  install(FILES ${CODAC_GRAPHICS_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-graphics)
-  install(FILES ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-graphics)
+  install(FILES ${CODAC_GRAPHICS_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics)
+  install(FILES ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics)
+
+
+# IDEs should put the headers in a nice place
+#source_group(
+#  TREE "${PROJECT_SOURCE_DIR}/include"
+#  PREFIX "Header Files"
+#  FILES ${HEADER_LIST})
+#source_group(
+#  TREE "${PROJECT_SOURCE_DIR}/graphics"
+#  PREFIX "Other Files"
+#  FILES ${OTHER_LIST})

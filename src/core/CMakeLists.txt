@@ -1,6 +1,28 @@
-# ==================================================================
-#  Codac - cmake configuration file
-# ==================================================================
+# From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/examples/extended-project/src/CMakeLists.txt
+
+# Note that headers are optional, and do not affect add_library, but they will not
+# show up in IDEs unless they are listed in add_library.
+
+# Optionally glob, but only for CMake 3.12 or later:
+# file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/include/modern/*.hpp")
+#set(HEADER_LIST "${codac_SOURCE_DIR}/include/modern/lib.hpp")
+#set(SOURCE_LIST 
+#codac.cpp
+#)
+#file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/codac/*.h" "${codac_SOURCE_DIR}/codac/*.hpp")
+#file(GLOB OTHER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/codac/*.ypp")
+
+# Make an automatic library - will be static or dynamic based on user setting
+#add_library(codac ${SOURCE_LIST} ${HEADER_LIST} ${OTHER_LIST})
+
+#file(GLOB_RECURSE CODAC_CORE_SRC CONFIGURE_DEPENDS 
+#    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+#)
+#
+## Exclusions...
+#list(FILTER CODAC_CORE_SRC EXCLUDE REGEX ".*/contractors/codac2_CtcPolar_codac1\\.cpp$")
+#list(FILTER CODAC_CORE_SRC EXCLUDE REGEX ".*/functions/analytic/codac2_AnalyticFunction_impl\\.h$")
 
   list(APPEND CODAC_CORE_SRC
 
@@ -242,69 +264,82 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_TrajBase.h
   )
 
-################################################################################
-# Create the target for libcodac-core
-################################################################################
+# Make an automatic library - will be static or dynamic based on user setting
+add_library(codac-core ${CODAC_CORE_SRC})
 
-  #if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  #endif()
+# Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+#add_library(codac::core ALIAS core)
 
-  add_library(${PROJECT_NAME}-core ${CODAC_CORE_SRC})
-  target_include_directories(${PROJECT_NAME}-core PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/actions
-    ${CMAKE_CURRENT_SOURCE_DIR}/contractors
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving
-    ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube
-    ${CMAKE_CURRENT_SOURCE_DIR}/functions
-    ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic
-    ${CMAKE_CURRENT_SOURCE_DIR}/functions/set
-    ${CMAKE_CURRENT_SOURCE_DIR}/geometry
-    #${CMAKE_CURRENT_SOURCE_DIR}/graphics
-    #${CMAKE_CURRENT_SOURCE_DIR}/graphics/ipe
-    #${CMAKE_CURRENT_SOURCE_DIR}/graphics/vibes
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons
-    ${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons
-    ${CMAKE_CURRENT_SOURCE_DIR}/operators
-    ${CMAKE_CURRENT_SOURCE_DIR}/paver
-    ${CMAKE_CURRENT_SOURCE_DIR}/proj
-    ${CMAKE_CURRENT_SOURCE_DIR}/separators
-    ${CMAKE_CURRENT_SOURCE_DIR}/tools
-    ${CMAKE_CURRENT_SOURCE_DIR}/trajectory
-  )
-  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-graphics gaol::gaol Eigen3::Eigen) # ${PROJECT_NAME}-graphics
-  
+# We need this directory, and users of our library will need it too
+#target_include_directories(codac PUBLIC ../include)
+# Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+target_include_directories(codac-core 
+	PUBLIC
+		"$<INSTALL_INTERFACE:include>"
+		"$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/actions>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/contractors>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/interval>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/paving>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/tube>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/functions>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/functions/set>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/geometry>"
+        #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/graphics>"
+        #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/graphics/ipe>"
+        #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/graphics/vibes>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/matrices>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/operators>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/paver>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/proj>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/separators>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tools>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/trajectory>"
+)
 
-################################################################################
-# For the generation of the PKG file
-################################################################################
-  
-  set(CODAC_PKG_CONFIG_CFLAGS "${CODAC_PKG_CONFIG_CFLAGS} -I\${includedir}/${PROJECT_NAME}-core" PARENT_SCOPE)
-  set(CODAC_PKG_CONFIG_LIBS "${CODAC_PKG_CONFIG_LIBS} -l${PROJECT_NAME}-core" PARENT_SCOPE)
+# See https://github.com/friendlyanon/cxx-static-shared-example
+include(GenerateExportHeader)
+generate_export_header(
+    codac-core
+    BASE_NAME codac-core
+    EXPORT_FILE_NAME codac-core_export.h
+)
 
-  
-################################################################################
-# Installation of libcodac-core files
-################################################################################
-  
+target_link_libraries(codac-core PUBLIC gaol::gaol Eigen3::Eigen) # ${PROJECT_NAME}-graphics
+
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(codac-core PUBLIC codac_STATIC_DEFINE)
+else()
+  target_compile_definitions(codac-core PUBLIC codac_SHARED_DEFINE) # For compatibility...
+endif()
+
+# TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
+
+
+
+target_compile_features(codac-core PUBLIC cxx_std_20)
+
+
+
 # Getting header files from sources
 
   foreach(srcfile ${CODAC_CORE_SRC})
     if(srcfile MATCHES "\\.h$" OR srcfile MATCHES "\\.hpp$")
       list(APPEND CODAC_CORE_HDR ${srcfile})
-      file(COPY ${srcfile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
+      file(COPY ${srcfile} DESTINATION ${PROJECT_BINARY_DIR}/../../include)
     endif()
   endforeach()
 
 # Generating the file codac-core.h
 
-  set(CODAC_CORE_MAIN_HEADER ${CMAKE_CURRENT_BINARY_DIR}/codac-core.h)
+  set(CODAC_CORE_MAIN_HEADER ${PROJECT_BINARY_DIR}/codac-core.h)
   set(CODAC_MAIN_SUBHEADERS ${CODAC_MAIN_SUBHEADERS} "codac-core.h" PARENT_SCOPE)
   file(WRITE ${CODAC_CORE_MAIN_HEADER} "/* This file is generated by CMake */\n\n")
   file(APPEND ${CODAC_CORE_MAIN_HEADER} "#pragma once\n\n")
@@ -314,11 +349,21 @@
       file(APPEND ${CODAC_CORE_MAIN_HEADER} "#include <${header_name}>\n")
     endif()
   endforeach()
-  file(COPY ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
+  file(COPY ${CODAC_CORE_MAIN_HEADER} DESTINATION ${PROJECT_BINARY_DIR}/../../include)
 
 
 # Install files in system directories
 
-  install(TARGETS ${PROJECT_NAME}-core DESTINATION ${CMAKE_INSTALL_LIBDIR})
-  install(FILES ${CODAC_CORE_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-core)
-  install(FILES ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-core)
+  install(FILES ${CODAC_CORE_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
+  install(FILES ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
+
+
+# IDEs should put the headers in a nice place
+#source_group(
+#  TREE "${PROJECT_SOURCE_DIR}/include"
+#  PREFIX "Header Files"
+#  FILES ${HEADER_LIST})
+#source_group(
+#  TREE "${PROJECT_SOURCE_DIR}/core"
+#  PREFIX "Other Files"
+#  FILES ${OTHER_LIST})

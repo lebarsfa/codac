@@ -93,7 +93,10 @@ endif()
 
 include(FetchContent)
 
-find_package(gaol QUIET)
+option(ENABLE_FIND_PACKAGE_GAOL "ENABLE_FIND_PACKAGE_GAOL" OFF)
+if(ENABLE_FIND_PACKAGE_GAOL)
+    find_package(gaol QUIET) # Use gaol_DIR or CMAKE_PREFIX_PATH to specify a custom gaol installation path...
+endif()
 if(gaol_FOUND)
 	message(STATUS "Found gaol version ${gaol_VERSION} in ${gaol_DIR}")
 else()
@@ -150,6 +153,7 @@ endif()
   option(WITH_CAPD "Using CAPD for accurate integration of ODEs" OFF)
   if(WITH_CAPD)
     find_package(CAPD REQUIRED)
+    message(STATUS "Found CAPD version ${CAPD_VERSION}")
   endif()
   
   add_subdirectory(src) # C++ sources

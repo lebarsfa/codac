@@ -171,7 +171,7 @@ endif()
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/chapters/install/installing.md
     # and https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
-    install(TARGETS codac-core codac-graphics #####################################
+    install(TARGETS codac-core codac-graphics gaol ultim eigen #####################################
             EXPORT codacTargets
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib
@@ -198,7 +198,7 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             DESTINATION share/cmake/codac
             )
 else()
-    export(TARGETS codac-core codac-graphics #####################################
+    export(TARGETS codac-core codac-graphics eigen #####################################
            NAMESPACE codac::
            FILE codacTargets.cmake)
 endif()

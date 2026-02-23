@@ -33,4 +33,7 @@
     get_filename_component(header_name ${header_path} NAME)
     file(APPEND ${CODAC_MAIN_HEADER} "#include <${header_name}>\n")
   endforeach()
+
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   install(FILES ${CODAC_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()

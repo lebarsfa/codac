@@ -267,9 +267,6 @@
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(codac-core ${CODAC_CORE_SRC})
 
-# Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
-#add_library(codac::core ALIAS core)
-
 # We need this directory, and users of our library will need it too
 #target_include_directories(codac PUBLIC ../include)
 # Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
@@ -354,8 +351,10 @@ target_compile_features(codac-core PUBLIC cxx_std_20)
 
 # Install files in system directories
 
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   install(FILES ${CODAC_CORE_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
   install(FILES ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
+endif()
 
 
 # IDEs should put the headers in a nice place

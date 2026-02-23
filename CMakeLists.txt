@@ -157,6 +157,8 @@ endif()
   endif()
   
   add_subdirectory(src) # C++ sources
+  add_library(codac::codac-core ALIAS codac-core)
+  add_library(codac::codac-graphics ALIAS codac-graphics)
 ####################################  add_subdirectory(doc) # documentation (Doxygen + Sphinx manual)
 
   # Python binding:
@@ -167,11 +169,9 @@ endif()
   endif()
 
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    # Only at top-level do we generate install() and install(EXPORT)
-
     # From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/chapters/install/installing.md
     # and https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
-    install(TARGETS codac-core codac-graphics gaol ultim eigen #####################################
+    install(TARGETS codac-core codac-graphics #####################################
             EXPORT codacTargets
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib
@@ -186,11 +186,6 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
         COMPATIBILITY AnyNewerVersion
         )
 
-    # Inspired from https://github.com/fmtlib/fmt/blob/7d4662f7ab39f70107b6e8899bcc4076fe947a39/CMakeLists.txt
-    #export(TARGETS codac-core codac-graphics #####################################
-    #        NAMESPACE codac::
-    #        FILE codacTargets.cmake)
-
     install(EXPORT codacTargets
             #FILE codacTargets.cmake
             NAMESPACE codac::
@@ -203,8 +198,7 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             DESTINATION share/cmake/codac
             )
 else()
-    # Sub-project: give users namespace aliases
-
-    add_library(codac::codac-core ALIAS codac-core)
-    add_library(codac::codac-graphics ALIAS codac-graphics)
+    export(TARGETS codac-core codac-graphics #####################################
+           NAMESPACE codac::
+           FILE codacTargets.cmake)
 endif()

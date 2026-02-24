@@ -351,10 +351,10 @@ target_compile_features(codac-core PUBLIC cxx_std_20)
 
 # Install files in system directories
 
-if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+#if (CODAC_INSTALL) # To find how to set the default value of this option...
   install(FILES ${CODAC_CORE_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
   install(FILES ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
-endif()
+#endif()
 
 
 # IDEs should put the headers in a nice place

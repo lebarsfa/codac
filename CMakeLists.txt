@@ -41,6 +41,16 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
+####################################### TO REMOVE LATER (BEGINNING) #########################################
+if(NOT DEFINED ENV{CMAKE_BUILD_PARALLEL_LEVEL})
+  set(ENV{CMAKE_BUILD_PARALLEL_LEVEL} 8)
+  message(STATUS "Defaulting CMAKE_BUILD_PARALLEL_LEVEL to 8")
+endif()
+if(MSVC)
+  add_compile_options(/MP)
+endif()
+####################################### TO REMOVE LATER (END) #########################################
+
 endif()
 
 option(CODAC_INSTALL "Generate the install target" ON)

@@ -15,19 +15,22 @@
 # Make an automatic library - will be static or dynamic based on user setting
 #add_library(codac ${SOURCE_LIST} ${HEADER_LIST} ${OTHER_LIST})
 
-#file(GLOB_RECURSE CODAC_CORE_SRC CONFIGURE_DEPENDS 
-#    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+#file(GLOB_RECURSE CODAC_CORE_HDR CONFIGURE_DEPENDS 
+#    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
 #    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
 #)
-#
+#file(GLOB_RECURSE CODAC_CORE_SRC CONFIGURE_DEPENDS 
+#    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+#)
 ## Exclusions...
 #list(FILTER CODAC_CORE_SRC EXCLUDE REGEX ".*/contractors/codac2_CtcPolar_codac1\\.cpp$")
-#list(FILTER CODAC_CORE_SRC EXCLUDE REGEX ".*/functions/analytic/codac2_AnalyticFunction_impl\\.h$")
 
+# Explicit list to avoid problems related to circular dependencies...
   list(APPEND CODAC_CORE_SRC
 
     ${CMAKE_CURRENT_SOURCE_DIR}/actions/codac2_OctaSym.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/actions/codac2_OctaSym.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/actions/codac2_OctaSym_operator.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_Ctc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcAction.cpp
@@ -39,6 +42,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCross.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCtcBoundary.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcCtcBoundary.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcDeriv.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcDeriv.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcDist.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcDist.h
@@ -46,6 +50,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEllipse.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEmpty.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEmpty.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcEval.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcFixpoint.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcFixpoint.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcIdentity.cpp
@@ -66,6 +71,8 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcPolygon.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcProj.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcProj.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcQInter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcQInter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcSegment.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcSegment.h
     ${CMAKE_CURRENT_SOURCE_DIR}/contractors/codac2_CtcWrapper.h
@@ -76,6 +83,8 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Domain.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/codac2_Wrapper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_checks.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_mapping.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_utils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_utils.h
@@ -90,6 +99,10 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_Paving.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_PavingNode.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/paving/codac2_Subpaving.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/zonotope/codac2_Parallelepiped.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/zonotope/codac2_Parallelepiped.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/zonotope/codac2_Zonotope.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/zonotope/codac2_Zonotope.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_Slice.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_SliceBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_SliceBase.h
@@ -98,9 +111,11 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_SlicedTubeBase.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_TDomain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_TDomain.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_TimePropag.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_TSlice.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_TSlice.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_TubeBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_Tube_operator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/domains/tube/codac2_tube_cart_prod.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/codac2_ExprBase.cpp
@@ -109,6 +124,7 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/codac2_FunctionBase.h
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/codac2_VarBase.h
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic/codac2_analytic_constants.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic/codac2_analytic_constants_impl.h
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic/codac2_analytic_variables.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic/codac2_analytic_variables.h
     ${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic/codac2_AnalyticExpr.h
@@ -208,12 +224,21 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/paver/codac2_pave.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/paver/codac2_pave.h
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/peibos/codac2_peibos_tools.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/peibos/codac2_peibos_tools.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/peibos/codac2_peibos.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/peibos/codac2_peibos.h
+
     ${CMAKE_CURRENT_SOURCE_DIR}/proj/codac2_ProjBase.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/proj/codac2_ProjBase.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/proj/codac2_qinter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/proj/codac2_qinter.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_Sep.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepAction.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepAction.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepCartPolar.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepCartPolar.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepCartProd.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepCartProd.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepChi.cpp
@@ -233,6 +258,8 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepPolygon.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepProj.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepProj.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepQInter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepQInter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepTransform.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepTransform.h
     ${CMAKE_CURRENT_SOURCE_DIR}/separators/codac2_SepUnion.cpp
@@ -250,11 +277,15 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_object_file_format.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_RobotSimulator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_RobotSimulator.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_serialize.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_serialization.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_template_tools.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_transformations.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_transformations.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_trunc.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_trunc.h
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/codac2_TypeInfo.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/ibex/codac2_ibex.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/tools/ibex/codac2_ibex_impl.h
 
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_AnalyticTraj.h
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_SampledTraj.h
@@ -264,41 +295,33 @@
     ${CMAKE_CURRENT_SOURCE_DIR}/trajectory/codac2_TrajBase.h
   )
 
+# Getting header files from sources
+foreach(srcfile ${CODAC_CORE_SRC})
+  if(srcfile MATCHES "\\.h$" OR srcfile MATCHES "\\.hpp$")
+    list(APPEND CODAC_CORE_HDR ${srcfile})
+  endif()
+endforeach()
+
 # Make an automatic library - will be static or dynamic based on user setting
+#add_library(codac-core ${CODAC_CORE_SRC} ${CODAC_CORE_HDR})
 add_library(codac-core ${CODAC_CORE_SRC})
 
-# We need this directory, and users of our library will need it too
-#target_include_directories(codac PUBLIC ../include)
+set(_inc_dirs "")
+foreach(_hdr IN LISTS CODAC_CORE_HDR)
+    get_filename_component(_dir "${_hdr}" DIRECTORY)
+    list(APPEND _inc_dirs "${_dir}")
+endforeach()
+# Remove duplicates to keep the include path clean
+list(REMOVE_DUPLICATES _inc_dirs)
+
 # Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
 target_include_directories(codac-core 
 	PUBLIC
-		"$<INSTALL_INTERFACE:include>"
-		"$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
-		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/actions>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/contractors>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/interval>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/interval/eigen>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/paving>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/domains/tube>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/functions>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/functions/analytic>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/functions/set>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/geometry>"
-        #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/graphics>"
-        #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/graphics/ipe>"
-        #"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/graphics/vibes>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/matrices>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/Matrix_addons>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/matrices/eigen/MatrixBase_addons>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/operators>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/paver>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/proj>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/separators>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tools>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/trajectory>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/codac-core>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>"
+        "$<BUILD_INTERFACE:${_inc_dirs}>"
 )
 
 # See https://github.com/friendlyanon/cxx-static-shared-example
@@ -325,18 +348,9 @@ target_compile_features(codac-core PUBLIC cxx_std_20)
 
 
 
-# Getting header files from sources
-
-  foreach(srcfile ${CODAC_CORE_SRC})
-    if(srcfile MATCHES "\\.h$" OR srcfile MATCHES "\\.hpp$")
-      list(APPEND CODAC_CORE_HDR ${srcfile})
-      file(COPY ${srcfile} DESTINATION ${PROJECT_BINARY_DIR}/../../include)
-    endif()
-  endforeach()
-
 # Generating the file codac-core.h
 
-  set(CODAC_CORE_MAIN_HEADER ${PROJECT_BINARY_DIR}/codac-core.h)
+  set(CODAC_CORE_MAIN_HEADER ${CMAKE_CURRENT_BINARY_DIR}/codac-core.h)
   set(CODAC_MAIN_SUBHEADERS ${CODAC_MAIN_SUBHEADERS} "codac-core.h" PARENT_SCOPE)
   file(WRITE ${CODAC_CORE_MAIN_HEADER} "/* This file is generated by CMake */\n\n")
   file(APPEND ${CODAC_CORE_MAIN_HEADER} "#pragma once\n\n")
@@ -346,7 +360,6 @@ target_compile_features(codac-core PUBLIC cxx_std_20)
       file(APPEND ${CODAC_CORE_MAIN_HEADER} "#include <${header_name}>\n")
     endif()
   endforeach()
-  file(COPY ${CODAC_CORE_MAIN_HEADER} DESTINATION ${PROJECT_BINARY_DIR}/../../include)
 
 
 # Install files in system directories

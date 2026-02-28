@@ -116,10 +116,10 @@ target_compile_features(codac-graphics PUBLIC cxx_std_20)
 
 # Install files in system directories
 
-#if (CODAC_INSTALL) # To find how to set the default value of this option...
+if (CODAC_INSTALL)
   install(FILES ${CODAC_GRAPHICS_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics)
   install(FILES ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics)
-#endif()
+endif()
 
 
 # IDEs should put the headers in a nice place

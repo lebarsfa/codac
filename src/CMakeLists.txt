@@ -34,6 +34,6 @@
     file(APPEND ${CODAC_MAIN_HEADER} "#include <${header_name}>\n")
   endforeach()
 
-#if (CODAC_INSTALL) # To find how to set the default value of this option...
+if (CODAC_INSTALL)
   install(FILES ${CODAC_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-#endif()
+endif()

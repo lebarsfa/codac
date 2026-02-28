@@ -31,13 +31,21 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
   endif()
 
-endif()
-
-####################################### TO IMPROVE (BEGINNING) #########################################
-
   if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
   endif()
+
+  if(MSVC)
+    add_compile_options(/W4)
+  else()
+    add_compile_options(-Wall -Wextra -Wpedantic)
+  endif()
+
+endif()
+
+option(CODAC_INSTALL "Generate the install target" ON)
+
+####################################### TO IMPROVE (BEGINNING) #########################################
   
   if(FAST_RELEASE)
     add_compile_definitions(FAST_RELEASE)
@@ -66,12 +74,6 @@ endif()
     message(STATUS "Note: in Release build mode, the option FAST_RELEASE=ON would allow faster computations if enabled.")
   endif()
 
-  if(MSVC)
-    add_compile_options(/W4)
-  else()
-    add_compile_options(-Wall -Wextra -Wpedantic)
-  endif()
-
   # Temporary attempts to fix errors similar to: 
   # _ number of sections exceeded object file format limit.
   # _ out of memory allocating XXX bytes.
@@ -95,7 +97,7 @@ include(FetchContent)
 
 option(ENABLE_FIND_PACKAGE_GAOL "ENABLE_FIND_PACKAGE_GAOL" OFF)
 if(ENABLE_FIND_PACKAGE_GAOL)
-    find_package(gaol QUIET) # Use gaol_DIR or CMAKE_PREFIX_PATH to specify a custom gaol installation path...
+    find_package(gaol 4.2.3.20260215 QUIET) # Use gaol_DIR or CMAKE_PREFIX_PATH to specify a custom gaol installation path...
 endif()
 if(gaol_FOUND)
 	message(STATUS "Found gaol version ${gaol_VERSION} in ${gaol_DIR}")
@@ -145,7 +147,7 @@ endif()
 
   option(WITH_IBEX "Using IBEX" OFF)
   if(WITH_IBEX)
-    find_package(IBEX REQUIRED)
+    find_package(IBEX 2.8.9.20260215 REQUIRED)
     ibex_init_common() # IBEX should have installed this function
     message(STATUS "Found IBEX version ${IBEX_VERSION}")
   endif()
@@ -168,7 +170,7 @@ endif()
     add_subdirectory(python)
   endif()
 
-#if (CODAC_INSTALL) # To find how to set the default value of this option...
+if (CODAC_INSTALL)
     # From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/chapters/install/installing.md
     # and https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
     install(TARGETS codac-core codac-graphics eigen #####################################
@@ -201,4 +203,4 @@ endif()
     export(TARGETS codac-core codac-graphics eigen #####################################
            NAMESPACE codac::
            FILE codacTargets.cmake)
-#endif()
+endif()

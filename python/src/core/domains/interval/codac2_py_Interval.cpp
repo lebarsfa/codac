@@ -15,6 +15,7 @@
 #include <codac2_Interval.h>
 #include "codac2_py_Interval_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py):
 #include "codac2_py_Interval_impl_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py):
+#include "codac2_py_matlab.h"
 
 using namespace std;
 using namespace codac2;
@@ -23,7 +24,7 @@ using namespace pybind11::literals;
 
 py::class_<Interval> export_Interval(py::module& m)
 {
-  py::class_<Interval> exported_interval_class(m, "Interval", INTERVAL_MAIN);
+  py::class_<Interval,std::shared_ptr<Interval>> exported_interval_class(m, "Interval", INTERVAL_MAIN);
   exported_interval_class
   
     .def(py::init<>(),
@@ -87,6 +88,12 @@ py::class_<Interval> export_Interval(py::module& m)
     .def("mig", &Interval::mig,
       DOUBLE_INTERVAL_MIG_CONST)
 
+    .def("smag", &Interval::smag,
+      DOUBLE_INTERVAL_SMAG_CONST)
+
+    .def("smig", &Interval::smig,
+      DOUBLE_INTERVAL_SMIG_CONST)
+
     .def("rand", &Interval::rand,
       DOUBLE_INTERVAL_RAND_CONST)
 
@@ -125,6 +132,12 @@ py::class_<Interval> export_Interval(py::module& m)
 
     .def("is_degenerated", &Interval::is_degenerated,
       BOOL_INTERVAL_IS_DEGENERATED_CONST)
+
+    .def("is_integer", &Interval::is_integer,
+      BOOL_INTERVAL_IS_INTEGER_CONST)
+
+    .def("has_integer_bounds", &Interval::has_integer_bounds,
+      BOOL_INTERVAL_HAS_INTEGER_BOUNDS_CONST)
 
     .def("intersects", &Interval::intersects,
       BOOL_INTERVAL_INTERSECTS_CONST_INTERVAL_REF_CONST,
@@ -180,24 +193,39 @@ py::class_<Interval> export_Interval(py::module& m)
     .def("diff", &Interval::diff,
       VECTOR_INTERVAL_INTERVAL_DIFF_CONST_INTERVAL_REF_BOOL_CONST,
       "y"_a, "compactness"_a = true)
+  ;
+
+  if constexpr(!FOR_MATLAB)
+  {
+    exported_interval_class
 
     .def(py::self |= py::self,
-      INTERVAL_REF_INTERVAL_OPERATOROREQ_CONST_INTERVAL_REF,
-      "x"_a)
-
-    // For MATLAB compatibility
-    .def("self_union", &Interval::operator|=,
-      INTERVAL_REF_INTERVAL_OPERATOROREQ_CONST_INTERVAL_REF,
+      INTERVAL_REF_INTERVAL_OPERATORUNIONEQ_CONST_INTERVAL_REF,
       "x"_a)
 
     .def(py::self &= py::self,
-      INTERVAL_REF_INTERVAL_OPERATORANDEQ_CONST_INTERVAL_REF,
+      INTERVAL_REF_INTERVAL_OPERATORINTEREQ_CONST_INTERVAL_REF,
       "x"_a)
 
+    ;
+  }
+
+  if constexpr(FOR_MATLAB)
+  {
     // For MATLAB compatibility
-    .def("self_inter", &Interval::operator&=,
-      INTERVAL_REF_INTERVAL_OPERATORANDEQ_CONST_INTERVAL_REF,
-      "x"_a)
+    exported_interval_class
+
+      .def("self_union", &Interval::operator|=,
+        INTERVAL_REF_INTERVAL_OPERATORUNIONEQ_CONST_INTERVAL_REF,
+        "x"_a)
+
+      .def("self_inter", &Interval::operator&=,
+        INTERVAL_REF_INTERVAL_OPERATORINTEREQ_CONST_INTERVAL_REF,
+        "x"_a)
+    ;
+  }
+
+  exported_interval_class
 
     .def(py::self += double(),
       INTERVAL_REF_INTERVAL_OPERATORPLUSEQ_DOUBLE,
@@ -267,7 +295,7 @@ py::class_<Interval> export_Interval(py::module& m)
 
   // The following functions are defined in GAOL:
 
-    m.def("previous_float", &codac2::previous_float,
+    m.def("prev_float", &codac2::prev_float,
       "Returns the previous floating point value",
       "x"_a);
 

@@ -143,8 +143,11 @@ You can access key interval properties:
     x.diam      % diameter
     x.mag       % magnitude
     x.mig       % mignitude
+    x.smag      % signed magnitude
+    x.smig      % signed mignitude
     x.size      % dimension (always 1)
 
+Note that these methods are reliable in the sense that they are pessimistic. For instance, ``x.rad()`` returns the radius using outward rounding.
 
 Testing intervals
 -----------------
@@ -154,6 +157,7 @@ Intervals support a wide range of predicates:
 - ``is_empty()``: test if the interval is empty
 - ``is_degenerated()``: test if it’s of the form [a,a]
 - ``is_integer()``: test if it’s an integer singleton
+- ``has_integer_bounds()``: test if the bounds are integers
 - ``is_unbounded()``: test if any bound is infinite
 - ``contains(x)``: test if it contains a real number
 - ``intersects(y)``: test if it intersects with another interval
@@ -161,10 +165,55 @@ Intervals support a wide range of predicates:
 - ``is_strict_subset(y)``, ``is_interior_subset(y)``, *etc.*
 
 
+Advanced operations
+-------------------
+
+.. list-table:: Supported advanced methods for a given interval :math:`[x]`
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Method
+     - Description
+   * - ``inflate(rad)``
+     - Expands the interval by `±rad`
+   * - ``bisect([ratio])``
+     - Splits into two intervals at given ratio (default is 0.49)
+   * - ``complementary()``
+     - Computes complement :math:`\mathbb{R} \setminus [x]`
+   * - ``diff(y)``
+     - Computes set difference :math:`[x] \setminus [y]`
+   * - ``rand()``
+     - Returns a random sample within the interval
+   * - ``init()``
+     - Re-initializes to :math:`[-\infty,\infty]`
+   * - ``init_from_list(l)``
+     - Initializes using the hull of a list of values
+
+
 Interval arithmetic
 -------------------
 
-All standard arithmetic operations are supported, both element-wise and with real numbers.
+Interval analysis is based on the extension of all classical real arithmetic operators.
+Consider two intervals :math:`[x]` and :math:`[y]` and an operator :math:`\diamond\in\left\{+,-,\cdot,/\right\}`. We define :math:`[x]\diamond[y]` as the smallest interval containing all feasible values for :math:`x\diamond y`, assuming that :math:`x\in[x]` and :math:`y\in[y]`:
+
+.. math::
+
+  [x]\diamond[y] = \big[\left\{x\diamond y \mid x\in[x],y\in[y]\right\}\big].
+
+Dealing with closed intervals, most of the operations can rely on their bounds. It is for instance the case of addition, difference, union, *etc.*:
+
+.. math::
+
+  \begin{eqnarray}
+    [x]+[y]&=&\left[x^-+y^-,x^++y^+\right],\\
+    \left[x\right]-\left[y\right]& = &\left[x^--y^+,x^+-y^-\right],\\
+    \left[x\right]\sqcup\left[y\right]& = &\left[\min\left(x^-,y^-\right),\max\left(x^+,y^+\right)\right],\\
+    \left[x\right]\cap\left[y\right]& = &\left[\max\left(x^-,y^-\right),\min\left(x^+,y^+\right)\right] \\ & & \textrm{if} \max\left\{x^-,y^-\right\}\leqslant\min\left\{x^+,y^+\right\}, \varnothing \textrm{ otherwise}.
+  \end{eqnarray}
+
+Note that Codac is built upon a low-level interval library, `GAOL <https://github.com/goualard-f/GAOL>`_, which has been built to provide functionalities for computing arithmetic on intervals, involving basic operations as well as non-linear functions.
+
+All standard arithmetic operations are supported in Codac, both element-wise and with real numbers.
 
 .. tabs::
 
@@ -194,31 +243,6 @@ All standard arithmetic operations are supported, both element-wise and with rea
     z = x / y              % [1, 3]
 
 
-Advanced operations
--------------------
-
-.. list-table:: Supported advanced methods for a given interval :math:`[x]`
-   :widths: 30 70
-   :header-rows: 1
-
-   * - Method
-     - Description
-   * - ``inflate(rad)``
-     - Expands the interval by `±rad`
-   * - ``bisect([ratio])``
-     - Splits into two intervals at given ratio (default is 0.49)
-   * - ``complementary()``
-     - Computes complement :math:`\mathbb{R} \setminus [x]`
-   * - ``diff(y)``
-     - Computes set difference :math:`[x] \setminus [y]`
-   * - ``rand()``
-     - Returns a random sample within the interval
-   * - ``init()``
-     - Re-initializes to [-∞, ∞]
-   * - ``init_from_list(l)``
-     - Initializes using the hull of a list of values
-
-
 Unary and binary functions
 --------------------------
 
@@ -244,10 +268,11 @@ Mathematical functions such as :math:`\sin`, :math:`\cos`, :math:`\exp`, :math:`
 
   .. code-tab:: matlab
 
-    x = Interval.half_pi();
+    x = Interval().half_pi();
     x.self_union(0);        % x = [0, π/2]
     y = sin(x);             % y = [0, 1]
     z = exp(x);             % z = [1, exp(π/2)]
+    w = y.inter(z);         % w = [1, 1]
 
 For a complete list of additional operations, see the page :ref:`sec-functions-analytic-operators`.
 
@@ -267,10 +292,10 @@ In C++, a user-defined literal is provided in C++ to construct an interval direc
 Floating-point adjacency
 ------------------------
 
-The ``previous_float`` and ``next_float`` functions return the floating-point numbers directly adjacent to a given value.
+The ``prev_float`` and ``next_float`` functions return the floating-point numbers directly adjacent to a given value.
 These functions are useful in the context of interval arithmetic to tightly control rounding directions.
 
-.. doxygenfunction:: codac2::previous_float
+.. doxygenfunction:: codac2::prev_float
   :project: codac
 
 .. tabs::
@@ -293,10 +318,10 @@ These functions are useful in the context of interval arithmetic to tightly cont
 
   .. code-tab:: matlab
 
-    x = previous_float(1.0);
+    x = prev_float(1.0);
     % x = 0.9999999999999999
 
 
 .. admonition:: Technical documentation
 
-  See the `C++ API documentation of this class <../../../api/html/classcodac2_1_1_interval.html>`_.
+  See the `C++ API documentation of the Interval class <../../api/html/classcodac2_1_1_interval.html>`_.

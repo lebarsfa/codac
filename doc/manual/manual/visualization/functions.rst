@@ -116,10 +116,10 @@ Geometric shapes
 .. doxygenfunction:: codac2::Figure2D::draw_polygon(const Polygon&, const StyleProperties&)
   :project: codac
 
-.. doxygenfunction:: codac2::Figure2D::draw_parallelepiped(const Vector&, const Matrix&, const StyleProperties&)
+.. doxygenfunction:: codac2::Figure2D::draw_parallelepiped(const Parallelepiped&, const StyleProperties&)
   :project: codac
 
-.. doxygenfunction:: codac2::Figure2D::draw_zonotope(const Vector&, const std::vector<Vector>&, const StyleProperties&)
+.. doxygenfunction:: codac2::Figure2D::draw_zonotope(const Zonotope&, const StyleProperties&)
   :project: codac
 
 .. doxygenfunction:: codac2::Figure2D::draw_pie(const Vector&, const Interval&, const Interval&, const StyleProperties&)
@@ -142,16 +142,22 @@ Trajectories and tubes
 
 Trajectories can be drawn with a ColorMap instead of the classic StyleProperties. This can be done by passing a ColorMap object as the second argument.
 
-.. doxygenfunction:: codac2::Figure2D::draw_trajectory(const SampledTraj<Vector>&, const ColorMap&)
+.. doxygenfunction:: codac2::Figure2D::draw_trajectory(const SampledTraj<Vector>&, const StyleGradientProperties&)
   :project: codac
 
-.. doxygenfunction:: codac2::Figure2D::draw_trajectory(const AnalyticTraj<VectorType>&, const ColorMap&)
+.. doxygenfunction:: codac2::Figure2D::draw_trajectory(const AnalyticTraj<VectorType>&, const StyleGradientProperties&)
   :project: codac
 
-.. doxygenfunction:: codac2::Figure2D::draw_tube(const SlicedTube<IntervalVector>&, const StyleProperties&)
+.. doxygenfunction:: codac2::Figure2D::draw_tube(const SlicedTube<IntervalVector>&, const StyleProperties&, int)
   :project: codac
 
-.. doxygenfunction:: codac2::Figure2D::draw_tube(const SlicedTube<IntervalVector>&, const ColorMap&)
+.. doxygenfunction:: codac2::Figure2D::draw_tube(const SlicedTube<IntervalVector>&, const StyleGradientProperties&, int)
+  :project: codac
+
+.. doxygenfunction:: codac2::Figure2D::plot_tube(const SlicedTube<Interval>&, const StyleProperties&)
+  :project: codac
+
+.. doxygenfunction:: codac2::Figure2D::plot_tube(const SlicedTube<Interval>&, const SlicedTube<Interval>&, const StyleProperties&)
   :project: codac
 
 Vehicles
@@ -166,13 +172,28 @@ Vehicles
 .. doxygenfunction:: codac2::Figure2D::draw_motor_boat(const Vector&, float, const StyleProperties&)
   :project: codac
 
+Miscellaneous
+-------------
+
+.. doxygenfunction:: codac2::Figure2D::draw_text(const std::string&, const Vector&, double, const StyleProperties&)
+  :project: codac
+
+.. doxygenfunction:: codac2::Figure2D::draw_raster(const std::string&, const IntervalVector&, const StyleProperties&)
+  :project: codac
+
 Paving
 ------
 
-.. doxygenfunction:: codac2::Figure2D::draw_paving(const PavingOut&, const StyleProperties&, const StyleProperties&)
+.. doxygenfunction:: codac2::Figure2D::draw_paving(const PavingOut&, const PavingStyle&)
   :project: codac
 
-.. doxygenfunction:: codac2::Figure2D::draw_paving(const PavingInOut&, const StyleProperties&, const StyleProperties&, const StyleProperties&)
+.. doxygenfunction:: codac2::Figure2D::draw_paving(const PavingOut&, const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>&, const PavingStyle&)
+  :project: codac
+
+.. doxygenfunction:: codac2::Figure2D::draw_paving(const PavingInOut&, const PavingStyle&)
+  :project: codac
+
+.. doxygenfunction:: codac2::Figure2D::draw_paving(const PavingInOut&, const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>&, const PavingStyle&)
   :project: codac
 
 .. doxygenfunction:: codac2::Figure2D::draw_subpaving(const Subpaving<P>&, const StyleProperties&)

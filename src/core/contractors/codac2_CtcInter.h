@@ -44,6 +44,11 @@ namespace codac2
         assert_release(all_same_size(c...));
       }
 
+      size_t nb() const
+      {
+        return _ctcs.size();
+      }
+
       template<typename X_> // single type
       void contract_impl(X_& x) const
       {
@@ -62,17 +67,10 @@ namespace codac2
       }
 
       template<typename C>
-        requires std::is_base_of_v<CtcBase<X...>,C>
+        requires IsCtcBaseOrPtr<C,X...>
       CtcInter<X...>& operator&=(const C& c)
       {
-        assert_release(c.size() == this->size());
-        _ctcs.push_object_back(c);
-        return *this;
-      }
-
-      CtcInter<X...>& operator&=(const std::shared_ptr<CtcBase<X...>>& c)
-      {
-        assert_release(c->size() == this->size());
+        assert_release(size_of(c) == this->size());
         _ctcs.push_back(c);
         return *this;
       }
@@ -94,12 +92,30 @@ namespace codac2
     using Ctc = CtcInter<T...>;
   };
 
-  template<typename C1, typename C2>
+  template<typename C1,typename C2>
   typename CtcInterType<typename C1::ContractedTypes>::Ctc operator&(const C1& c1, const C2& c2)
   {
     return { c1, c2 };
   }
 
+  template<typename C1,typename C2>
+  typename CtcInterType<typename C1::ContractedTypes>::Ctc operator&(const std::shared_ptr<C1>& c1, const std::shared_ptr<C2>& c2)
+  {
+    return { c1, c2 };
+  }
+
+  template<typename C1,typename C2>
+  typename CtcInterType<typename C1::ContractedTypes>::Ctc operator&(const std::shared_ptr<C1>& c1, const C2& c2)
+  {
+    return { c1, c2 };
+  }
+
+  template<typename C1,typename C2>
+  typename CtcInterType<typename C1::ContractedTypes>::Ctc operator&(const C1& c1, const std::shared_ptr<C2>& c2)
+  {
+    return { c1, c2 };
+  }
+  
   template<typename C2>
     requires std::is_base_of_v<CtcBase<IntervalVector>,C2>
   inline CtcInter<IntervalVector> operator&(const IntervalVector& c1, const C2& c2)
@@ -115,4 +131,7 @@ namespace codac2
     assert_release(c1.size() == c2.size());
     return CtcInter<IntervalVector>(c1,CtcWrapper(c2));
   }
+
+  // Template deduction guides
+  CtcInter(Index) -> CtcInter<IntervalVector>;
 }

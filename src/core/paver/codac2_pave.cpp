@@ -22,9 +22,14 @@ namespace codac2
 
   PavingOut pave(const IntervalVector& x, const CtcBase<IntervalVector>& c, double eps, bool verbose)
   {
+    double time = 0;
+    return pave(x,c,eps,time,verbose);
+  }
+
+  PavingOut pave(const IntervalVector& x, const CtcBase<IntervalVector>& c, double eps, double& time, bool verbose)
+  {
     assert_release(eps > 0.);
     assert_release(!x.is_empty());
-    assert_release(c.size() >= 2 && "cannot reveal 1d contractors");
     
     clock_t t_start = clock();
     Index n_boundary = 0;
@@ -58,11 +63,12 @@ namespace codac2
         else if(verbose)
           n_boundary++;
       }
-    }    
+    }
+
+    time = (double)(clock()-t_start)/CLOCKS_PER_SEC;
 
     if(verbose)
-      printf("Computation time: %.4fs, %ld boxes\n",
-        (double)(clock()-t_start)/CLOCKS_PER_SEC, n_boundary);
+      printf("Computation time: %.4fs, %ld boxes\n", time, n_boundary);
     return p;
   }
   
@@ -76,7 +82,6 @@ namespace codac2
   {
     assert_release(eps > 0.);
     assert_release(!x.is_empty());
-    assert_release(s.size() >= 2 && "cannot reveal 1d separators");
     
     clock_t t_start = clock();
 

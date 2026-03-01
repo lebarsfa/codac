@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <cmath> // for trunc
+
 // Inline functions
 
 namespace codac2
@@ -132,13 +134,23 @@ namespace codac2
     return gaol::interval::mig();
   }
 
+  inline double Interval::smag() const
+  {
+    return (abs(lb()) > abs(ub())) ? lb() : ub();
+  }
+
+  inline double Interval::smig() const
+  {
+    return gaol::interval::smig();
+  }
+
   inline double Interval::rand() const
   {
     if(is_empty())
       return std::numeric_limits<double>::quiet_NaN();
 
     double a = std::max<double>(next_float(-oo),lb());
-    double b = std::min<double>(previous_float(oo),ub());
+    double b = std::min<double>(prev_float(oo),ub());
     double r = a + (((double)std::rand())/(double)RAND_MAX)*(b-a);
     // The above operation may result in a floating point outside the bounds,
     // due to floating-point errors. Such possible error is corrected below:
@@ -218,6 +230,11 @@ namespace codac2
   inline bool Interval::is_integer() const
   {
     return gaol::interval::is_an_int();
+  }
+
+  inline bool Interval::has_integer_bounds() const
+  {
+    return trunc(lb()) == lb() && trunc(ub()) == ub();
   }
 
   inline bool Interval::intersects(const Interval &x) const
@@ -594,7 +611,7 @@ namespace codac2
     return Interval(x);
   }
 
-  inline double previous_float(double x)
+  inline double prev_float(double x)
   {
     return gaol::previous_float(x);
   }

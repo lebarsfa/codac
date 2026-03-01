@@ -19,7 +19,7 @@ This page provides an overview of the ``AnalyticFunction`` class, its key featur
 
 .. note::
 
-  .. Figure:: CtcInverse_small.png
+  .. figure:: CtcInverse_small.png
     :align: right
   
   For defining a contractor based on an ``AnalyticFunction``, the ``CtcInverse`` class is available.
@@ -188,6 +188,7 @@ Below is an example of a function composition involving matrix calculation for t
       :end-before: [4b-end]
       :dedent: 0
 
+.. _subsec-functions-analytic-class-evaluations:
 
 Evaluations
 -----------

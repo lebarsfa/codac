@@ -16,10 +16,14 @@
 #include "codac2_Figure2DInterface.h"
 #include "codac2_OutputFigure2D.h"
 #include "codac2_Paving.h"
-#include "codac2_ColorMap.h"
+#include "codac2_Parallelepiped.h"
+#include "codac2_Zonotope.h"
+#include "codac2_PavingStyle.h"
 #include "codac2_Ellipsoid.h"
 #include "codac2_Polygon.h"
 #include "codac2_SlicedTube.h"
+#include "codac2_Ctc.h"
+#include "codac2_Sep.h"
 
 #define DEFAULT_FIG_NAME "Codac - default figure"
 
@@ -83,9 +87,15 @@ namespace codac2
        * 
        * \param name Name of the figure
        * \param o Output of the figure, can be VIBes or IPE (or both)
-       * \param set_as_default (optionnal) If true, the figure is set as the default view, default is false
        */
-      Figure2D(const std::string& name, GraphicOutput o, bool set_as_default = false);
+      Figure2D(const std::string& name, GraphicOutput o);
+
+      /**
+       * \brief Returns ``OutputFigure2D`` objects rendering the current figure.
+       * 
+       * \return vector of pointers to the ``OutputFigure2D`` objects
+       */
+      std::vector<std::shared_ptr<OutputFigure2D>> output_figures();
 
       /**
        * \brief Getter for the name of the figure
@@ -287,20 +297,18 @@ namespace codac2
       /**
        * \brief Draws a parallelepiped z+A*[-1,1]^2 on the figure
        * 
-       * \param z Coordinates of the center of the parallelepiped
-       * \param A Matrix of the parallelepiped
+       * \param p Parallelepiped to draw (center and shape matrix)
        * \param style Style of the parallelepiped (edge color and fill color)
        */
-      void draw_parallelepiped(const Vector& z, const Matrix& A, const StyleProperties& style = StyleProperties());
+      void draw_parallelepiped(const Parallelepiped& p, const StyleProperties& style = StyleProperties());
 
       /**
        * \brief Draws a zonotope z+sum_i [-1,1] A_i on the figure
        * 
-       * \param z Coordinates of the center of the zonotope
-       * \param A list of vectors
+       * \param z Zonotope to draw (center and shape matrix)
        * \param style Style of the zonotope (edge color and fill color)
        */
-      void draw_zonotope(const Vector& z, const std::vector<Vector>& A, const StyleProperties& style = StyleProperties());
+      void draw_zonotope(const Zonotope& z, const StyleProperties& style = StyleProperties());
 
       /**
        * \brief Draws a pie on the figure
@@ -350,17 +358,17 @@ namespace codac2
        * \brief Draws a trajectory on the figure with a colormap
        * 
        * \param x SampledTraj to plot
-       * \param cmap Colormap to use
+       * \param style StyleGradientProperties to use
        */
-      void draw_trajectory(const SampledTraj<Vector>& x, const ColorMap& cmap);
+      void draw_trajectory(const SampledTraj<Vector>& x, const StyleGradientProperties& style);
 
       /**
        * \brief Draws a trajectory on the figure with a colormap
        * 
        * \param x AnalyticTraj to plot
-       * \param cmap Colormap to use
+       * \param style StyleGradientProperties to use
        */
-      void draw_trajectory(const AnalyticTraj<VectorType>& x, const ColorMap& cmap);
+      void draw_trajectory(const AnalyticTraj<VectorType>& x, const StyleGradientProperties& style);
 
       /**
        * \brief Plots a trajectory on the figure (x-axis is the time)
@@ -371,28 +379,67 @@ namespace codac2
       void plot_trajectory(const SampledTraj<double>& x, const StyleProperties& style = StyleProperties());
 
       /**
-       * \brief Plots a set of trajectories on the figure (x-axis is the time)
+       * \brief Plots a set of trajectories on the figure (x-axis is the time) with random colors
        * 
        * \param x SampledTraj<Vector> set of trajectories to plot
-       * \param style Style of the trajectory (edge color)
        */
-      void plot_trajectories(const SampledTraj<Vector>& x, const StyleProperties& style = StyleProperties());
+      void plot_trajectories(const SampledTraj<Vector>& x);
 
       /**
-       * \brief Draws a tube of `IntervalVector` on the figure
+       * \brief Plots a set of trajectories on the figure (x-axis is the time) with custom common color
        * 
-       * \param x SlicedTube to draw
-       * \param style Style of the tube
+       * \param x SampledTraj<Vector> set of trajectories to plot
+       * \param style Style shared by all the trajectories (edge color)
        */
-      void draw_tube(const SlicedTube<IntervalVector>& x, const StyleProperties& style);
+      void plot_trajectories(const SampledTraj<Vector>& x, const StyleProperties& style);
 
       /**
-       * \brief Draws a tube of `IntervalVector` on the figure with a colormap
-       * 
-       * \param x SlicedTube to draw
-       * \param cmap Colormap to use
+       * \brief Draws a tube of ``IntervalVector`` on the figure with some ``StyleProperties``.
+       *
+       * This function renders the slices (boxes) that compose a ``SlicedTube``.  
+       * If the number of slices exceeds ``max_nb_slices_to_display``, consecutive 
+       * rectangular slices are merged by groups into convex polygons.  
+       * This reduces visual clutter and improves rendering efficiency while 
+       * preserving the overall shape of the tube.
+       *
+       * \param x SlicedTube to draw.
+       * \param style Style properties used for drawing the tube.
+       * \param max_nb_slices_to_display Maximum number of slices to display before merging them into convex polygons.
        */
-      void draw_tube(const SlicedTube<IntervalVector>& x, const ColorMap& cmap = ColorMap::blue_tube());
+      void draw_tube(const SlicedTube<IntervalVector>& x, const StyleProperties& style, int max_nb_slices_to_display = 5000);
+
+      /**
+       * \brief Draws a tube of ``IntervalVector`` on the figure with a colormap.
+       *
+       * This function renders the slices (boxes) that compose a ``SlicedTube``.  
+       * If the number of slices exceeds ``max_nb_slices_to_display``, consecutive 
+       * rectangular slices are merged by groups into convex polygons.  
+       * This reduces visual clutter and improves rendering efficiency while 
+       * preserving the overall shape of the tube.
+       *
+       * \param x SlicedTube to draw.
+       * \param style StyleGradientProperties to use
+       * \param max_nb_slices_to_display Maximum number of slices to display before merging them into convex polygons.
+       */
+      void draw_tube(const SlicedTube<IntervalVector>& x, const StyleGradientProperties& style = StyleGradientProperties(ColorMap::blue_tube(), "z:-1"), int max_nb_slices_to_display = 5000);
+
+      /**
+       * \brief Plots a tube on the figure (x-axis is the time)
+       * 
+       * \param x SlicedTube to plot
+       * \param style Style of the tube (edge color)
+       */
+      void plot_tube(const SlicedTube<Interval>& x, const StyleProperties& style = StyleProperties());
+
+      /**
+       * \brief Plots a tube on the figure (x-axis is the time), with derivative information: 
+       *        slices are displayed as polygons.
+       * 
+       * \param x SlicedTube to plot
+       * \param v derivative tube of the SlicedTube to plot
+       * \param style Style of the tube (edge color)
+       */
+      void plot_tube(const SlicedTube<Interval>& x, const SlicedTube<Interval>& v, const StyleProperties& style = StyleProperties());
 
       // Robots
 
@@ -423,31 +470,124 @@ namespace codac2
        */
       void draw_motor_boat(const Vector& x, float size, const StyleProperties& style = StyleProperties());
 
+      // Miscellaneous
+
+      /**
+       * \brief Draws text on the figure
+       * 
+       * \param text Text to display
+       * \param ul Position of the top-left corner of the text
+       * \param scale Scaling of the text (VIBes only)
+       * \param style Style of the text (color, layer)
+       */
+      void draw_text(const std::string& text, const Vector& ul, double scale, const StyleProperties& style = StyleProperties());
+
+      /**
+       * \brief Draws a raster on the figure in VIBes only, only the bounding box is drawn in IPE
+       * 
+       * \param filename The name of the file, the path is relative to the VIBes' server folder
+       * \param bbox The bounding box of the raster
+       * \param style Style of the raster (only the layer is used)
+       */
+      void draw_raster(const std::string& filename, const IntervalVector& bbox, const StyleProperties& style = StyleProperties());
+
       // Pavings
 
       /**
-       * \brief Draws a paving on the figure
+       * \brief Draws a previously computed paving (outer approximation) on the figure
        * 
        * \param p PavingOut to draw (result of a paving with contractors)
-       * \param bound_s Style of the boundary of the paving
-       * \param out_s Style of the outside of the paving
+       * \param style ``PavingStyle`` for the drawing
        */
       void draw_paving(const PavingOut& p,
-        const StyleProperties& bound_s = StyleProperties::boundary(),
-        const StyleProperties& out_s = StyleProperties::outside());
+        const PavingStyle& style = PavingStyle::default_style());
 
       /**
-       * \brief Draws a paving on the figure
+       * \brief Draws a previously computed paving (outer approximation) on the figure
+       * 
+       * \param p PavingOut to draw (result of a paving with contractors)
+       * \param draw_box Custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      void draw_paving(const PavingOut& p,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style());
+
+      /**
+       * \brief Draws a previously computed paving (inner/outer approximation) on the figure
        * 
        * \param p PavingInOut to draw (result of a paving with separators)
-       * \param bound_s Style of the boundary of the paving
-       * \param out_s Style of the outside of the paving
-       * \param in_s Style of the inside of the paving
+       * \param style ``PavingStyle`` for the drawing
        */
       void draw_paving(const PavingInOut& p,
-        const StyleProperties& bound_s = StyleProperties::boundary(),
-        const StyleProperties& out_s = StyleProperties::outside(),
-        const StyleProperties& in_s = StyleProperties::inside());
+        const PavingStyle& style = PavingStyle::default_style());
+
+      /**
+       * \brief Draws a previously computed paving (inner/outer approximation) on the figure
+       * 
+       * \param p PavingInOut to draw (result of a paving with separators)
+       * \param draw_box Custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      void draw_paving(const PavingInOut& p,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style());
+
+      /**
+       * \brief Draws a paving from a contractor while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param c Contractor to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename C>
+        requires IsCtcBaseOrPtr<C,IntervalVector>
+      void pave(const IntervalVector& x0, const C& c, double eps,
+        const PavingStyle& style = PavingStyle::default_style());
+
+      /**
+       * \brief Draws a paving from a contractor while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param c Contractor to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param draw_box Optional custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename C>
+        requires IsCtcBaseOrPtr<C,IntervalVector>
+      void pave(const IntervalVector& x0, const C& c, double eps,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style());
+
+      /**
+       * \brief Draws a paving from a separator while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param s Separator to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename S>
+        requires IsSepBaseOrPtr<S>
+      void pave(const IntervalVector& x0, const S& s, double eps,
+        const PavingStyle& style = PavingStyle::default_style());
+
+      /**
+       * \brief Draws a paving from a separator while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param s Separator to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param draw_box Optional custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename S>
+        requires IsSepBaseOrPtr<S>
+      void pave(const IntervalVector& x0, const S& s, double eps,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style());
 
       /**
        * \brief Draws a subpaving on the figure
@@ -680,27 +820,25 @@ namespace codac2
       /**
        * \brief Draws a parallelepiped z+A*[-1,1]^2 on the figure
        * 
-       * \param z Coordinates of the center of the parallelepiped
-       * \param A Matrix of the parallelepiped
+       * \param p Parallelepiped to draw (center and shape matrix)
        * \param style Style of the parallelepiped (edge color and fill color)
        */
-      static void draw_parallelepiped(const Vector& z, const Matrix& A, const StyleProperties& style = StyleProperties())
+      static void draw_parallelepiped(const Parallelepiped& p, const StyleProperties& style = StyleProperties())
       {
         auto_init();
-        selected_fig()->draw_parallelepiped(z,A,style);
+        selected_fig()->draw_parallelepiped(p,style);
       }
 
       /**
        * \brief Draws a zonotope z+sum_i [-1,1] A_i on the figure
        * 
-       * \param z Coordinates of the center of the zonotope
-       * \param A list of vectors
+       * \param z Zonotope to draw (center and shape matrix)
        * \param style Style of the zonotope (edge color and fill color)
        */
-      static void draw_zonotope(const Vector& z, const std::vector<Vector>& A, const StyleProperties& style = StyleProperties())
+      static void draw_zonotope(const Zonotope& z, const StyleProperties& style = StyleProperties())
       {
         auto_init();
-        selected_fig()->draw_zonotope(z,A,style);
+        selected_fig()->draw_zonotope(z,style);
       }
 
       /**
@@ -771,24 +909,24 @@ namespace codac2
        * \brief Draws a trajectory on the figure with a colormap
        * 
        * \param x SampledTraj to draw
-       * \param cmap Colormap to use
+       * \param style StyleGradientProperties to use
        */
-      static void draw_trajectory(const SampledTraj<Vector>& x, const ColorMap& cmap)
+      static void draw_trajectory(const SampledTraj<Vector>& x, const StyleGradientProperties& style)
       {
         auto_init();
-        selected_fig()->draw_trajectory(x,cmap);
+        selected_fig()->draw_trajectory(x,style);
       }
 
       /**
        * \brief Draws a trajectory on the figure with a colormap
        * 
        * \param x AnalyticTraj to draw
-       * \param cmap Colormap to use
+       * \param style StyleGradientProperties to use
        */
-      static void draw_trajectory(const AnalyticTraj<VectorType>& x, const ColorMap& cmap)
+      static void draw_trajectory(const AnalyticTraj<VectorType>& x, const StyleGradientProperties& style)
       {
         auto_init();
-        selected_fig()->draw_trajectory(x,cmap);
+        selected_fig()->draw_trajectory(x,style);
       }
 
       /**
@@ -821,7 +959,7 @@ namespace codac2
        * \param x SlicedTube to draw
        * \param style Style of the tube
        */
-      static void draw_tube(const SlicedTube<IntervalVector>& x, const StyleProperties& style = StyleProperties())
+      static void draw_tube(const SlicedTube<IntervalVector>& x, const StyleProperties& style)
       {
         auto_init();
         selected_fig()->draw_tube(x,style);
@@ -831,12 +969,38 @@ namespace codac2
        * \brief Draws a tube of `IntervalVector` on the figure with a colormap
        * 
        * \param x SlicedTube to draw
-       * \param cmap Colormap to use
+       * \param style StyleGradientProperties to use
        */
-      static void draw_tube(const SlicedTube<IntervalVector>& x, const ColorMap& cmap)
+      static void draw_tube(const SlicedTube<IntervalVector>& x, const StyleGradientProperties& style = StyleGradientProperties(ColorMap::blue_tube(), "z:-1"))
       {
         auto_init();
-        selected_fig()->draw_tube(x,cmap);
+        selected_fig()->draw_tube(x,style);
+      }
+
+      /**
+       * \brief Plots a tube on the figure (x-axis is the time)
+       * 
+       * \param x SlicedTube to plot
+       * \param style Style of the tube (edge color)
+       */
+      static void plot_tube(const SlicedTube<Interval>& x, const StyleProperties& style = StyleProperties())
+      {
+        auto_init();
+        selected_fig()->plot_tube(x,style);
+      }
+
+      /**
+       * \brief Plots a tube on the figure (x-axis is the time), with derivative information: 
+       *        slices are displayed as polygons.
+       * 
+       * \param x SlicedTube to plot
+       * \param v derivative tube of the SlicedTube to plot
+       * \param style Style of the tube (edge color)
+       */
+      static void plot_tube(const SlicedTube<Interval>& x, const SlicedTube<Interval>& v, const StyleProperties& style = StyleProperties())
+      {
+        auto_init();
+        selected_fig()->plot_tube(x,v,style);
       }
 
       // Robots
@@ -880,52 +1044,182 @@ namespace codac2
         selected_fig()->draw_motor_boat(x,size,style);
       }
 
-      // Pavings
+      // Miscellaneous
 
       /**
-       * \brief Draws a paving on the figure
+       * \brief Draws text on the figure
        * 
-       * \param p PavingOut to draw (result of a paving with contractors)
-       * \param boundary_style Style of the boundary of the paving
-       * \param outside_style Style of the outside of the paving
+       * \param text Text to display
+       * \param ul Position of the top-left corner of the text
+       * \param scale Scaling of the text (VIBes only)
+       * \param style Style of the text (edge color, layer)
        */
-      static void draw_paving(const PavingOut& p,
-        const StyleProperties& boundary_style = StyleProperties::boundary(),
-        const StyleProperties& outside_style = StyleProperties::outside())
+      static void draw_text(const std::string& text, const Vector& ul, double scale, const StyleProperties& style = StyleProperties())
       {
-        if(auto_init())
-        {
-          double rx = p.tree()->hull()[0].diam(), ry = p.tree()->hull()[1].diam();
-          _default_fig->set_window_properties({20.,20.}, 
-            rx > ry ? Vector({800.,800.*ry/rx}) : Vector({800.*rx/ry,800.}));
-          _default_fig->set_axes(axis(0,p.tree()->hull()[0]),axis(1,p.tree()->hull()[1]));
-        }
-
-        selected_fig()->draw_paving(p, boundary_style, outside_style);
+        auto_init();
+        selected_fig()->draw_text(text,ul,scale,style);
       }
 
       /**
-       * \brief Draws a paving on the figure
+       * \brief Draws a raster on the figure in VIBes only, only the bounding box is drawn in IPE
        * 
-       * \param p PavingInOut to draw (result of a paving with separators)
-       * \param boundary_style Style of the boundary of the paving
-       * \param outside_style Style of the outside of the paving
-       * \param inside_style Style of the inside of the paving
+       * \param filename The name of the file, the path is relative to the VIBes' server folder
+       * \param bbox The bounding box of the raster
+       * \param style Style of the raster (only the layer is used)
        */
-      static void draw_paving(const PavingInOut& p,
-        const StyleProperties& boundary_style = StyleProperties::boundary(),
-        const StyleProperties& outside_style = StyleProperties::outside(),
-        const StyleProperties& inside_style = StyleProperties::inside())
+      static void draw_raster(const std::string& filename, const IntervalVector& bbox, const StyleProperties& style = StyleProperties())
+      {
+        auto_init();
+        selected_fig()->draw_raster(filename,bbox,style);
+      }
+
+      // Pavings
+
+    protected:
+
+      static void init_axes_paving(const IntervalVector& x)
+      {
+        _default_fig->set_window_properties({100,100}, {800,800});
+        _default_fig->set_axes(axis(0,x[0],"x_1"), axis(1,x[1],"x_2"));
+        _default_fig->auto_scale();
+      }
+
+    public:
+
+      /**
+       * \brief Draws a previously computed paving (outer approximation) on the figure
+       * 
+       * \param p PavingOut to draw (result of a paving with contractors)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      static void draw_paving(const PavingOut& p,
+        const PavingStyle& style = PavingStyle::default_style())
       {
         if(auto_init())
-        {
-          double rx = p.tree()->hull()[0].diam(), ry = p.tree()->hull()[1].diam();
-          _default_fig->set_window_properties({20.,20.}, 
-            rx > ry ? Vector({800.,800.*ry/rx}) : Vector({800.*rx/ry,800.}));
-          _default_fig->set_axes(axis(0,p.tree()->hull()[0]),axis(1,p.tree()->hull()[1]));
-        }
+          init_axes_paving(p.tree()->hull());
+        selected_fig()->draw_paving(p, style);
+      }
 
-        selected_fig()->draw_paving(p, boundary_style, outside_style, inside_style);
+      /**
+       * \brief Draws a previously computed paving (outer approximation) on the figure
+       * 
+       * \param p PavingOut to draw (result of a paving with contractors)
+       * \param draw_box Custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      static void draw_paving(const PavingOut& p,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(p.tree()->hull());
+        selected_fig()->draw_paving(p, draw_box, style);
+      }
+
+      /**
+       * \brief Draws a previously computed paving (inner/outer approximation) on the figure
+       * 
+       * \param p PavingInOut to draw (result of a paving with separators)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      static void draw_paving(const PavingInOut& p,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(p.tree()->hull());
+        selected_fig()->draw_paving(p, style);
+      }
+
+      /**
+       * \brief Draws a previously computed paving (inner/outer approximation) on the figure
+       * 
+       * \param p PavingInOut to draw (result of a paving with separators)
+       * \param draw_box Custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      static void draw_paving(const PavingInOut& p,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(p.tree()->hull());
+        selected_fig()->draw_paving(p, draw_box, style);
+      }
+
+      /**
+       * \brief Draws a paving from a contractor while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param c Contractor to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param style ``PavingStyle`` for the drawing
+       */
+      template<typename C>
+        requires IsCtcBaseOrPtr<C,IntervalVector>
+      static void pave(const IntervalVector& x0, const C& c, double eps,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(x0);
+        selected_fig()->pave(x0, c, eps, style);
+      }
+
+      /**
+       * \brief Draws a paving from a contractor while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param c Contractor to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param draw_box Optional custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename C>
+        requires IsCtcBaseOrPtr<C,IntervalVector>
+      static void pave(const IntervalVector& x0, const C& c, double eps,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(x0);
+        selected_fig()->pave(x0, c, eps, draw_box, style);
+      }
+
+      /**
+       * \brief Draws a paving from a separator while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param s Separator to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename S>
+        requires IsSepBaseOrPtr<S>
+      static void pave(const IntervalVector& x0, const S& s, double eps,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(x0);
+        selected_fig()->pave(x0, s, eps, style);
+      }
+
+      /**
+       * \brief Draws a paving from a separator while it is being computed
+       * 
+       * \param x0 Initial box
+       * \param s Separator to be paved
+       * \param eps Accuracy of the paving algorithm (the undefined boxes will have their max_diam <= eps)
+       * \param draw_box Optional custom drawing function (for instance, if one wants to draw in polar coordinates)
+       * \param style ``PavingStyle`` for the drawing
+       */  
+      template<typename S>
+        requires IsSepBaseOrPtr<S>
+      static void pave(const IntervalVector& x0, const S& s, double eps,
+        const std::function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box,
+        const PavingStyle& style = PavingStyle::default_style())
+      {
+        if(auto_init())
+          init_axes_paving(x0);
+        selected_fig()->pave(x0, s, eps, draw_box, style);
       }
 
       /**
@@ -964,3 +1258,5 @@ namespace codac2
       static std::shared_ptr<Figure2D> _selected_fig;
   };
 }
+
+#include "codac2_Figure2D_pave.h"

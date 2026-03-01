@@ -39,7 +39,7 @@ namespace codac2
       }
 
       CtcInverse(const AnalyticFunction<typename ExprType<Y>::Type>& f, const Y& y, bool with_centered_form = true, bool is_not_in = false)
-        : CtcInverse(f, CtcWrapper<Y>(y), with_centered_form, is_not_in)
+        : CtcInverse(f, CtcWrapper<Y,Y>(y), with_centered_form, is_not_in)
       { }
 
       void contract(X&... x) const
@@ -49,7 +49,7 @@ namespace codac2
 
       void contract_(const Y& y, X&... x) const
       {
-        return contract_(CtcWrapper<Y>(y), x...);
+        return contract_(CtcWrapper<Y,Y>(y), x...);
       }
 
       void contract_(const CtcBase<Y>& ctc_y, X&... x) const
@@ -117,7 +117,7 @@ namespace codac2
         _f.intersect_from_args(v, x...); // updating input values
       }
 
-      const AnalyticFunction<typename ExprType<Y>::Type>& function() const
+      const AnalyticFunction<typename ExprType<Y>::Type>& fnc() const
       {
         return _f;
       }
@@ -142,7 +142,10 @@ namespace codac2
     CtcInverse(const AnalyticFunction<ScalarType>&, std::initializer_list<Y>, bool = true, bool = false) -> 
       CtcInverse<Interval,IntervalVector>;
 
-    CtcInverse(const AnalyticFunction<VectorType>&, const Interval&, bool = true, bool = false) -> 
+    CtcInverse(const AnalyticFunction<ScalarType>&, const Interval&, bool = true, bool = false) -> 
+      CtcInverse<Interval,IntervalVector>;
+
+    CtcInverse(const AnalyticFunction<ScalarType>&, double, bool = true, bool = false) -> 
       CtcInverse<Interval,IntervalVector>;
 
     template<typename C>
@@ -184,7 +187,7 @@ namespace codac2
 
     template<typename OtherDerived>
       requires (OtherDerived::RowsAtCompileTime == -1 && OtherDerived::ColsAtCompileTime == -1)
-    CtcInverse(const AnalyticFunction<VectorType>&, const Eigen::MatrixBase<OtherDerived>&, bool = true, bool = false) -> 
+    CtcInverse(const AnalyticFunction<MatrixType>&, const Eigen::MatrixBase<OtherDerived>&, bool = true, bool = false) -> 
       CtcInverse<IntervalMatrix,IntervalVector>;
 
     template<typename C>

@@ -1,11 +1,11 @@
-Contractors
-===========
+Contractors, separators
+=======================
 
 .. toctree::
 
+  CtcInverse <analytic/ctcinverse>
   CtcDist <geometric/ctcdist>
   CtcPolar <geometric/ctcpolar>
-  CtcInverse <analytic/ctcinverse>
 
 ..   What are contractors? <http://codac.io>
 ..   The Ctc class <http://codac.io>

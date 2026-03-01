@@ -23,15 +23,11 @@ A Debian package is available for the last release |version| of the library:
 
 .. code-block:: bash
 
-  sudo sh -c 'echo "deb [trusted=yes] https://packages.ensta-bretagne.fr/$(if [ -z "$(. /etc/os-release && echo $UBUNTU_CODENAME)" ]; then echo debian/$(. /etc/os-release && echo $VERSION_CODENAME); else echo ubuntu/$(. /etc/os-release && echo $UBUNTU_CODENAME); fi) ./" > /etc/apt/sources.list.d/ensta-bretagne.list'
+  sudo sh -c 'echo "deb [trusted=yes] https://webperso.ensta.fr/packages/$(if [ -z "$(. /etc/os-release && echo $UBUNTU_CODENAME)" ]; then echo debian/$(. /etc/os-release && echo $VERSION_CODENAME); else echo ubuntu/$(. /etc/os-release && echo $UBUNTU_CODENAME); fi) ./" > /etc/apt/sources.list.d/ensta-bretagne.list'
   sudo apt update
   sudo apt install libcodac-dev
 
 Then, check your installation :ref:`with the instructions of this page <sec-start-cpp-project>`.
-
-.. warning::
-
-  | :strike:`URL changed: Please uninstall before.`
 
 .. admonition:: Uninstall Codac
 
@@ -42,8 +38,6 @@ Then, check your installation :ref:`with the instructions of this page <sec-star
     sudo apt remove libcodac-dev libibex-dev
     sudo rm -f /etc/apt/sources.list.d/ensta-bretagne.list
     sudo apt update
-
-  :strike:`Note also that ``libeigen3-dev`` ` :strike:`might have been installed as a dependency of Codac but might be also used by other software. You might want to keep it.`
 
 .. admonition:: Standalone archives
 
@@ -113,8 +107,6 @@ Steps
 
       # Configure Codac before installation
       cd $HOME/codac
-      # Get automatically pybind11 and eigen submodules:
-      git submodule init ; git submodule update 
       mkdir build ; cd build
       cmake -DCMAKE_INSTALL_PREFIX=$HOME/codac/build_install -DCMAKE_PREFIX_PATH=$HOME/ibex-lib/build_install -DCMAKE_BUILD_TYPE=Release ..
 

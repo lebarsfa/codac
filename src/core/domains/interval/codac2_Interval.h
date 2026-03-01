@@ -211,6 +211,25 @@ namespace codac2
       double mig() const;
 
       /**
+       * \brief Returns the signed magnitude of this 
+       * i.e. lower bound if |lower bound|>|upper bound|, upper bound otherwise.
+       * 
+       * \return the signed magnitude of the interval
+       */
+      double smag() const;
+
+      /**
+       * \brief Returns the signed mignitude of this 
+       * 
+       * lower bound if lower_bound > 0,
+       * upper bound if upper_bound < 0,
+       * 0 otherwise.
+       * 
+       * \return the signed mignitude of the interval
+       */
+      double smig() const;
+
+      /**
        * \brief Returns a random value inside the interval
        *
        * \note The seed of the pseudo-random number generator is 
@@ -313,6 +332,13 @@ namespace codac2
        * \return true if this is an integer singleton
        */
       bool is_integer() const;
+
+      /**
+       * \brief Checks whether the interval has integer lower and upper bounds.
+       *
+       * \return ``true`` if this has integer lower and upper bounds; ``false`` otherwise.
+       */
+      bool has_integer_bounds() const;
 
       /**
        * \brief Tests if this and x intersect
@@ -442,7 +468,7 @@ namespace codac2
       std::vector<Interval> complementary(bool compactness = true) const;
 
       /**
-       * \brief Computes the result of \f$[x]\[y]\f$
+       * \brief Computes the result of \f$[x]\backslash[y]\f$
        * 
        * \param y interval to remove from this
        * \param compactness optional boolean to obtain or not disjoint intervals
@@ -705,7 +731,7 @@ namespace codac2
    * \param x The input double value.
    * \return The previous representable double value before x.
    */
-  double previous_float(double x);
+  double prev_float(double x);
 
   /**
    * \brief Returns the next representable double-precision floating-point value after x.
@@ -713,7 +739,7 @@ namespace codac2
    * This function computes the smallest double value that is strictly greater than the input value x,
    * effectively moving one step up in the floating-point representation.
    * 
-   * \see For obtaining the previous representable double value less than x, use ``previous_float()``.
+   * \see For obtaining the previous representable double value less than x, use ``prev_float()``.
    *
    * \param x The input double value.
    * \return The next representable double value after x.

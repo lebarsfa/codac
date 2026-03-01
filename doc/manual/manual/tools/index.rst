@@ -4,5 +4,8 @@ Tools
 =====
 
 .. toctree::
-
-   registration.rst
+  :maxdepth: 1
+   
+  serialization.rst
+  registration.rst
+  octasym.rst

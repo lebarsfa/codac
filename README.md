@@ -2,14 +2,14 @@
 
 See the official website: http://codac.io/v2
 
-Codac (Catalog Of Domains And Contractors) is a C++/Python/Matlab library providing tools for constraint programming over reals, trajectories and sets.
-It has many applications in parameter estimation, guaranteed integration, robot localization, and provides reliable outputs.
+Codac (Catalog Of Domains And Contractors) is a C++/Python/Matlab library providing tools for interval computations and constraint programming over real numbers, trajectories and sets.
+It has numerous applications in parameter estimation, guaranteed integration, robot localization, and provides reliable outputs.
 
-The toolbox allows to approximate feasible solutions of non-linear and/or differential systems. Since the solution of these complex systems cannot generally be calculated exactly, Codac uses numerical analysis to compute the bounds of sets of feasible solutions. The assets are **guarantee** (computations are guaranteed to never lose solutions, due to the rigorous interval arithmetic) and thus **exhaustiveness** (if multiple values are possible, all of them are characterized).
+The toolbox allows to approximate feasible solutions of non-linear and/or differential systems. Since the solution of these complex systems cannot generally be calculated exactly, Codac uses numerical analysis to compute bounds on the sets of feasible solutions. The assets are **guarantee** (ensuring that no solutions are lost thanks to rigorous interval arithmetic) and thus **exhaustiveness** (capturing all possible values when multiple solutions exist).
 
-Codac can thus be used to establish numerical proofs, or to approximate solutions of complex systems mixing variables of different natures such as reals, vectors, trajectories, uncertain sets, graphs, *etc.* Most developers of the library are motivated by mobile robotics problems for which Codac offers new perspectives.
+Codac can therefore be used to establish numerical proofs or approximate solutions for complex systems involving variables of various types, such as real numbers, vectors, trajectories, uncertain sets, graphs, *etc.* Most of the library's developers are motivated by challenges in mobile robotics, where Codac offers new perspectives.
 
-Recent advances in interval methods have been done by the community, and the Codac library gathers a part of related state-of-the-art implementations with the objective to make them easy to combine.
+Recent advances in interval methods have been made by the community, and the Codac library brings together some of the corresponding state-of-the-art implementations, with the goal of making them easy to combine.
 
 ## Short example: solving an equation
 
@@ -35,7 +35,7 @@ f = AnalyticFunction([x], [
 ])
 
 ctc = CtcInverse(f, [0,0])
-draw_while_paving([[0,2],[2,4],[0,10]], ctc, 0.004)
+DefaultFigure.pave([[0,2],[2,4],[0,10]], ctc, 0.004)
 ```
 
 The result is a set of non-overlapping boxes containing the set of feasible solutions. The following figure shows a projection of the computed set.
@@ -59,7 +59,7 @@ $$
 x = VectorVar(2)
 f = AnalyticFunction([x], x[0]*cos(x[0]-x[1])+x[1])
 sep = SepInverse(f, [-oo,0])
-draw_while_paving([[-10,10],[-10,10]], sep, 0.004)
+DefaultFigure.pave([[-10,10],[-10,10]], sep, 0.004)
 ```
 
 <img src="./doc/manual/manual/example_ineq.png" width="400px" />
@@ -74,6 +74,7 @@ This list is in alphabetical order by surname.
 - Auguste Bourgois
 - [Cyril Bouvier](http://www.lirmm.fr/~bouvier/index.en.html)
 - [Quentin Brateau](https://teusner.github.io)
+- [Clément Carbonnel](https://www.lirmm.fr/~ccarbonnel/)
 - Gilles Chabert
 - [Julien Damers](http://damers.org)
 - Benoît Desrochers

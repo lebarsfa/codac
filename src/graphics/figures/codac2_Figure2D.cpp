@@ -22,18 +22,21 @@ using namespace codac2;
 shared_ptr<Figure2D> DefaultFigure::_default_fig = nullptr;
 shared_ptr<Figure2D> DefaultFigure::_selected_fig = DefaultFigure::_default_fig;
 
-Figure2D::Figure2D(const std::string& name, GraphicOutput o, bool set_as_default_)
+Figure2D::Figure2D(const string& name, GraphicOutput o)
   : _name(name)
 {
   if(o & GraphicOutput::VIBES)
-    _output_figures.push_back(std::make_shared<Figure2D_VIBes>(*this));
+    _output_figures.push_back(make_shared<Figure2D_VIBes>(*this));
   if(o & GraphicOutput::IPE)
-    _output_figures.push_back(std::make_shared<Figure2D_IPE>(*this));
-  if(set_as_default_)
-    set_as_default();
+    _output_figures.push_back(make_shared<Figure2D_IPE>(*this));
 }
 
-const std::string& Figure2D::name() const
+vector<shared_ptr<OutputFigure2D>> Figure2D::output_figures()
+{
+  return _output_figures;
+}
+
+const string& Figure2D::name() const
 {
   return _name;
 }
@@ -43,7 +46,7 @@ Index Figure2D::size() const
   return _axes.size();
 }
 
-const std::vector<FigureAxis>& Figure2D::axes() const
+const vector<FigureAxis>& Figure2D::axes() const
 {
   return _axes;
 }
@@ -51,6 +54,7 @@ const std::vector<FigureAxis>& Figure2D::axes() const
 Figure2D& Figure2D::set_axes(const FigureAxis& axis1, const FigureAxis& axis2)
 {
   _axes = { axis1, axis2 };
+  assert_release(axis1.dim_id != axis2.dim_id);
   for(const auto& output_fig : _output_figures)
     output_fig->update_axes();
   return *this;
@@ -149,7 +153,7 @@ void Figure2D::draw_box(const IntervalVector& x, const StyleProperties& style)
       if(x.max_diam() == 0.)
         output_fig->draw_point({x[0].lb(),x[1].lb()}, style);
       else
-        output_fig->draw_box(x,style);
+        output_fig->draw_box(x & IntervalVector::constant(x.size(),{-9e10,9e10}),style);
     }
 }
 
@@ -215,10 +219,8 @@ void Figure2D::draw_polyline(const vector<Vector>& x, float tip_length, const St
 
 void Figure2D::draw_polygon(const Polygon& x, const StyleProperties& style)
 {
-  assert_release(x.size() > 1);
-
   vector<Vector> w;
-  for(const auto& xi : x.sorted_vertices())
+  for(const auto& xi : x.vertices())
   {
     assert_release(this->size() <= xi.size());
     if(!xi.is_degenerated())
@@ -230,10 +232,11 @@ void Figure2D::draw_polygon(const Polygon& x, const StyleProperties& style)
     output_fig->draw_polygon(w,style);
 }
 
-void Figure2D::draw_zonotope(const Vector& z, const std::vector<Vector>& A, const StyleProperties& style)
+void Figure2D::draw_zonotope(const Zonotope& z, const StyleProperties& style)
 {
-   std::map<double,Vector> sides;
-   for (auto &u : A) {
+   map<double,Vector> sides;
+   for (int i=0; i < z.A.cols(); i++) {
+       auto u = z.A.col(i);
        assert_release(u.size()==2);
        if (u==Vector::zero(2)) continue;
        double theta = std::atan2(u[1],u[0]);
@@ -245,19 +248,19 @@ void Figure2D::draw_zonotope(const Vector& z, const std::vector<Vector>& A, cons
            (try_insert.first)->second += v;
        }
    }
-   std::vector<Vector> vertices;
-   Vector point=z;
+   vector<Vector> vertices;
+   Vector point=z.z;
    // Start from v[1] maximum (and v[0] min for horizontal side)
-   for (const auto &a : sides) {
+   for (const auto& a : sides) {
        point+=a.second;
    }
    // Turn anticlockwise : first half
-   for (const auto &a : sides) {
+   for (const auto& a : sides) {
        vertices.push_back(point);
        point-=2*a.second;
    }
    // Turn anticlockwise : second half
-   for (const auto &a : sides) {
+   for (const auto& a : sides) {
        vertices.push_back(point);
        point+=2*a.second;
    }
@@ -266,16 +269,16 @@ void Figure2D::draw_zonotope(const Vector& z, const std::vector<Vector>& A, cons
 }
 
 
-void Figure2D::draw_parallelepiped(const Vector& z, const Matrix& A, const StyleProperties& style)
+void Figure2D::draw_parallelepiped(const Parallelepiped& p, const StyleProperties& style)
 {
-  assert_release(A.is_squared() && A.rows() == z.size());
-  assert_release(z.size() == 2);
+  assert_release(p.A.is_squared() && p.A.rows() == p.z.size());
+  assert_release(p.z.size() == 2);
 
-  auto a1 = A.col(0), a2 = A.col(1);
+  auto a1 = p.A.col(0), a2 = p.A.col(1);
 
   draw_polygon(vector<Vector>({
-      Vector(z+a1+a2), Vector(z-a1+a2),
-      Vector(z-a1-a2), Vector(z+a1-a2)
+      Vector(p.z+a1+a2), Vector(p.z-a1+a2),
+      Vector(p.z-a1-a2), Vector(p.z+a1-a2)
     }), style);
 }
 
@@ -293,7 +296,7 @@ void Figure2D::draw_pie(const Vector& c, const Interval& r, const Interval& thet
 
   Interval r_(r);
   if(r.is_unbounded())
-    r_ &= Interval(0,previous_float(oo));
+    r_ &= Interval(0,prev_float(oo));
 
   for(const auto& output_fig : _output_figures)
     output_fig->draw_pie(c,r_,theta_,style);
@@ -308,7 +311,7 @@ void Figure2D::draw_ellipse(const Vector& c, const Vector& ab, double theta, con
     output_fig->draw_ellipse(c,ab,theta,style);
 }
 
-void Figure2D::draw_ellipsoid(const Ellipsoid &e, const StyleProperties &style)
+void Figure2D::draw_ellipsoid(const Ellipsoid& e, const StyleProperties& style)
 {
   // Author: Morgan Louédec
   assert_release(this->size() <= e.size());
@@ -344,13 +347,30 @@ void Figure2D::draw_trajectory(const SampledTraj<Vector>& x, const StyleProperti
 {
   assert_release(this->size() <= x.size());
 
-  std::vector<Vector> values;
+  vector<Vector> values;
+
+  auto display_and_clear = [&]() {
+
+    if(values.size() > 1)
+      draw_polyline(values,style);
+
+    else if(values.size() == 1)
+      draw_point(values[0],style);
+
+    values.clear();
+  };
+
   for(const auto& [ti,xi] : x)
     if(_tdomain.contains(ti))
-      values.push_back(xi);
+    {
+      if(!xi.is_nan())
+        values.push_back(xi);
 
-  if(values.size() > 1)
-    draw_polyline(values,style);
+      else
+        display_and_clear();
+    }
+
+  display_and_clear();
 }
 
 void Figure2D::draw_trajectory(const AnalyticTraj<VectorType>& x, const StyleProperties& style)
@@ -358,41 +378,63 @@ void Figure2D::draw_trajectory(const AnalyticTraj<VectorType>& x, const StylePro
   draw_trajectory(x.sampled(x.tdomain().diam()/1e4), style);
 }
 
-void Figure2D::draw_trajectory(const SampledTraj<Vector>& x, const ColorMap& cmap)
+void Figure2D::draw_trajectory(const SampledTraj<Vector>& x, const StyleGradientProperties& style)
 {
   assert_release(this->size() <= x.size());
 
   double range = x.tdomain().diam();
 
-  for(auto it = x.begin(); std::next(it) != x.end(); ++it)
+  for(auto it = x.begin(); next(it) != x.end(); ++it)
     if(_tdomain.contains(it->first))
       draw_polyline(
-        { it->second, std::next(it)->second },
-        cmap.color((it->first - x.begin()->first) / range));
+        { it->second, next(it)->second },
+        {style.cmap.color((it->first - x.begin()->first) / range), style.layer, style.line_style, to_string(style.line_width)});
 }
 
-void Figure2D::draw_trajectory(const AnalyticTraj<VectorType>& x, const ColorMap& cmap)
+void Figure2D::draw_trajectory(const AnalyticTraj<VectorType>& x, const StyleGradientProperties& style)
 {
-  draw_trajectory(x.sampled(x.tdomain().diam()/1e4), cmap);
+  draw_trajectory(x.sampled(x.tdomain().diam()/1e4), style);
 }
 
 void Figure2D::plot_trajectory(const SampledTraj<double>& x, const StyleProperties& style)
 {
-  std::vector<Vector> values;
+  _axes[0].limits = x.tdomain();
+  if(_axes[1].limits == Interval(0,1))
+    _axes[1].limits.set_empty();
+  _axes[1].limits |= x.codomain();
+  for(const auto& output_fig : _output_figures)
+    output_fig->update_axes();
+
+  vector<Vector> values;
+
+  auto display_and_clear = [&]() {
+
+    if(values.size() > 1)
+      draw_polyline(values,style);
+
+    else if(values.size() == 1)
+      draw_point(values[0],style);
+
+    values.clear();
+  };
+
   for(const auto& [ti,xi] : x)
     if(_tdomain.contains(ti))
-      values.push_back({ti,xi});
+    {
+      if(!isnan(xi))
+        values.push_back({ti,xi});
 
-  if(values.size() > 1)
-  {
-    _axes[0].limits = x.tdomain();
-    _axes[1].limits = x.codomain();
+      else
+        display_and_clear();
+    }
 
-    for(const auto& output_fig : _output_figures)
-      output_fig->update_axes();
+  display_and_clear();
+}
 
-    draw_polyline(values,style);
-  }
+void Figure2D::plot_trajectories(const SampledTraj<Vector>& x)
+{
+  for(const auto& xi : as_scalar_trajs(x))
+    plot_trajectory(xi,Color::random());
 }
 
 void Figure2D::plot_trajectories(const SampledTraj<Vector>& x, const StyleProperties& style)
@@ -401,20 +443,98 @@ void Figure2D::plot_trajectories(const SampledTraj<Vector>& x, const StyleProper
     plot_trajectory(xi,style);
 }
 
-void Figure2D::draw_tube(const SlicedTube<IntervalVector>& x, const StyleProperties& style)
+template<typename Func>
+void draw_tube_common(Figure2D& fig, const SlicedTube<IntervalVector>& x, int max_nb_slices_to_display, const Func& slice_color)
 {
-  for(auto it = x.rbegin(); it != x.rend(); ++it)
-    draw_box(it->codomain(),style);
+  const int n = x.nb_slices();
+  auto tube_t0tf = x.tdomain()->t0_tf();
+
+  if(n < max_nb_slices_to_display)
+    for(auto it = x.tdomain()->rbegin(); it != x.tdomain()->rend(); ++it)
+    {
+      auto c = slice_color(tube_t0tf,it);
+      fig.draw_box(x.slice(it)->codomain(), slice_color(tube_t0tf,it));
+    }
+      
+  else
+  {
+    int group_size = std::max(1, (int)((1.*n)/max_nb_slices_to_display));
+
+    for(auto it = x.tdomain()->rbegin() ; it != x.tdomain()->rend(); )
+    {
+      auto c = slice_color(tube_t0tf,it);
+      ConvexPolygon p(x.slice(it)->codomain());
+      it++;
+
+      int j;
+      for(j = 0; j < group_size-1 && it != x.tdomain()->rend(); j++,it++)
+        p |= ConvexPolygon(x.slice(it)->codomain());
+      fig.draw_polygon(p, c);
+      if(j != 0)
+        it--;
+    }
+  }
 }
 
-void Figure2D::draw_tube(const SlicedTube<IntervalVector>& x, const ColorMap& cmap)
+void Figure2D::draw_tube(const SlicedTube<IntervalVector>& x, const StyleProperties& style, int max_nb_slices_to_display)
 {
-  auto tube_t0tf = x.tdomain()->t0_tf();
-  for(auto it = x.rbegin(); it != x.rend(); ++it)
+  draw_tube_common(*this, x, max_nb_slices_to_display,
+    [&style]([[maybe_unused]] const Interval& tube_t0tf, [[maybe_unused]] std::list<TSlice>::reverse_iterator it) {
+      return style;
+    });
+}
+
+void Figure2D::draw_tube(const SlicedTube<IntervalVector>& x, const StyleGradientProperties& style, int max_nb_slices_to_display)
+{
+  draw_tube_common(*this, x, max_nb_slices_to_display,
+    [&style](const Interval& tube_t0tf, std::list<TSlice>::reverse_iterator it) {
+      auto c = style.cmap.color((it->mid()-tube_t0tf.lb())/tube_t0tf.diam());
+      return StyleProperties({c,c}, style.layer, style.line_style, "w:"+to_string(style.line_width), "z:"+to_string(style.z_value));
+    });
+}
+
+template<typename Func>
+void plot_tube_common(Figure2D& fig, const SlicedTube<Interval>& x, const StyleProperties& style, const Func& apply_draw_slice)
+{
+  fig.set_axes(axis(0,x.tdomain()->t0_tf()), axis(1,x.codomain()));
+  for(const auto& output_fig : fig.output_figures())
+    output_fig->update_axes();
+
+  for(auto it = x.tdomain()->begin() ; it != x.tdomain()->end() ; it++)
   {
-    auto c = cmap.color((it->t0_tf().mid()-tube_t0tf.lb())/tube_t0tf.diam());
-    draw_box(it->codomain(), {c,c});
+    if(!it->is_gate())
+    {
+      auto xi = x.slice(it);
+      apply_draw_slice(*xi,it,style);
+    }
   }
+
+  for(const auto& xi : x)
+    if(xi.is_gate())
+    {
+      Vector g1({xi.t0_tf().lb(),xi.codomain().lb()});
+      Vector g2({xi.t0_tf().lb(),xi.codomain().ub()});
+      fig.draw_point(g1, style.stroke_color);
+      fig.draw_point(g2, style.stroke_color);
+      fig.draw_line(Segment(g1,g2), StyleProperties(style.stroke_color));
+    }
+}
+
+void Figure2D::plot_tube(const SlicedTube<Interval>& x, const StyleProperties& style)
+{
+  plot_tube_common(*this, x, style,
+    [this](const Slice<Interval>& xi, [[maybe_unused]] TDomain::iterator it, const StyleProperties& style) {
+      this->draw_box(cart_prod(xi.t0_tf(),xi.codomain()), style);
+    });
+}
+
+void Figure2D::plot_tube(const SlicedTube<Interval>& x, const SlicedTube<Interval>& v, const StyleProperties& style)
+{
+  plot_tube_common(*this, x, style,
+    [this,&v](const Slice<Interval>& xi, TDomain::iterator it, const StyleProperties& style) {
+      this->draw_box(cart_prod(xi.t0_tf(),xi.codomain()), Color::light_gray());
+      this->draw_polygon(xi.polygon_slice(*v.slice(it)), style);
+    });
 }
 
 void Figure2D::draw_tank(const Vector& x, float size, const StyleProperties& style)
@@ -453,38 +573,66 @@ void Figure2D::draw_motor_boat(const Vector& x, float size, const StylePropertie
   }
 }
 
-void Figure2D::draw_paving(const PavingOut& p,
-  const StyleProperties& boundary_style,const StyleProperties& outside_style)
+void Figure2D::draw_text(const std::string& text, const Vector& p, double scale, const StyleProperties& style)
 {
-    p.tree()->left()->visit([&]
-      (std::shared_ptr<const PavingOut_Node> n)
-      {
-        const IntervalVector& outer = get<0>(n->boxes());
+  assert_release(p.size() == 2);
 
-        if(n->top() == p.tree())
-          draw_box(get<0>(n->top()->boxes()), outside_style);
-
-        else
-        {
-          auto b = get<0>(n->top()->boxes()).bisect_largest();
-          IntervalVector hull = n->top()->left() == n ? b.first : b.second;
-
-          for(const auto& bi : hull.diff(outer))
-            draw_box(bi, outside_style);
-        }
-
-        if(n->is_leaf())
-          draw_box(outer, boundary_style);
-
-        return true;
-      });
+  for(const auto& output_fig : _output_figures)
+    output_fig->draw_text(text,p,scale,style);
 }
 
-void Figure2D::draw_paving(const PavingInOut& p, const StyleProperties& boundary_style,
-  const StyleProperties& outside_style, const StyleProperties& inside_style)
+void Figure2D::draw_raster(const std::string& filename, const IntervalVector& bbox, const StyleProperties& style)
+{
+  assert_release(bbox.size() == 2);
+
+  for(const auto& output_fig : _output_figures)
+    output_fig->draw_raster(filename,bbox,style);
+}
+
+void Figure2D::draw_paving(const PavingOut& p, const PavingStyle& style)
+{
+  draw_paving(p, cartesian_drawing(), style);
+}
+
+void Figure2D::draw_paving(const PavingOut& p,
+  const function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box_,
+  const PavingStyle& style)
+{
+  p.tree()->left()->visit([&]
+    (shared_ptr<const PavingOut_Node> n)
+    {
+      const IntervalVector& outer = get<0>(n->boxes());
+
+      if(n->top() == p.tree())
+        draw_box_(*this, get<0>(n->top()->boxes()), style.outside);
+
+      else
+      {
+        auto b = get<0>(n->top()->boxes()).bisect_largest();
+        IntervalVector hull = n->top()->left() == n ? b.first : b.second;
+
+        for(const auto& bi : hull.diff(outer))
+          draw_box_(*this, bi, style.outside);
+      }
+
+      if(n->is_leaf())
+        draw_box_(*this, outer, style.boundary);
+
+      return true;
+    });
+}
+
+void Figure2D::draw_paving(const PavingInOut& p, const PavingStyle& style)
+{
+  draw_paving(p, cartesian_drawing(), style);
+}
+
+void Figure2D::draw_paving(const PavingInOut& p,
+  const function<void(Figure2D&,const IntervalVector&,const StyleProperties&)>& draw_box_,
+  const PavingStyle& style)
 {
   p.tree()->visit([&]
-    (std::shared_ptr<const PavingInOut_Node> n)
+    (shared_ptr<const PavingInOut_Node> n)
     {
       const IntervalVector& outer = get<0>(n->boxes());
       const IntervalVector& inner = get<1>(n->boxes());
@@ -492,13 +640,13 @@ void Figure2D::draw_paving(const PavingInOut& p, const StyleProperties& boundary
       IntervalVector hull = inner | outer;
 
       for(const auto& bi : hull.diff(inner))
-        draw_box(bi, inside_style);
+        draw_box_(*this, bi, style.inside);
 
       for(const auto& bi : hull.diff(outer))
-        draw_box(bi, outside_style);
+        draw_box_(*this, bi, style.outside);
 
       if(n->is_leaf())
-          draw_box(inner & outer, boundary_style);
+          draw_box_(*this, inner & outer, style.boundary);
 
       return true;
     });

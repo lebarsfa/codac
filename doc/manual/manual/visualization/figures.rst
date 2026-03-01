@@ -55,7 +55,7 @@ DefaultFigure (see :ref:`subsec-graphics-2d-figures-defaultfigure`).
 DefaultFigure
 -------------
 
-A DefaultFigure using only VIBes as graphical output is available. This figure is the one used by the function `draw_while_paving` by default. 
+A DefaultFigure using only VIBes as graphical output is available.
 Any Figure2D object can be used as DefaultFigure with the set method:
 
 .. tabs::
@@ -70,23 +70,11 @@ Any Figure2D object can be used as DefaultFigure with the set method:
   .. code-tab:: c++
 
     std::shared_ptr<codac2::Figure2D> fig = std::make_shared<Figure2D>("My Figure",GraphicOutput::VIBES|GraphicOutput::IPE);
-    fig->is_default() // is false
+    fig->is_default(); // is false
     DefaultFigure::set(fig);
-    fig->is_default() // is true
+    fig->is_default(); // is true
 
 Note that in C++ the figure must be a shared pointer in order to be passed to the `set` method.
-
-Equivalently, a Figure2D can be used as DefaultFigure by setting the flag `set_as_default` to true in the constructor:
-
-.. tabs::
-
-  .. code-tab:: py
-
-    fig = Figure2D("My figure", GraphicOutput.VIBES | GraphicOutput.IPE, True)
-
-  .. code-tab:: c++
-
-    Figure2D fig ("My Figure",GraphicOutput::VIBES|GraphicOutput::IPE,true);
 
 
 .. _subsec-graphics-2d-figures-figure-properties:

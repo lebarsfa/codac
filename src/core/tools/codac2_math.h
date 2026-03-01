@@ -30,9 +30,11 @@ namespace codac2
 
   constexpr double PI = std::numbers::pi; // Need C++20
 
-  inline int sign(double x)
+  template<typename T>
+  requires std::is_arithmetic_v<T>
+  inline constexpr int sign(T x)
   {
-    return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
+    return (x > T(0)) - (x < T(0));
   }
 
   inline int integer(double x)
@@ -48,5 +50,14 @@ namespace codac2
   inline double root(double v, double p)
   {
     return pow(v, 1./p);
+  }
+
+  template<typename T>
+  inline bool is_nan(const T& x)
+  {
+    if constexpr(std::is_arithmetic_v<T>)
+      return std::isnan(x);
+    else
+      return x.is_nan();
   }
 }

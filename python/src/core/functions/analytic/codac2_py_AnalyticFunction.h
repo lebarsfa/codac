@@ -15,6 +15,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 #include <codac2_SampledTraj.h>
+#include <codac2_Parallelepiped.h>
 #include <codac2_AnalyticFunction.h>
 #include <codac2_analytic_variables.h>
 #include "codac2_py_AnalyticFunction_docs.h" // Generated file from Doxygen XML (doxygen2docstring.py)
@@ -77,8 +78,9 @@ using namespace pybind11::literals;
   \
   exported \
   \
-    /* Several cases of scalar inputs */ \
     .def(op_name, [](AnalyticFunction<T>& f) { return f.op(); }, doc) \
+  \
+    /* Several cases of scalar inputs */ \
     .def(op_name, [](AnalyticFunction<T>& f, I x1) { return f.op(x1); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2) { return f.op(x1,x2); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3) { return f.op(x1,x2,x3); }, doc) \
@@ -91,7 +93,6 @@ using namespace pybind11::literals;
     .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5, I x6, I x7, I x8, I x9, I x10) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10); }, doc) \
   \
     /* Several cases of vector inputs */ \
-    .def(op_name, [](AnalyticFunction<T>& f) { return f.op(); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, py::list x1) { return f.op(cast<IntervalVector>(x1)); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, IV x1) { return f.op(x1); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2) { return f.op(x1,x2); }, doc) \
@@ -105,7 +106,6 @@ using namespace pybind11::literals;
     .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5, IV x6, IV x7, IV x8, IV x9, IV x10) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10); }, doc) \
   \
     /* Several cases of matrix inputs */ \
-    .def(op_name, [](AnalyticFunction<T>& f) { return f.op(); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, IM x1) { return f.op(x1); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, IM x1, IM x2) { return f.op(x1,x2); }, doc) \
     .def(op_name, [](AnalyticFunction<T>& f, IM x1, IM x2, IM x3) { return f.op(x1,x2,x3); }, doc) \
@@ -119,9 +119,42 @@ using namespace pybind11::literals;
   \
   ; \
 
+#define bind_parallelepiped_eval(exported, op_name, op, doc) \
+  \
+  exported \
+  \
+    .def(op_name, [](AnalyticFunction<T>& f) { return f.op(); }, doc) \
+  \
+    /* Several cases of scalar inputs */ \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1) { return f.op(x1); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2) { return f.op(x1,x2); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3) { return f.op(x1,x2,x3); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4) { return f.op(x1,x2,x3,x4); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5) { return f.op(x1,x2,x3,x4,x5); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5, I x6) { return f.op(x1,x2,x3,x4,x5,x6); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5, I x6, I x7) { return f.op(x1,x2,x3,x4,x5,x6,x7); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5, I x6, I x7, I x8) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5, I x6, I x7, I x8, I x9) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8,x9); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, I x1, I x2, I x3, I x4, I x5, I x6, I x7, I x8, I x9, I x10) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10); }, doc) \
+  \
+    /* Several cases of vector inputs */ \
+    .def(op_name, [](AnalyticFunction<T>& f, py::list x1) { return f.op(cast<IntervalVector>(x1)); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1) { return f.op(x1); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2) { return f.op(x1,x2); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3) { return f.op(x1,x2,x3); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4) { return f.op(x1,x2,x3,x4); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5) { return f.op(x1,x2,x3,x4,x5); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5, IV x6) { return f.op(x1,x2,x3,x4,x5,x6); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5, IV x6, IV x7) { return f.op(x1,x2,x3,x4,x5,x6,x7); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5, IV x6, IV x7, IV x8) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5, IV x6, IV x7, IV x8, IV x9) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8,x9); }, doc) \
+    .def(op_name, [](AnalyticFunction<T>& f, IV x1, IV x2, IV x3, IV x4, IV x5, IV x6, IV x7, IV x8, IV x9, IV x10) { return f.op(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10); }, doc) \
+  \
+  ; \
+
 inline FunctionArgsList create_FunctionArgsList(const std::vector<py::object>& l)
 {
-  FunctionArgsList args {};
+  std::vector<std::shared_ptr<VarBase>> v_args;
   Index i = 0;
 
   for(const auto& li : l)
@@ -129,20 +162,19 @@ inline FunctionArgsList create_FunctionArgsList(const std::vector<py::object>& l
     i++;
 
     if(py::isinstance<ScalarVar>(li))
-      args.push_back(li.cast<ScalarVar>().arg_copy());
+      v_args.push_back(li.cast<ScalarVar>().arg_copy());
 
     else if(py::isinstance<VectorVar>(li))
-      args.push_back(li.cast<VectorVar>().arg_copy());
+      v_args.push_back(li.cast<VectorVar>().arg_copy());
 
     else if(py::isinstance<MatrixVar>(li))
-      args.push_back(li.cast<MatrixVar>().arg_copy());
+      v_args.push_back(li.cast<MatrixVar>().arg_copy());
 
     else
       throw std::invalid_argument("Argument " + std::to_string(i) + " is invalid. Only variables are accepted.");
   }
-
-  args.compute_unique_arg_names();
-  return args;
+  
+  return { v_args };
 }
 
 template<typename T>
@@ -316,6 +348,11 @@ void export_AnalyticFunction(py::module& m, const std::string& export_name)
         AUTO_ANALYTICFUNCTION_T_TUBE_EVAL_CONST_SLICEDTUBE_ARGS_REF_VARIADIC_CONST,
         "x1"_a)
     ;
+  }
+
+  if constexpr(std::is_same_v<T,VectorType>)
+  {
+    bind_parallelepiped_eval(exported, "parallelepiped_eval", parallelepiped_eval, PARALLELEPIPED_ANALYTICFUNCTION_T_PARALLELEPIPED_EVAL_CONST_ARGS_REF_VARIADIC_CONST);
   }
 
   exported

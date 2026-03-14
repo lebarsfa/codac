@@ -6,10 +6,10 @@ if(gaol_FOUND)
   message(STATUS "Found gaol version ${gaol_VERSION} in ${gaol_DIR}")
 endif()
 
-find_dependency(Eigen3 REQUIRED)
-if(Eigen3_FOUND)
-  message(STATUS "Found Eigen3 version ${Eigen3_VERSION} in ${Eigen3_DIR}")
-endif()
+#find_dependency(Eigen3 REQUIRED)
+#if(Eigen3_FOUND)
+#  message(STATUS "Found Eigen3 version ${Eigen3_VERSION} in ${Eigen3_DIR}")
+#endif()
 
 # TODO: check flags, definitions that should be added depending on options...
 

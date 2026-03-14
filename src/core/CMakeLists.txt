@@ -332,7 +332,7 @@ generate_export_header(
     EXPORT_FILE_NAME codac-core_export.h
 )
 
-target_link_libraries(codac-core PUBLIC gaol::gaol Eigen3::Eigen) # ${PROJECT_NAME}-graphics
+target_link_libraries(codac-core PUBLIC codac-eigen gaol::gaol) #Eigen3::Eigen
 
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(codac-core PUBLIC codac_STATIC_DEFINE)

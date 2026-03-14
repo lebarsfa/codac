@@ -20,6 +20,8 @@ cmake_minimum_required(VERSION 3.14...3.25)
   set(PROJECT_HOMEPAGE_URL "http://codac.io")
   message(STATUS "Configuring build for ${PROJECT_NAME} ${PROJECT_VERSION}")
 
+include(GNUInstallDirs)
+
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
@@ -141,19 +143,42 @@ else()
     endif()
 endif()
 
-  option(ENABLE_FIND_PACKAGE_EIGEN3 "ENABLE_FIND_PACKAGE_EIGEN3" OFF)
-  if(ENABLE_FIND_PACKAGE_EIGEN3)
-    find_package(Eigen3 3.4.0 QUIET) # Use Eigen3_DIR or CMAKE_PREFIX_PATH to specify a custom Eigen3 installation path...
-  endif()
-  if(Eigen3_FOUND)
-    message(STATUS "Found Eigen3 version ${Eigen3_VERSION} in ${Eigen3_DIR}")
-  else()
-    message(STATUS "Attempt to install custom Eigen3 automatically...")
+  #option(ENABLE_FIND_PACKAGE_EIGEN3 "ENABLE_FIND_PACKAGE_EIGEN3" OFF)
+  #if(ENABLE_FIND_PACKAGE_EIGEN3)
+  #  find_package(Eigen3 3.4.0 QUIET) # Use Eigen3_DIR or CMAKE_PREFIX_PATH to specify a custom Eigen3 installation path...
+  #endif()
+  #if(Eigen3_FOUND)
+  #  message(STATUS "Found Eigen3 version ${Eigen3_VERSION} in ${Eigen3_DIR}")
+  #else()
+    #message(STATUS "Attempt to get Eigen3 automatically...")
+    message(STATUS "Attempt to get custom Eigen3...")
     FetchContent_Declare(Eigen3 URL http://github.com/codac-team/eigen/archive/refs/heads/eigen-5.0.zip)
     #FetchContent_Declare(Eigen3 URL ${CMAKE_CURRENT_SOURCE_DIR}/3rd/eigen-a0dc3994bd5d4e804dab58decb78c56a5af516ba.zip) # If needed to be self-contained...
-    FetchContent_MakeAvailable(Eigen3)
-  endif()
-  # Adds Eigen3::Eigen
+    #
+    #FetchContent_MakeAvailable(Eigen3)
+    #
+    # This avoids the install part of Eigen3 to override the system-wide Eigen3 installation if any...
+    cmake_policy(PUSH)
+    if (POLICY CMP0169)
+      cmake_policy(SET CMP0169 OLD)
+    endif()
+    FetchContent_Populate(Eigen3)
+    cmake_policy(POP)
+    add_library(codac-eigen INTERFACE)
+    target_include_directories(codac-eigen 
+	    INTERFACE
+		    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/codac-eigen>"
+		    "$<BUILD_INTERFACE:${eigen3_SOURCE_DIR}>"
+    )
+    if (CODAC_INSTALL)
+      install(DIRECTORY ${eigen3_SOURCE_DIR}/unsupported/Eigen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-eigen/unsupported)
+      install(DIRECTORY ${eigen3_SOURCE_DIR}/Eigen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-eigen)
+    endif()
+    add_library(codac::codac-eigen ALIAS codac-eigen)
+    #
+  #endif()
+  ## Adds Eigen3::Eigen
+  # Adds codac-eigen
 
   option(WITH_IBEX "Using IBEX" OFF)
   if(WITH_IBEX)
@@ -183,7 +208,7 @@ endif()
 if (CODAC_INSTALL)
     # From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/chapters/install/installing.md
     # and https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
-    install(TARGETS codac-core codac-graphics eigen #####################################
+    install(TARGETS codac-core codac-graphics codac-eigen #eigen #####################################
             EXPORT codacTargets
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib
@@ -210,7 +235,7 @@ if (CODAC_INSTALL)
             DESTINATION share/cmake/codac
             )
 
-    export(TARGETS codac-core codac-graphics eigen #####################################
+    export(TARGETS codac-core codac-graphics codac-eigen #eigen #####################################
            NAMESPACE codac::
            FILE codacTargets.cmake)
 endif()

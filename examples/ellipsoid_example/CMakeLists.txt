@@ -57,4 +57,4 @@
   add_executable(${PROJECT_NAME} main.cpp)
   target_compile_options(${PROJECT_NAME} PUBLIC ${CODAC_CXX_FLAGS})
   target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${CODAC_INCLUDE_DIRS})
-  target_link_libraries(${PROJECT_NAME} PUBLIC ${CODAC_LIBRARIES} gaol::gaol Eigen3::Eigen)
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${CODAC_LIBRARIES} codac-eigen gaol::gaol) # Eigen3::Eigen

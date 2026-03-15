@@ -8,13 +8,13 @@
 
   add_subdirectory(core)
   add_subdirectory(graphics)
-##################  add_subdirectory(unsupported)
+  add_subdirectory(unsupported)
 
   if(WITH_CAPD)
     add_subdirectory(extensions/capd)
   endif()
 
-  if(WITH_IBEX) # included by default for now
+  if(WITH_IBEX)
     add_subdirectory(extensions/ibex)
   endif()
 

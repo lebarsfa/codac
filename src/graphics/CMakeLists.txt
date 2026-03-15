@@ -24,7 +24,7 @@ file(GLOB_RECURSE CODAC_GRAPHICS_SRC CONFIGURE_DEPENDS
 )
 
 # Make an automatic library - will be static or dynamic based on user setting
-add_library(codac-graphics ${CODAC_GRAPHICS_SRC} ${CODAC_GRAPHICS_HDR})
+add_library(${PROJECT_NAME}-graphics ${CODAC_GRAPHICS_SRC} ${CODAC_GRAPHICS_HDR})
 
 set(_inc_dirs "")
 foreach(_hdr IN LISTS CODAC_GRAPHICS_HDR)
@@ -35,9 +35,9 @@ endforeach()
 list(REMOVE_DUPLICATES _inc_dirs)
 
 # Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
-target_include_directories(codac-graphics 
+target_include_directories(${PROJECT_NAME}-graphics 
 	PUBLIC
-		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-graphics>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>"
@@ -53,19 +53,20 @@ generate_export_header(
     EXPORT_FILE_NAME codac-graphics_export.h
 )
 
-target_link_libraries(codac-graphics PUBLIC codac-core codac-eigen gaol::gaol) #Eigen3::Eigen 
+target_link_libraries(${PROJECT_NAME}-graphics PUBLIC ${PROJECT_NAME}-core ${PROJECT_NAME}-eigen gaol::gaol) #Eigen3::Eigen 
 
 if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(codac-graphics PUBLIC codac_STATIC_DEFINE)
+  target_compile_definitions(${PROJECT_NAME}-graphics PUBLIC codac_STATIC_DEFINE)
 else()
-  target_compile_definitions(codac-graphics PUBLIC codac_SHARED_DEFINE) # For compatibility...
+  target_compile_definitions(${PROJECT_NAME}-graphics PUBLIC codac_SHARED_DEFINE) # For compatibility...
 endif()
 
 # TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
 
 
 
-target_compile_features(codac-graphics PUBLIC cxx_std_20)
+target_compile_features(${PROJECT_NAME}-graphics PUBLIC cxx_std_20)
+
 
 
 # Generating the file codac-graphics.h
@@ -85,8 +86,8 @@ target_compile_features(codac-graphics PUBLIC cxx_std_20)
 # Install files in system directories
 
 if (CODAC_INSTALL)
-  install(FILES ${CODAC_GRAPHICS_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics)
-  install(FILES ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-graphics)
+  install(FILES ${CODAC_GRAPHICS_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-graphics)
+  install(FILES ${CODAC_GRAPHICS_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-graphics)
 endif()
 
 

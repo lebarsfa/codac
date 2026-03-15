@@ -303,8 +303,8 @@ foreach(srcfile ${CODAC_CORE_SRC})
 endforeach()
 
 # Make an automatic library - will be static or dynamic based on user setting
-#add_library(codac-core ${CODAC_CORE_SRC} ${CODAC_CORE_HDR})
-add_library(codac-core ${CODAC_CORE_SRC})
+#add_library(${PROJECT_NAME}-core ${CODAC_CORE_SRC} ${CODAC_CORE_HDR})
+add_library(${PROJECT_NAME}-core ${CODAC_CORE_SRC})
 
 set(_inc_dirs "")
 foreach(_hdr IN LISTS CODAC_CORE_HDR)
@@ -315,9 +315,9 @@ endforeach()
 list(REMOVE_DUPLICATES _inc_dirs)
 
 # Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
-target_include_directories(codac-core 
+target_include_directories(${PROJECT_NAME}-core 
 	PUBLIC
-		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/codac-core>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-core>"
 		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
 		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>"
@@ -332,19 +332,19 @@ generate_export_header(
     EXPORT_FILE_NAME codac-core_export.h
 )
 
-target_link_libraries(codac-core PUBLIC codac-eigen gaol::gaol) #Eigen3::Eigen
+target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen gaol::gaol) #Eigen3::Eigen
 
 if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(codac-core PUBLIC codac_STATIC_DEFINE)
+  target_compile_definitions(${PROJECT_NAME}-core PUBLIC codac_STATIC_DEFINE)
 else()
-  target_compile_definitions(codac-core PUBLIC codac_SHARED_DEFINE) # For compatibility...
+  target_compile_definitions(${PROJECT_NAME}-core PUBLIC codac_SHARED_DEFINE) # For compatibility...
 endif()
 
 # TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
 
 
 
-target_compile_features(codac-core PUBLIC cxx_std_20)
+target_compile_features(${PROJECT_NAME}-core PUBLIC cxx_std_20)
 
 
 
@@ -365,8 +365,8 @@ target_compile_features(codac-core PUBLIC cxx_std_20)
 # Install files in system directories
 
 if (CODAC_INSTALL)
-  install(FILES ${CODAC_CORE_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
-  install(FILES ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-core)
+  install(FILES ${CODAC_CORE_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-core)
+  install(FILES ${CODAC_CORE_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-core)
 endif()
 
 

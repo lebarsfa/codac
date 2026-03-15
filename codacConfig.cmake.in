@@ -1,7 +1,24 @@
 include(CMakeFindDependencyMacro)
 include(CheckCXXCompilerFlag)
 
-find_dependency(gaol REQUIRED)
+set(WITH_CAPD @WITH_CAPD@)
+if(WITH_CAPD)
+  find_dependency(CAPD REQUIRED)
+  if(CAPD_FOUND)
+    message(STATUS "Found CAPD version ${CAPD_VERSION} in ${CAPD_DIR}")
+  endif()
+endif()
+
+set(WITH_IBEX @WITH_IBEX@)
+if(WITH_IBEX)
+  find_dependency(IBEX 2.8.9.20260215 REQUIRED)
+  if(IBEX_FOUND)
+    message(STATUS "Found IBEX version ${IBEX_VERSION} in ${IBEX_DIR}")
+    ibex_init_common() # IBEX should have installed this function
+  endif()
+endif()
+
+find_dependency(gaol 4.2.3.20260215 REQUIRED)
 if(gaol_FOUND)
   message(STATUS "Found gaol version ${gaol_VERSION} in ${gaol_DIR}")
 endif()

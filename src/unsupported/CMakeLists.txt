@@ -1,67 +1,102 @@
-# ==================================================================
-#  Codac - cmake configuration file
-# ==================================================================
+# From https://gitlab.com/CLIUtils/modern-cmake/-/blob/b47192867e86e5f00f70ec860638a28473edc8bf/examples/extended-project/src/CMakeLists.txt
 
-  list(APPEND CODAC_UNSUPPORTED_SRC
-    
-    ${CMAKE_CURRENT_SOURCE_DIR}/codac2_unsupported_empty.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/codac2_unsupported_empty.h
-  )
+# Note that headers are optional, and do not affect add_library, but they will not
+# show up in IDEs unless they are listed in add_library.
 
-################################################################################
-# Create the target for libcodac-unsupported
-################################################################################
+# Optionally glob, but only for CMake 3.12 or later:
+# file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/include/modern/*.hpp")
+#set(HEADER_LIST "${codac_SOURCE_DIR}/include/modern/lib.hpp")
+#set(SOURCE_LIST 
+#codac.cpp
+#)
+#file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/codac/*.h" "${codac_SOURCE_DIR}/codac/*.hpp")
+#file(GLOB OTHER_LIST CONFIGURE_DEPENDS "${codac_SOURCE_DIR}/codac/*.ypp")
 
-  #if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  #endif()
+# Make an automatic library - will be static or dynamic based on user setting
+#add_library(codac ${SOURCE_LIST} ${HEADER_LIST} ${OTHER_LIST})
 
-  add_library(${PROJECT_NAME}-unsupported ${CODAC_UNSUPPORTED_SRC})
-  target_include_directories(${PROJECT_NAME}-unsupported PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rd/ipe
-    ${CMAKE_CURRENT_SOURCE_DIR}/3rd/vibes
-    ${CMAKE_CURRENT_SOURCE_DIR}/figures
-    ${CMAKE_CURRENT_SOURCE_DIR}/paver
-    ${CMAKE_CURRENT_SOURCE_DIR}/styles
-  )
-  target_link_libraries(${PROJECT_NAME}-unsupported PUBLIC ${PROJECT_NAME}-core codac-eigen gaol::gaol) #Eigen3::Eigen
-  
+file(GLOB_RECURSE CODAC_UNSUPPORTED_HDR CONFIGURE_DEPENDS 
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+)
+file(GLOB_RECURSE CODAC_UNSUPPORTED_SRC CONFIGURE_DEPENDS 
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+)
 
-################################################################################
-# For the generation of the PKG file
-################################################################################
-  
-  set(CODAC_PKG_CONFIG_CFLAGS "${CODAC_PKG_CONFIG_CFLAGS} -I\${includedir}/${PROJECT_NAME}-unsupported" PARENT_SCOPE)
-  set(CODAC_PKG_CONFIG_LIBS "${CODAC_PKG_CONFIG_LIBS} -l${PROJECT_NAME}-unsupported" PARENT_SCOPE)
+# Make an automatic library - will be static or dynamic based on user setting
+add_library(${PROJECT_NAME}-unsupported ${CODAC_UNSUPPORTED_SRC} ${CODAC_UNSUPPORTED_HDR})
+
+set(_inc_dirs "")
+foreach(_hdr IN LISTS CODAC_UNSUPPORTED_HDR)
+    get_filename_component(_dir "${_hdr}" DIRECTORY)
+    list(APPEND _inc_dirs "${_dir}")
+endforeach()
+# Remove duplicates to keep the include path clean
+list(REMOVE_DUPLICATES _inc_dirs)
+
+# Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+target_include_directories(${PROJECT_NAME}-unsupported 
+	PUBLIC
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-unsupported>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>"
+        "$<BUILD_INTERFACE:${_inc_dirs}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+)
+
+# See https://github.com/friendlyanon/cxx-static-shared-example
+include(GenerateExportHeader)
+generate_export_header(
+    codac-unsupported
+    BASE_NAME codac-unsupported
+    EXPORT_FILE_NAME codac-unsupported_export.h
+)
+
+target_link_libraries(${PROJECT_NAME}-unsupported PUBLIC ${PROJECT_NAME}-core ${PROJECT_NAME}-eigen gaol::gaol) #Eigen3::Eigen 
+
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}-unsupported PUBLIC codac_STATIC_DEFINE)
+else()
+  target_compile_definitions(${PROJECT_NAME}-unsupported PUBLIC codac_SHARED_DEFINE) # For compatibility...
+endif()
+
+# TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
 
 
-################################################################################
-# Installation of libcodac-unsupported files
-################################################################################
-  
-# Getting header files from sources
 
-  foreach(srcfile ${CODAC_UNSUPPORTED_SRC})
-    if(srcfile MATCHES "\\.h$" OR srcfile MATCHES "\\.hpp$")
-      list(APPEND CODAC_UNSUPPORTED_HDR ${srcfile})
-      file(COPY ${srcfile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
-    endif()
-  endforeach()
+target_compile_features(${PROJECT_NAME}-unsupported PUBLIC cxx_std_20)
+
+
 
 # Generating the file codac-unsupported.h
 
   set(CODAC_UNSUPPORTED_MAIN_HEADER ${CMAKE_CURRENT_BINARY_DIR}/codac-unsupported.h)
+  set(CODAC_MAIN_SUBHEADERS ${CODAC_MAIN_SUBHEADERS} "codac-unsupported.h" PARENT_SCOPE)
   file(WRITE ${CODAC_UNSUPPORTED_MAIN_HEADER} "/* This file is generated by CMake */\n\n")
   file(APPEND ${CODAC_UNSUPPORTED_MAIN_HEADER} "#pragma once\n\n")
   foreach(header_path ${CODAC_UNSUPPORTED_HDR})
     get_filename_component(header_name ${header_path} NAME)
-    file(APPEND ${CODAC_UNSUPPORTED_MAIN_HEADER} "#include <${header_name}>\n")
+    if((NOT header_name MATCHES "^.*_addons.*$") AND (NOT header_name MATCHES "^.*_impl.*$"))
+      file(APPEND ${CODAC_UNSUPPORTED_MAIN_HEADER} "#include <${header_name}>\n")
+    endif()
   endforeach()
-  file(COPY ${CODAC_UNSUPPORTED_MAIN_HEADER} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../../include)
+
 
 # Install files in system directories
 
-  install(TARGETS ${PROJECT_NAME}-unsupported DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if (CODAC_INSTALL)
   install(FILES ${CODAC_UNSUPPORTED_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-unsupported)
   install(FILES ${CODAC_UNSUPPORTED_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-unsupported)
+endif()
+
+
+# IDEs should put the headers in a nice place
+#source_group(
+#  TREE "${PROJECT_SOURCE_DIR}/include"
+#  PREFIX "Header Files"
+#  FILES ${HEADER_LIST})
+#source_group(
+#  TREE "${PROJECT_SOURCE_DIR}/unsupported"
+#  PREFIX "Other Files"
+#  FILES ${OTHER_LIST})

@@ -205,10 +205,18 @@ add_subdirectory(src) # C++ sources
 add_library(${PROJECT_NAME}::${PROJECT_NAME}-core ALIAS ${PROJECT_NAME}-core)
 add_library(${PROJECT_NAME}::${PROJECT_NAME}-graphics ALIAS ${PROJECT_NAME}-graphics)
 add_library(${PROJECT_NAME}::${PROJECT_NAME}-unsupported ALIAS ${PROJECT_NAME}-unsupported)
-add_subdirectory(doc) # documentation (Doxygen + Sphinx manual)
 
-# Python binding:
 option(WITH_PYTHON "Build Python binding" OFF) # To rename to CODAC_WITH_PYTHON...?#####################################
+if(WITH_PYTHON)
+  option(WITH_DOC "Build documentation (Doxygen + Sphinx manual)" ON) # To rename to CODAC_WITH_DOC...?#####################################
+else()
+  option(WITH_DOC "Build documentation (Doxygen + Sphinx manual)" OFF)
+endif()
+
+if(WITH_DOC)
+  add_subdirectory(doc)
+endif()
+
 if(WITH_PYTHON)
   set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
   add_subdirectory(python)

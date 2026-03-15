@@ -332,7 +332,11 @@ generate_export_header(
     EXPORT_FILE_NAME codac-core_export.h
 )
 
-target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen gaol::gaol) #Eigen3::Eigen
+if(WITH_IBEX)
+  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen Ibex::ibex) #Eigen3::Eigen
+else()
+  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen gaol::gaol) #Eigen3::Eigen
+endif()
 
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}-core PUBLIC codac_STATIC_DEFINE)

@@ -1,32 +1,47 @@
-# ==================================================================
-#  Codac - cmake configuration file
-# ==================================================================
 
 list(APPEND CODAC_CAPD_SRC
     
   ${CMAKE_CURRENT_SOURCE_DIR}/codac2_capd.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/codac2_capd.h
 )
+  
+# Make an automatic library - will be static or dynamic based on user setting
+#add_library(${PROJECT_NAME}-capd ${CODAC_CAPD_SRC} ${CODAC_CAPD_HDR})
+add_library(${PROJECT_NAME}-capd ${CODAC_CAPD_SRC})
+  
+ # Inspired from https://unclejimbo.github.io/2018/06/08/Modern-CMake-for-Library-Developers/
+target_include_directories(${PROJECT_NAME}-capd 
+	PUBLIC
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-capd>"
+		"$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/..>"
+		"$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+)
 
-################################################################################
-# Create the target for libcodac-capd
-################################################################################
+# See https://github.com/friendlyanon/cxx-static-shared-example
+include(GenerateExportHeader)
+generate_export_header(
+    codac-capd
+    BASE_NAME codac-capd
+    EXPORT_FILE_NAME codac-capd_export.h
+)
 
-  #if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 20)
-    set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  #endif()
+target_link_libraries(${PROJECT_NAME}-capd PUBLIC ${PROJECT_NAME}-core ${PROJECT_NAME}-eigen gaol::gaol capd::capd) #Eigen3::Eigen
 
-  add_library(${PROJECT_NAME}-capd ${CODAC_CAPD_SRC})
-  target_link_libraries(${PROJECT_NAME}-capd PUBLIC ${PROJECT_NAME}-core codac-eigen gaol::gaol capd::capd) #Eigen3::Eigen
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}-capd PUBLIC codac_STATIC_DEFINE)
+else()
+  target_compile_definitions(${PROJECT_NAME}-capd PUBLIC codac_SHARED_DEFINE) # For compatibility...
+endif()
+
+# TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
 
 
-  ################################################################################
-  # For the generation of the PKG file
-  ################################################################################
 
-  set(CODAC_PKG_CONFIG_CFLAGS "${CODAC_PKG_CONFIG_CFLAGS} -I\${includedir}/${PROJECT_NAME}-capd" PARENT_SCOPE)
-  set(CODAC_PKG_CONFIG_LIBS "${CODAC_PKG_CONFIG_LIBS} -l${PROJECT_NAME}-capd" PARENT_SCOPE)
+target_compile_features(${PROJECT_NAME}-capd PUBLIC cxx_std_20)
+
+
 
 
   ################################################################################
@@ -55,6 +70,14 @@ list(APPEND CODAC_CAPD_SRC
 
   # Install files in system directories
 
+ 
+  
+  
+  
+if (CODAC_INSTALL)
   install(TARGETS ${PROJECT_NAME}-capd DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+
   install(FILES ${CODAC_CAPD_HDR} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-capd)
   install(FILES ${CODAC_CAPD_MAIN_HEADER} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-capd)
+endif()

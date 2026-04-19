@@ -333,9 +333,9 @@ generate_export_header(
 )
 
 if(WITH_IBEX)
-  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen Ibex::ibex) #Eigen3::Eigen
+  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen Ibex::ibex Threads::Threads) #Eigen3::Eigen
 else()
-  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen gaol::gaol) #Eigen3::Eigen
+  target_link_libraries(${PROJECT_NAME}-core PUBLIC ${PROJECT_NAME}-eigen gaol::gaol Threads::Threads) #Eigen3::Eigen
 endif()
 
 if(NOT BUILD_SHARED_LIBS)

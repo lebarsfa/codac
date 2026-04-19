@@ -200,7 +200,10 @@ endif()
 #endif()
 ## Adds Eigen3::Eigen
 # Adds ${PROJECT_NAME}-eigen
-  
+ 
+find_package(Threads REQUIRED)
+# Adds Threads::Threads
+
 add_subdirectory(src) # C++ sources
 add_library(${PROJECT_NAME}::${PROJECT_NAME}-core ALIAS ${PROJECT_NAME}-core)
 add_library(${PROJECT_NAME}::${PROJECT_NAME}-graphics ALIAS ${PROJECT_NAME}-graphics)

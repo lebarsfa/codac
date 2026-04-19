@@ -31,15 +31,21 @@ list(APPEND SRC_TESTS # listing files without extension
   core/contractors/codac2_tests_CtcAction
   core/contractors/codac2_tests_CtcCartProd
   core/contractors/codac2_tests_CtcCtcBoundary
+  core/contractors/codac2_tests_CtcDeriv
+  core/contractors/codac2_tests_CtcEval
   core/contractors/codac2_tests_CtcFixpoint
   core/contractors/codac2_tests_CtcInter
   core/contractors/codac2_tests_CtcInverse
   core/contractors/codac2_tests_CtcInverseNotIn
   core/contractors/codac2_tests_CtcLazy
+  core/contractors/codac2_tests_CtcLohner
   core/contractors/codac2_tests_CtcPolygon
   core/contractors/codac2_tests_CtcSegment
+  core/contractors/codac2_tests_CtcVisible
   core/contractors/codac2_tests_linear_ctc
   ../doc/manual/manual/contractors/geometric/src
+  ../doc/manual/manual/contractors/analytic/src
+  ../doc/manual/manual/contractors/set/src
 
   core/domains/codac2_tests_BoolInterval
   core/domains/ellipsoid/codac2_tests_Ellipsoid
@@ -47,10 +53,15 @@ list(APPEND SRC_TESTS # listing files without extension
   core/domains/interval/codac2_tests_Interval_operations
   core/domains/interval/codac2_tests_IntervalMatrix
   core/domains/interval/codac2_tests_IntervalVector
+  ../doc/manual/manual/intervals/src
+  core/domains/zonotope/codac2_tests_Parallelepiped
+  core/domains/zonotope/codac2_tests_Parallelepiped_eval
   core/domains/tube/codac2_tests_TDomain
+  core/domains/tube/codac2_tests_Slice
+  core/domains/tube/codac2_tests_Slice_polygon
   core/domains/tube/codac2_tests_SlicedTube
   core/domains/tube/codac2_tests_SlicedTube_integral
-  ../doc/manual/manual/intervals/src
+  ../doc/manual/manual/tubes/src
 
   core/functions/analytic/codac2_tests_AnalyticFunction
   ../doc/manual/manual/functions/analytic/src
@@ -71,9 +82,12 @@ list(APPEND SRC_TESTS # listing files without extension
   core/matrices/codac2_tests_hull
   core/matrices/codac2_tests_inversion
   core/matrices/codac2_tests_IntFullPivLU
+  core/matrices/codac2_tests_GaussJordan
   ../doc/manual/manual/linear/src
 
   core/operators/codac2_tests_operators
+
+  core/peibos/codac2_tests_peibos
 
   core/separators/codac2_tests_SepCartProd
   core/separators/codac2_tests_SepCtcBoundary
@@ -81,9 +95,14 @@ list(APPEND SRC_TESTS # listing files without extension
   core/separators/codac2_tests_SepPolygon
   core/separators/codac2_tests_SepProj
   core/separators/codac2_tests_SepTransform
+  core/separators/codac2_tests_SepVisible
   
   core/tools/codac2_tests_Approx
+  core/tools/codac2_tests_serialization
   core/tools/codac2_tests_transformations
+  core/tools/codac2_tests_trunc
+  core/tools/ibex/codac2_tests_ibex
+  ../doc/manual/manual/tools/src
   
   core/trajectory/codac2_tests_AnalyticTraj
   core/trajectory/codac2_tests_SampledTraj
@@ -102,10 +121,25 @@ file(COPY
 
 set(CODAC_LIBRARIES ${PROJECT_NAME}-core ${PROJECT_NAME}-graphics)
 
+option(BUILD_SYMPY_EMBED_TESTS "Build C++ tests that require embedded Python for Sympy" ON)
+if(WITH_PYTHON AND DEFINED PYBIND11_FINDPYTHON AND NOT PYBIND11_FINDPYTHON)
+  message(STATUS "Disabling Sympy C++ embed tests because PYBIND11_FINDPYTHON=OFF")
+  set(BUILD_SYMPY_EMBED_TESTS OFF)
+endif()
+
+# Sympy test
+if (WITH_PYTHON AND BUILD_SYMPY_EMBED_TESTS)
+  list(APPEND SRC_TESTS
+    extensions/sympy/codac2_tests_sympy
+    ../doc/manual/manual/extensions/sympy/src
+  )
+endif()
+
 # CAPD test
 if (WITH_CAPD)
   list(APPEND SRC_TESTS
     extensions/capd/codac2_tests_capd
+    extensions/capd/codac2_tests_peibos_capd
     ../doc/manual/manual/extensions/capd/src
   )
   set(CODAC_LIBRARIES ${CODAC_LIBRARIES} ${PROJECT_NAME}-capd capd::capd)
@@ -113,6 +147,9 @@ endif()
 
 # IBEX test
 if (WITH_IBEX)
+  #find_package(IBEX REQUIRED)
+  #ibex_init_common() # IBEX should have installed this function
+  #message(STATUS "Found IBEX version ${IBEX_VERSION}")
   list(APPEND SRC_TESTS
     extensions/ibex/codac2_tests_ibex
   )
@@ -129,6 +166,9 @@ foreach(SRC_TEST ${SRC_TESTS})
   set(CODAC_HEADERS_DIR ${CMAKE_CURRENT_BINARY_DIR}/../include)
   target_include_directories(${TEST_NAME} SYSTEM PUBLIC ${CODAC_HEADERS_DIR})
   target_link_libraries(${TEST_NAME} PUBLIC gaol::gaol ${CODAC_LIBRARIES} PRIVATE Catch2::Catch2WithMain)
+  if(WITH_PYTHON AND SRC_TEST MATCHES "extensions/sympy/")
+    target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME}-sympy pybind11::embed)
+  endif()
   add_dependencies(check ${TEST_NAME})
   add_test(NAME ${TEST_NAME}_cpp COMMAND ${TEST_NAME})
 

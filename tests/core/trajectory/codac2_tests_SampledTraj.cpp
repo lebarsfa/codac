@@ -68,7 +68,7 @@ TEST_CASE("SampledTraj as operator (1d case)")
 {
   ScalarVar t;
   AnalyticFunction f { {t}, cos(t) };
-  AnalyticTraj analytic_traj(f, {-PI,PI});
+  AnalyticTraj analytic_traj({-PI,PI},f);
   auto sampled_traj = analytic_traj.sampled(1e-2);
   auto g = sampled_traj.as_function();
 
@@ -86,7 +86,7 @@ TEST_CASE("SampledTraj as operator (nd case)")
     vec(2*cos(t),sin(2*t))
   };
 
-  auto analytic_traj = AnalyticTraj(f, {0,5});
+  auto analytic_traj = AnalyticTraj({0,5},f);
   auto sampled_traj = analytic_traj.sampled(1e-2);
   auto g = sampled_traj.as_function();
 
@@ -114,10 +114,39 @@ TEST_CASE("SampledTraj: operations")
 {
   ScalarVar t;
   AnalyticFunction h { {t}, t };
-  auto analytic_traj = AnalyticTraj(h, {-PI,PI});
+  auto analytic_traj = AnalyticTraj({-PI,PI},h);
   SampledTraj x = analytic_traj.sampled(1e-2);
   CHECK(Approx(cos(x).codomain(),1e-5) == Interval(-1,1));
   x = cos(x) + 4.;
   x -= 42.;
   CHECK(Approx(x.codomain(),1e-5) == Interval(-1,1)+4.-42.);
+}
+
+TEST_CASE("SampledTraj: nan case")
+{
+  SampledTraj<Vector> x;
+  x.set(Vector({0,0}),0.);
+  x.set(Vector({2,2}),2.);
+  CHECK(x(1.) == Vector({1,1}));
+  x.set(Vector({0,NAN}),0.);
+  CHECK(x(1.).is_nan());
+}
+
+TEST_CASE("SampledTraj: derivative")
+{
+  ScalarVar t;
+  AnalyticFunction f({t}, sqr(t)*exp(sin(t)));
+  SampledTraj<double> x = AnalyticTraj({0,10},f).sampled(1e-3);
+  SampledTraj<double> s = AnalyticTraj({0,10},AnalyticFunction({t},exp(sin(t))*(2*t+sqr(t)*cos(t)))).sampled(1e-2);
+
+  //DefaultFigure::plot_trajectory(x);
+  //DefaultFigure::plot_trajectory(x.derivative(), Color::blue());
+  //DefaultFigure::plot_trajectory(s, Color::light_gray());
+  //DefaultFigure::plot_trajectory(x.derivative().primitive(), Color::red());
+
+  auto d = x.derivative();
+  auto p = d.primitive();
+
+  for(double i = 0 ; i < 10 ; i+=1e-1)
+    CHECK(Approx(p(i),1e-2) == x(i));
 }

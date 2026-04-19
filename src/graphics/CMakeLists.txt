@@ -77,9 +77,7 @@ target_compile_features(${PROJECT_NAME}-graphics PUBLIC cxx_std_20)
   file(APPEND ${CODAC_GRAPHICS_MAIN_HEADER} "#pragma once\n\n")
   foreach(header_path ${CODAC_GRAPHICS_HDR})
     get_filename_component(header_name ${header_path} NAME)
-    if((NOT header_name MATCHES "^.*_addons.*$") AND (NOT header_name MATCHES "^.*_impl.*$"))
-      file(APPEND ${CODAC_GRAPHICS_MAIN_HEADER} "#include <${header_name}>\n")
-    endif()
+    file(APPEND ${CODAC_GRAPHICS_MAIN_HEADER} "#include <${header_name}>\n")
   endforeach()
 
 

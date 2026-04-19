@@ -9,13 +9,13 @@
 
 import unittest
 from codac import *
-import sys, math
+import sys, math, numpy as np
 
 class TestSampledTraj(unittest.TestCase):
 
   def test_SampledTraj(self):
 
-    x = SampledVectorTraj({
+    x = SampledTraj_Vector({
       0.25: [-0.5,0.5],
       1.: [0,0],
       2.: [1,0],
@@ -64,7 +64,7 @@ class TestSampledTraj(unittest.TestCase):
     f = AnalyticFunction(
       [t], cos(t)
     )
-    analytic_traj = AnalyticTraj(f, [-math.pi,math.pi])
+    analytic_traj = AnalyticTraj([-math.pi,math.pi],f)
     sampled_traj = analytic_traj.sampled(1e-2)
     g = sampled_traj.as_function()
 
@@ -85,7 +85,7 @@ class TestSampledTraj(unittest.TestCase):
       vec(2*cos(t),sin(2*t))
     )
 
-    analytic_traj = AnalyticTraj(f, [0,5])
+    analytic_traj = AnalyticTraj([0,5],f)
     sampled_traj = analytic_traj.sampled(1e-2)
     g = sampled_traj.as_function()
 
@@ -108,6 +108,28 @@ class TestSampledTraj(unittest.TestCase):
     while t_ < 5:
       self.assertTrue(Approx(h.real_eval(t_),1e-8) == Vector([2*math.cos(t_),math.sin(2*t_)]))
       t_=t_+1e-2
+
+    # SampledTraj (nan case)
+
+    x = SampledTraj_Vector()
+    x.set(Vector([0,0]),0.)
+    x.set(Vector([2,2]),2.)
+    self.assertTrue(x(1.) == Vector([1,1]))
+    x.set(Vector([0,float("nan")]),0.)
+    self.assertTrue(x(1.).is_nan())
+
+    # SampledTraj, derivative
+
+    t = ScalarVar()
+    f = AnalyticFunction([t], sqr(t)*exp(sin(t)))
+    x = AnalyticTraj([0,10],f).sampled(1e-3)
+    s = AnalyticTraj([0,10],AnalyticFunction([t],exp(sin(t))*(2*t+sqr(t)*cos(t)))).sampled(1e-2)
+
+    d = x.derivative()
+    p = d.primitive()
+
+    for i in np.arange(0, 10, 1e-1):
+      self.assertTrue(Approx(p(i),1e-2) == x(i))
 
 if __name__ ==  '__main__':
   unittest.main()

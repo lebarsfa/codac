@@ -14,9 +14,9 @@ int main()
 
   AnalyticFunction f { {x},
     {
-          (2.0+cos(x[0])/(1+(sin(x[0])^2.0)))*sin(x[1]),
-          (2.0+cos(x[0])/(1+(sin(x[0])^2.0)))*cos(x[1]),
-          2.0*sin(x[0])*cos(x[0])/(1+(sin(x[0])^2.0))
+          (2.0+cos(x[0])/(1+sqr(sin(x[0]))))*sin(x[1]),
+          (2.0+cos(x[0])/(1+sqr(sin(x[0]))))*cos(x[1]),
+          2.0*sin(x[0])*cos(x[0])/(1+sqr(sin(x[0])))
           
     }
   };
@@ -37,11 +37,11 @@ int main()
         } else {
            IntervalVector cent = f.eval(T.mid());
 	   Vector inflationbox = cent.rad() + df.rad()*T.rad();
-           std::vector<Vector> v
-              { (T[0].rad()*df.col(0).mid()), (T[1].rad()*df.col(1).mid()),
-              { inflationbox[0], 0.0, 0.0 }, { 0.0, inflationbox[1], 0.0 },
-	      { 0.0, 0.0, inflationbox[2] } };
-           fig_zon.draw_zonotope(cent.mid(),v,Color::red(0.3));
+           Matrix v (3,5);
+            v << (T[0].rad()*df.col(0).mid()), (T[1].rad()*df.col(1).mid()),
+                  Vector({ inflationbox[0], 0.0, 0.0 }),Vector({ 0.0, inflationbox[1], 0.0 }),
+                  Vector({ 0.0, 0.0, inflationbox[2] });
+           fig_zon.draw_zonotope({cent.mid(),v},Color::red(0.3));
         }
         psi=psi+dpsi;
       }

@@ -17,11 +17,11 @@
   if(WITH_IBEX)
     add_subdirectory(extensions/ibex)
   endif()
-
-  #if(WITH_PYTHON)
-  #  add_subdirectory(sympy)
-  #endif()
   
+  if(WITH_PYTHON)
+    add_subdirectory(extensions/sympy)
+  endif()
+
 
 # Generating file for #include <codac>
 # ====================================

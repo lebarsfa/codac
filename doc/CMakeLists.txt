@@ -6,11 +6,11 @@
 
   if(WITH_PYTHON)
     
-    find_package(Doxygen)
+    find_package(Doxygen)# 1.16.1 QUIET)
 
     if(NOT DOXYGEN_FOUND)
 
-      message(STATUS "Doxygen not found, not able to generate/install the API documentation.")
+      message(STATUS "The required version of Doxygen has not been found, the API documentation will not be generated.")
 
     else()
 
@@ -39,12 +39,6 @@
 
       execute_process(COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT} OUTPUT_QUIET)
       add_custom_target(api COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT} OUTPUT_QUIET)
-
-      if (CODAC_INSTALL)
-        install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/api/html 
-                DESTINATION share/doc/${CMAKE_PROJECT_NAME}/api
-                OPTIONAL)
-      endif()
 
     endif()
 
@@ -100,14 +94,14 @@
               ${SPHINX_EXTRA_API}
       COMMENT "Copying generated Doxygen HTML to Sphinx extra_html/api"
     )
-
+    
     if (CODAC_INSTALL)
-        install(DIRECTORY ${SPHINX_BUILD}/
-                DESTINATION share/codac_website
-                OPTIONAL)
-        install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api
-                DESTINATION share/codac_website
-            OPTIONAL)
+      install(DIRECTORY ${SPHINX_BUILD}/
+              DESTINATION share/codac_website
+              OPTIONAL)
+      install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api
+              DESTINATION share/codac_website
+          OPTIONAL)
     endif()
 
   endif()

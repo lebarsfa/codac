@@ -99,16 +99,17 @@ endif()
 # _ out of memory allocating XXX bytes.
 # _ string table overflow.
 # _ .obj: file too big.
+# See also per-file compile options...
 if(MSVC)
   add_compile_options(/bigobj)
 elseif(MINGW)
   add_compile_options(-Wa,-mbig-obj)
-  if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-    add_compile_options(-g0)
-  endif()
-  if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-Os)
-  endif()
+  #if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+  #  add_compile_options(-g0)
+  #endif()
+  #if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  #  add_compile_options(-Os)
+  #endif()
 endif()
 
 include(FetchContent)

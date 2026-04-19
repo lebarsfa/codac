@@ -360,6 +360,23 @@ else()
   target_compile_definitions(${PROJECT_NAME}-core PUBLIC codac_SHARED_DEFINE) # For compatibility...
 endif()
 
+# Temporary attempts to fix errors similar to: 
+# _ number of sections exceeded object file format limit.
+# _ out of memory allocating XXX bytes.
+# _ string table overflow.
+# _ .obj: file too big.
+if(MSVC)
+elseif(MINGW)
+  set_source_files_properties(
+    "${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_checks.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_mapping.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/domains/ellipsoid/codac2_Ellipsoid_utils.cpp"
+    PROPERTIES
+      COMPILE_FLAGS "-g0 -Os"
+  )
+endif()
+
 # TO CHECK DEFAULTS DEPENDING ON THE COMPILER, ALSO THE .CMAKE...
 
 

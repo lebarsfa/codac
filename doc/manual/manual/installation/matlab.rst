@@ -41,3 +41,27 @@ A solution is to avoid using ``sudo``. If required, run MATLAB with the correct 
 .. code::
 
   sudo HOME=/home/your_username matlab
+
+.. warning:: 
+
+  **Known issues and possible workarounds**
+    
+  * On some configurations, you might need to use ``pip3`` instead of ``pip``, and/or ``--break-system-packages`` parameter, *e.g.*
+
+    .. code-block:: bash
+    
+      pip3 install --break-system-packages codac4matlab
+
+  * In some cases, you might have multiple Python installations at different locations on your system (possibly the same Python version can be installed separately at different locations). Follow `MATLAB documentation <https://www.mathworks.com/help/matlab/matlab_external/install-supported-python-implementation.html>`_ to try to determine surely where is the Python installation that it uses, possibly run the pip install command from inside MATLAB command window with the ``!`` prefix, *i.e* ``!pip install codac4matlab``
+
+  * Python virtual environments compatibility has not been tested.
+  
+  * MATLAB Online: you will need to run `codac4matlabonline.m <https://github.com/lebarsfa/codac/raw/refs/heads/codac2/scripts/MATLAB/codac4matlabonline.m>`_. Tweak it if it does not work for you. It might not be possible to view the VIBes windows, possibly use the VIBes functions to save the desired pictures as a workaround.
+  
+  * You might need to add as prefix ``py.codac4matlab.`` to class names, e.g. ``py.codac4matlab.Interval`` for ``Interval`` to avoid potential classes and function name conflicts with other libraries, or do explicitely *e.g.* ``import y.codac4matlab.Interval;import py.codac4matlab.IntervalVector;import py.codac4matlab.IntervalMatrix;`` instead of just ``import py.codac4matlab.*``.
+  
+  * When we click on a Codac variable e.g. IntervalVector (``py.codac4matlab._core.IntervalVector``), we do not get help. Please check `codac.io <..>`_ for the documentation. Also, you can try typing *e.g.* ``X0.`` followed by the TAB key (assuming ``X0`` is a ``py.codac4matlab._core.IntervalVector``) to get a list of suggestions of properties and methods.
+
+.. admonition:: Note
+   
+  * Check `codac4matlab_usage.m <https://github.com/lebarsfa/codac/raw/refs/heads/codac2/scripts/MATLAB/codac4matlab_usage.m>`_ example for some MATLAB specificities. 

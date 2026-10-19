@@ -174,7 +174,7 @@ endif()
 #else()
   #message(STATUS "Attempt to get Eigen3 automatically...")
   message(STATUS "Attempt to get custom Eigen3...")
-  FetchContent_Declare(Eigen3 URL http://github.com/codac-team/eigen/archive/refs/heads/eigen-5.0.zip)
+  FetchContent_Declare(Eigen3 URL https://github.com/codac-team/eigen/archive/refs/heads/eigen-5.0.zip)
   #FetchContent_Declare(Eigen3 URL ${CMAKE_CURRENT_SOURCE_DIR}/3rd/eigen-a0dc3994bd5d4e804dab58decb78c56a5af516ba.zip) # If needed to be self-contained...
   #
   #FetchContent_MakeAvailable(Eigen3)
@@ -189,12 +189,12 @@ endif()
   add_library(${PROJECT_NAME}-eigen INTERFACE)
   target_include_directories(${PROJECT_NAME}-eigen 
       INTERFACE
-          "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/codac-eigen>"
+          "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-eigen>"
           "$<BUILD_INTERFACE:${eigen3_SOURCE_DIR}>"
   )
   if (CODAC_INSTALL)
-    install(DIRECTORY ${eigen3_SOURCE_DIR}/unsupported/Eigen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-eigen/unsupported)
-    install(DIRECTORY ${eigen3_SOURCE_DIR}/Eigen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/codac-eigen)
+    install(DIRECTORY ${eigen3_SOURCE_DIR}/unsupported/Eigen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-eigen/unsupported)
+    install(DIRECTORY ${eigen3_SOURCE_DIR}/Eigen DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}-eigen)
   endif()
   add_library(${PROJECT_NAME}::${PROJECT_NAME}-eigen ALIAS ${PROJECT_NAME}-eigen)
   #

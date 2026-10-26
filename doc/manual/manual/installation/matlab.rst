@@ -47,7 +47,7 @@ Known installation issues and possible workarounds
 
 * Python virtual environments compatibility has not been tested.
 
-* MATLAB Online: you will need to run `codac4matlabonline.m <https://github.com/lebarsfa/codac/raw/refs/heads/codac2/scripts/MATLAB/codac4matlabonline.m>`_. Tweak it if it does not work for you. It might not be possible to view the `VIBes viewer <../visualization/vibes.html>`_ windows, possibly use the VIBes functions to save the desired pictures as a workaround.
+* MATLAB Online: you will need to run `codac4matlabonline.m <https://github.com/codac-team/codac/raw/refs/heads/codac2/scripts/MATLAB/codac4matlabonline.m>`_. Tweak it if it does not work for you. It might not be possible to view the `VIBes viewer <../visualization/vibes.html>`_ windows, possibly use the VIBes functions to save the desired pictures as a workaround.
 
 
 MATLAB specificities
@@ -59,7 +59,7 @@ MATLAB specificities
 
 .. admonition:: Note
    
-  Check `codac4matlab_usage.m <https://github.com/lebarsfa/codac/raw/refs/heads/codac2/scripts/MATLAB/codac4matlab_usage.m>`_ example for some MATLAB specificities. 
+  Check `codac4matlab_usage.m <https://github.com/codac-team/codac/raw/refs/heads/codac2/scripts/MATLAB/codac4matlab_usage.m>`_ example for some MATLAB specificities. 
 
   See also `Codac v1 documentation <https://codac.io/v1/install/04-start-matlab-project.html>`_ for some remaining issues and potential workarounds.
 

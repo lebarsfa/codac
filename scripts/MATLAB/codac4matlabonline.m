@@ -33,19 +33,19 @@ if ~isfolder("/MATLAB Drive/vibes/squashfs-root")
     !cd "/MATLAB Drive/vibes" ; wget -q --show-progress --progress=dot:giga https://github.com/ENSTABretagneRobotics/VIBES/releases/latest/download/VIBes-viewer_amd64.AppImage
     !cd "/MATLAB Drive/vibes" ; ./VIBes-viewer_amd64.AppImage --appimage-extract >/dev/null
     !cd "/MATLAB Drive/vibes" ; mv squashfs-root/lib/x86_64-linux-gnu/libc.so.6 libc.so.6.bak
-    % To run in the background, but probably no way to make the window might visible...
-    !QT_QPA_PLATFORM_PLUGIN_PATH="/MATLAB Drive/vibes/squashfs-root/usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/" ./squashfs-root/usr/bin/VIBes-viewer &
-    !xwininfo -root -tree | grep VIBes
-    % Maybe capture it with [~,out] = system('xwininfo -root -tree | grep "Codac - default figure"'); wid = regexp(out,'0x[0-9A-Fa-f]+','match','once'); system(sprintf('xwd -id %s -silent -out vibes.xwd', wid));...
 end
+% Run VIBes-viewer in the background only if its windows do not exist, but probably no way to make the windows visible...
+!cd "/MATLAB Drive/vibes/squashfs-root" ; !(xwininfo -root -tree | grep -q VIBes) && QT_QPA_PLATFORM_PLUGIN_PATH="/MATLAB Drive/vibes/squashfs-root/usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/" ./usr/bin/VIBes-viewer &
+%!sleep 4
+%!xwininfo -root -tree | grep VIBes
+% Maybe capture it with [~,out] = system('xwininfo -root -tree | grep "Codac - default figure"'); wid = regexp(out,'0x[0-9A-Fa-f]+','match','once'); system(sprintf('xwd -id %s -silent -out vibes.xwd', wid));...
 
-disp('End of codac4matlab prerequisites checks.');
-
-% This is probably necessary every time...
 if count(py.sys.path, "/MATLAB Drive/pythonlibs") == 0
     insert(py.sys.path, int32(0), "/MATLAB Drive/pythonlibs");
 end
 
+disp('End of codac4matlab prerequisites checks.');
+
 disp('Notes:');
 disp('_ This script needs to be run every time MATLAB Online is started.');
-disp('_ To uninstall, remove the "/MATLAB Drive/pythonlibs" and "/MATLAB Drive/vibes" folders, and remove related entries from py.sys.path.');
+disp('_ To uninstall, run: system("pkill VIBes-viewer"); p = "/MATLAB Drive/pythonlibs"; if any(py.sys.path == p), remove(py.sys.path, p); end; p = "/MATLAB Drive/pythonlibs"; if isfolder(p), rmdir(p, "s"); end; p = "/MATLAB Drive/vibes"; if isfolder(p), rmdir(p, "s"); end');
